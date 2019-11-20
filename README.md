@@ -15,11 +15,11 @@ Geo2DR implements a variety of graph reduction and vocabulary building algorithm
 
 The following methods are currently implemented (in examples)
 
-- Graph2Vec from Narayanan et al. Graph2Vec: Learning Distributed Representations of Graphs (2017 International Workshop on Mining and Learning with Graphs)
-- AWE-DD from from Ivanov and Burnaev: Anonymous Walk Embeddings (ICML 2018)
-- Deep GK from Yanardag and Vishwanathan Deep Graph Kernels (KDD 2015)
-- Deep SP from Yanardag and Vishwanathan Deep Graph Kernels (KDD 2015)
-- Deep WL from Yanardag and Vishwanathan Deep Graph Kernels (KDD 2015)
+- Graph2Vec from Narayanan et al. [Graph2Vec: Learning Distributed Representations of Graphs](https://arxiv.org/abs/1707.05005) (2017 International Workshop on Mining and Learning with Graphs)
+- AWE-DD from from Ivanov and Burnaev [Anonymous Walk Embeddings](https://arxiv.org/abs/1805.11921) (ICML 2018)
+- Deep GK from Yanardag and Vishwanathan [Deep Graph Kernels](https://dl.acm.org/citation.cfm?id=2783417) (KDD 2015)
+- Deep SP from Yanardag and Vishwanathan [Deep Graph Kernels](https://dl.acm.org/citation.cfm?id=2783417) (KDD 2015)
+- Deep WL from Yanardag and Vishwanathan [Deep Graph Kernels](https://dl.acm.org/citation.cfm?id=2783417) (KDD 2015)
 <!-- - G2DR from A framework for creating models to learn distributed representations of graphs 
  -->
 <!-- ## QuickBuilder Example
@@ -40,4 +40,4 @@ The library is designed a -->
 
 4. Do you accept contributions?
 
-- *yes, I very much welcome them. Thank you for improving this library. We all benefit the better it becomes.*
+- *Yes. Thank you for improving this library. We all benefit the better Geo2DR becomes.*
