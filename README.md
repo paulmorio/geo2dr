@@ -13,6 +13,17 @@ Once the distributed vector representations are learned for each of the graphs i
 
 Geo2DR implements a variety of graph reduction and vocabulary building algorithms (such as Weisfeiler-Lehman, anonymous walks, graphlets) and learning models which exploits the distributive hypothesis (such as skipgram, skipgram+negative sampling, GLoVe). This enables the quick creation of existing systems such as Graph2Vec or AWE but also the creation of new combinations leading to new systems capable of learning distributed representations, allowing enabling deeper studies into how we can build better representations of graphs and more reliable comparative analyses on the same codebase.
 
+The following substructure induction algorithms are implemented
+
+- Weisfeiler-Lehman rooted subgraph decomposition
+- Anonymous walks
+- Graphlets
+- Shortest paths
+
+The following embedding systems are included
+- skipgram with negative sampling (all methods use this)
+- GloVE
+
 The following methods are currently implemented (in examples)
 
 - Graph2Vec from Narayanan et al. [Graph2Vec: Learning Distributed Representations of Graphs](https://arxiv.org/abs/1707.05005) (2017 International Workshop on Mining and Learning with Graphs)
