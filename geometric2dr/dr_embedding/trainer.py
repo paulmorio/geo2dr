@@ -47,7 +47,7 @@ class Trainer(object):
 
 					scheduler.step()
 					optimizer.zero_grad()
-					loss = self.skipgram.forward(pos_target, pos_context, neg_context)
+					loss = self.skipgram.forward(pos_target, pos_context, neg_context) # the loss is integrated into the forward function
 					loss.backward()
 					optimizer=step()
 

@@ -24,4 +24,18 @@ class GraphCorpus(Dataset):
 	"""
 
 	def __init__(self, data, context="all_induced"):
-		
+		self.data = data
+		self.context = context
+
+
+	def __len__(self):
+		pass
+
+	def __getitem__(self, idx):
+		pass
+
+	@staticmethod
+	def collate(batches):
+		all_targets = [target for batch in batches for target, _, _ in batch if len(batch)>0]
+		all_contexts = [context for batch in batches for _, context, _ in batch if len(batch)>0]
+		all_neg_contexts = [neg_context for batch in batches for _, _, neg_context in batch if len(batch)>0]
