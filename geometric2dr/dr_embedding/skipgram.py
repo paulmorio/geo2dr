@@ -45,7 +45,7 @@ class Skipgram(nn.Module):
 	def save_embedding(self, id2graph, file_name):
 		embedding = self.target_embeddings.weight.cpu().data.numpy()
 		with open(file_name, 'w') as f:
-			f.write('%d %d\n' % (len(id2word), self.emb_dimension))
+			f.write('%d %d\n' % (len(id2graph), self.emb_dimension))
 			for gid, g in id2graph.items():
 				e = ' '.join(map(lambda x: str(x), embedding[gid]))
 				f.write('%s %s\n' % (w,e))
