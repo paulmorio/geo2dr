@@ -86,7 +86,7 @@ else:
 	del(nodes)
 
 	# Now get the edges for each graph making sure the edge nodes are actually in the graph as well
-	print("#... Generating graph edges dictionary ...#")
+	print("#... Generating graph edges dictionary ...#") # Choke point of algorithm (but we realistically only do it once.)
 	graph_edges = defaultdict(list)
 	edges = open(graph_A_fname).readlines()
 	edges = [x.split(",") for x in edges]
@@ -101,7 +101,7 @@ else:
 				break # no need to continue going through graphs checking for this edge
 			else:
 				continue
-	del(edges)
+	del(  )
 
 	print("#... Generating NX Graph dictionary ...#")
 	# The more you know, the defaultdict is a factory pattern
@@ -112,7 +112,6 @@ else:
 			G.add_edge(u,v)
 		graph_nx[gindex] = G
 	del(graph_edges)
-
 
 
 
