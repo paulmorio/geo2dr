@@ -23,7 +23,7 @@ class Skipgram(nn.Module):
 		self.context_embeddings = nn.Embedding(vocab_size, embedding_dimension, sparse=True)
 
 		# Xavier initialization of weights
-		initrange=1.0/(self.embedding_dimension+vocab_size) 
+		initrange=1.0/(self.embedding_dimension) 
 		init.uniform_(self.target_embeddings.weight.data, -initrange, initrange)
 		init.constant_(self.context_embeddings.weight.data,0)
 
