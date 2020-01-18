@@ -60,4 +60,3 @@ class Trainer(object):
 if __name__ == '__main__':
 	g2dr = trainer(input_file='wl_graph_mutag.gcorpus', output_file="mutag_test_embeddings.vec")
 	g2dr.train()
-
