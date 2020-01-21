@@ -15,8 +15,8 @@ class Skipgram(nn.Module):
 	sampling as in Mikolov et al.
 	"""
 
-	def __init__(self, num_target_embs, vocab_size, embedding_dimension):
-		super(skipgram, self).__init__()
+	def __init__(self, num_targets, vocab_size, embedding_dimension):
+		super(Skipgram, self).__init__()
 		self.num_targets = num_targets
 		self.embedding_dimension = embedding_dimension
 		self.target_embeddings = nn.Embedding(num_targets, embedding_dimension, sparse=True) # its a tensor with a lookup function overloading the embedding(word) oart
@@ -45,7 +45,11 @@ class Skipgram(nn.Module):
 	def save_embedding(self, id2graph, file_name):
 		embedding = self.target_embeddings.weight.cpu().data.numpy()
 		with open(file_name, 'w') as f:
-			f.write('%d %d\n' % (len(id2graph), self.emb_dimension))
+			f.write('%d %d\n' % (len(id2graph), self.embedding_dimension))
 			for gid, g in id2graph.items():
 				e = ' '.join(map(lambda x: str(x), embedding[gid]))
-				f.write('%s %s\n' % (w,e))
+				f.write('%s %s\n' % (g,e))
+
+	def give_target_embeddings(self):
+		embedding = self.target_embeddings.weight.cpu().data.numpy()
+		return embedding
