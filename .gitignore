@@ -1,3 +1,7 @@
+# Sandbox files or files to temporarily ignore
+*.testfile
+*.json
+
 # Data
 geometric2dr/file_handling/dortmund_data
 geometric2dr/file_handling/dortmund_gexf
