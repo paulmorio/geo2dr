@@ -61,8 +61,7 @@ class Trainer(object):
 					scheduler.step()
 
 					running_loss = running_loss * 0.9 + loss.item() * 0.1
-					if i>0 and i%500==0:
-						print(" Loss: " + str(running_loss))
+			print(" Loss: " + str(running_loss))
 
 		final_embeddings = self.skipgram.target_embeddings.weight.cpu().data.numpy()
 		save_graph_embeddings(self.corpus, final_embeddings, self.output_fh)

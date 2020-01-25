@@ -6,6 +6,7 @@
 geometric2dr/file_handling/dortmund_data
 geometric2dr/file_handling/dortmund_gexf
 geometric2dr/file_handling/*.Labels
+geometric2dr/embeddings/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
