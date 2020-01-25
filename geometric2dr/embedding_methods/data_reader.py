@@ -6,14 +6,13 @@ Is essentially the class we use to handle the data and corpi
 
 import numpy as np
 import torch
-
 from torch.utils.data import Dataset, DataLoader
 from collections import defaultdict, Counter
 from random import shuffle
-from utils import get_files
+
+from embedding_methods.utils import get_files
 
 np.random.seed(27)
-
 class Corpus(Dataset):
 	"""
 	Class which representes all of the graph documents in a graph dataset

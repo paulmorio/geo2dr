@@ -7,12 +7,12 @@ from torch.utils.data import DataLoader
 from tqdm import tqdm
 
 # Internal 
-from data_reader import Corpus
-from skipgram import Skipgram
-from utils import get_files, get_class_labels, get_class_labels_tuples, save_graph_embeddings
+from embedding_methods.data_reader import Corpus
+from embedding_methods.skipgram import Skipgram
+from embedding_methods.utils import get_files, get_class_labels, get_class_labels_tuples, save_graph_embeddings
 
 # For testing
-from classify import perform_classification, cross_val_accuracy
+from embedding_methods.classify import perform_classification, cross_val_accuracy
 
 class Trainer(object):
 	def __init__(self, corpus_dir, extension, max_files, output_fh, emb_dimension=128, batch_size=32, epochs=100, initial_lr=1e-3, min_count=1):

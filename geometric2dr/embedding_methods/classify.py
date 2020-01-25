@@ -18,7 +18,7 @@ from random import randint
 import numpy as np
 import logging
 
-from utils import get_files, get_class_labels
+from embedding_methods.utils import get_files, get_class_labels
 
 logger = logging.getLogger()
 logger.setLevel("INFO")
