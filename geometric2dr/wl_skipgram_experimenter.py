@@ -34,7 +34,7 @@ for wl_h in wl_degrees:
     	for min_count in min_counts:
 	        for run in range(runs):
 	            # Set the output file name for the embeddings
-	            output_fh = str.join("_", [dataset, "WL", str(wl_h), "ed", str(embedding_dimension), "bs", str(batch_size), "minCount", str(min_count), "run", str(run)])
+	            output_fh = str.join("_", [dataset, "WL", str(wl_h), "embd", str(embedding_dimension), "epochs", str(epochs), "bs", str(batch_size), "minCount", str(min_count), "run", str(run)])
 	            output_fh += ".json"
 	            output_fh = embedding_folder + "/" + output_fh
 
