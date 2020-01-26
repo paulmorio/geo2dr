@@ -46,11 +46,11 @@ def load_graph(file_handle):
 
 
 def get_maps(num_graphlets):
-    with open("canonical_maps/canonical_map_n%s.p"%(num_graphlets), 'rb') as handle:
+    with open("/home/morio/workspace/geo2dr/geometric2dr/decomposition/canonical_maps/canonical_map_n%s.p"%(num_graphlets), 'rb') as handle:
         # canonical_map -> {canonical string id: {"graph", "idx", "n"}}
         canonical_map = pickle.load(handle, encoding="latin1")
 
-    with open("graphlet_counter_maps/graphlet_counter_nodebased_n%s.p"%(num_graphlets), 'rb') as handle:
+    with open("/home/morio/workspace/geo2dr/geometric2dr/decomposition/graphlet_counter_maps/graphlet_counter_nodebased_n%s.p"%(num_graphlets), 'rb') as handle:
         # weight map -> {parent id: {child1: weight1, ...}}
         weight_map = pickle.load(handle, encoding="latin1")
 
@@ -120,7 +120,7 @@ def graphlet_corpus(corpus_dir, num_graphlets, samplesize):
         else:
             count_map[fallback_map[num_graphlets]] = samplesize # fallback to 0th node at that level
         graph_map[gidx] = count_map
-        print ("Graph: %s #nodes: %s  total samples: %s" % (gidx, len(nx_graph.nodes()), sum(list(graph_map[gidx].values()))))
+        # print ("Graph: %s #nodes: %s  total samples: %s" % (gidx, len(nx_graph.nodes()), sum(list(graph_map[gidx].values()))))
         save_graphlet_document(gexf_fh, gidx, graph_map, num_graphlets, samplesize)
 
     print ("Total size of the corpus: %s" % (len(corpus)))
