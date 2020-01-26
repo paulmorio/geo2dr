@@ -29,7 +29,7 @@ import networkx as nx
 import pynauty # make sure to install this
 
 # Internal
-from utils import get_files
+from decomposition.utils import get_files
 
 # Random seeds from Yanardag et al.
 random.seed(314124)
