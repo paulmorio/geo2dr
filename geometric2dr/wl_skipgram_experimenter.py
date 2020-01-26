@@ -21,7 +21,7 @@ wl_degrees = [1, 2, 3]
 embedding_dimensions = [8, 16, 32, 64, 128]
 batch_size = 128
 runs = 5
-epochs = 1000
+epochs = 500
 initial_lr = 0.001
 embedding_folder = "embeddings"
 
