@@ -11,17 +11,11 @@ from tqdm import tqdm
 from data_reader import Corpus
 from skipgram import Skipgram
 from utils import get_files, get_class_labels, get_class_labels_tuples, save_graph_embeddings
-
-
-# For the classification bit
 from classify import perform_classification, cross_val_accuracy
 
-
-
 corpus_dir = "/home/morio/workspace/geo2dr/geometric2dr/file_handling/dortmund_gexf/MUTAG" # A needed parameter
-corpus = Corpus(corpus_dir, extension=".wld2", max_files=0, min_count=0)
-dataloader = DataLoader(corpus, batch_size=4, shuffle=False, num_workers=0, collate_fn=corpus.collate)
-
+corpus = Corpus(corpus_dir, extension=".spp", max_files=0, min_count=0)
+dataloader = DataLoader(corpus, batch_size=256, shuffle=False, num_workers=0, collate_fn=corpus.collate)
 
 output_file = "Embeddings.testfile" # A needed parameter
 output_file_name = output_file
@@ -29,7 +23,7 @@ num_targets = corpus.num_graphs
 vocab_size = corpus.num_subgraphs
 emb_dimension = 100 # A needed parameter
 batch_size = 256 # A needed parameter
-epochs = 1000 # A needed parameter
+epochs = 250 # A needed parameter
 initial_lr = 0.001 # A needed parameter
 skipgram = Skipgram(num_targets, vocab_size, emb_dimension)
 
@@ -60,8 +54,7 @@ for epoch in range(epochs):
 			scheduler.step()
 
 			running_loss = running_loss * 0.9 + loss.item() * 0.1
-			if i>0 and i%500==0:
-				print(" Loss: " + str(running_loss))
+	print(" Loss: " + str(running_loss))
 
 # skipgram.save_embedding(corpus._id_to_graph_name_map, output_file_name)
 
