@@ -57,36 +57,60 @@ Download the most recent sources of nauty from Nauty or from Traces. That file s
 
 Change to the directory pynauty-X.Y.Z/ replacing X.Y.Z with the actual version of pynauty:
 
+```bash
 cd pynauty-X.Y.Z
+```
+
 Unpack nautyXYZ.tar.gz inside the pynauty-X.Y.Z/ directory. Create a symbolic link named nauty to nauty’s source directory replacing XYZ with the actual version of Nauty:
 
+```bash
 ln -s nautyXYZ nauty
+```
+
 Pynauty can be built both for Python 2.7 or Python 3.5.
 
 At this stage you have the option to create and activate a virtualenv and continue the building process within it. Otherwise the building process just picks your system wide python version which would be fine for most users.
 
 To build pynauty use the command:
 
+```bash
 make pynauty
+```
+
 That takes care compiling the necessary object files from nauty’s source than compiling the pynauty Python extension module.
 
 To run all the tests coming with the package type:
 
+```bash
 make tests
+```
+
 The test exercises pynauty on a few graphs considered difficult.
 
-Install
+#### Install
 To install pynauty to the standard user location in your home directory type:
 
+```bash
 make user-ins
-That puts the pynauty package files into ~/.local/lib/pythonM.N/site-packages, where M.N is your python’s version.
+```
 
+That puts the pynauty package files into ~/.local/lib/pythonM.N/site-packages, where M.N is your python’s version.
 To uninstall type:
 
+```bash
 make user-unins
+```
+
 If you used a virtualenv you can install/uninstall pynauty within it by:
 
-make virtenv-ins make virtenv-unins
+```bash
+make virtenv-ins 
+```
+
+```bash
+make virtenv-unins
+```
+
 Please note, the install/unistall procedures use pip.
 
 
