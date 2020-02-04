@@ -41,7 +41,6 @@ def load_graph(file_handle):
     adj_matrix = nx.to_numpy_matrix(graph)
     return graph, adj_matrix
 
-corpus_dir = "/home/morio/workspace/geo2dr/geometric2dr/file_handling/dortmund_gexf/MUTAG/"
 
 def save_sp_doc(gexf_fh, gidx, sp_corpus):
 	"""
