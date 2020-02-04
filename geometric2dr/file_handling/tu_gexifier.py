@@ -191,6 +191,3 @@ else:
 				graph_fname = str(gindex) + ".gexf"
 				fh.write("%s %s\n" % (graph_fname, graph_classes[gindex]))
 		
-
-
-	
