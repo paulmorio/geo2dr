@@ -38,7 +38,7 @@ initial_lr = 0.001
 
 embedding_folder = "embeddings"
 dataset = "MUTAG"
-corpus_dir = "/home/morio/workspace/geo2dr/geometric2dr/file_handling/dortmund_gexf/" + dataset
+corpus_dir = "/home/morio/workspace/geo2dr/geometric2dr/data/dortmund_gexf/" + dataset
 
 
 
@@ -74,7 +74,7 @@ for embedding_dimension in embedding_dimensions:
 				# Classification if needed
 				final_embeddings = trainer.skipgram.give_target_embeddings()
 				graph_files = trainer.corpus.graph_fname_list
-				class_labels_fname = "/home/morio/workspace/geo2dr/geometric2dr/file_handling/MUTAG.Labels"
+				class_labels_fname = "/home/morio/workspace/geo2dr/geometric2dr/data/MUTAG.Labels"
 				embedding_fname = trainer.output_fh
 				classify_scores = cross_val_accuracy(corpus_dir, trainer.corpus.extension, embedding_fname, class_labels_fname)
 				mean_acc, std_dev = classify_scores

@@ -11,6 +11,8 @@ Then we build the distributed representations using the skipgram with different:
 
 Author: Paul Scherer
 """
+import os
+
 import embedding_methods.utils as utils
 from decomposition.weisfeiler_lehman_patterns import wlk_relabeled_corpus
 from embedding_methods.classify import cross_val_accuracy
@@ -18,7 +20,7 @@ from embedding_methods.trainer import Trainer
 
 min_counts = [1, 2]
 wl_degrees = [1, 2, 3]
-embedding_dimensions = [8, 16, 32, 64, 128]
+embedding_dimensions = [8, 16, 32, 64, 128, 256]
 batch_size = 128
 runs = 5
 epochs = 500
@@ -26,7 +28,7 @@ initial_lr = 0.001
 embedding_folder = "embeddings"
 
 dataset = "MUTAG"
-corpus_dir = "/home/morio/workspace/geo2dr/geometric2dr/file_handling/dortmund_gexf/" + dataset
+corpus_dir = "/home/morio/workspace/geo2dr/geometric2dr/data/dortmund_gexf/" + dataset
 
 for wl_h in wl_degrees:
     extension = ".wld" + str(wl_h)
@@ -38,7 +40,10 @@ for wl_h in wl_degrees:
                     epochs), "bs", str(batch_size), "minCount", str(min_count), "run", str(run)])
                 output_fh += ".json"
                 output_fh = embedding_folder + "/" + output_fh
-
+                # No need to learn something that exists.
+                if os.path.exists(output_fh):
+                    print("Embedding %s exists continuing..." % (output_fh))
+                    continue
                 # Run the decomposition algorithm
                 graph_files = utils.get_files(corpus_dir, ".gexf", max_files=0)
                 print("###.... Loaded %s files in total" %
@@ -57,7 +62,7 @@ for wl_h in wl_degrees:
                 # Classification if needed
                 final_embeddings = trainer.skipgram.give_target_embeddings()
                 graph_files = trainer.corpus.graph_fname_list
-                class_labels_fname = "/home/morio/workspace/geo2dr/geometric2dr/file_handling/MUTAG.Labels"
+                class_labels_fname = "/home/morio/workspace/geo2dr/geometric2dr/data/MUTAG.Labels"
                 embedding_fname = trainer.output_fh
                 classify_scores = cross_val_accuracy(corpus_dir, trainer.corpus.extension, embedding_fname, class_labels_fname)
                 mean_acc, std_dev = classify_scores
