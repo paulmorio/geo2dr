@@ -101,7 +101,7 @@ else:
 				break # no need to continue going through graphs checking for this edge
 			else:
 				continue
-	del(  )
+	del(edges)
 
 	print("#... Generating NX Graph dictionary ...#")
 	# The more you know, the defaultdict is a factory pattern
