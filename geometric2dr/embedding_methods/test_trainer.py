@@ -13,8 +13,8 @@ from skipgram import Skipgram
 from utils import get_files, get_class_labels, get_class_labels_tuples, save_graph_embeddings
 from classify import perform_classification, cross_val_accuracy
 
-corpus_dir = "/home/morio/workspace/geo2dr/geometric2dr/file_handling/dortmund_gexf/MUTAG" # A needed parameter
-corpus = Corpus(corpus_dir, extension=".spp", max_files=0, min_count=0)
+corpus_dir = "../data/dortmund_gexf/MUTAG" # A needed parameter
+corpus = Corpus(corpus_dir, extension=".wld2", max_files=0, min_count=0)
 dataloader = DataLoader(corpus, batch_size=256, shuffle=False, num_workers=0, collate_fn=corpus.collate)
 
 output_file = "Embeddings.testfile" # A needed parameter
@@ -64,7 +64,7 @@ save_graph_embeddings(corpus, final_embeddings, "jsonEmbeddings.json")
 
 ### Downstream classification.
 graph_files = corpus.graph_fname_list
-class_labels_fname = "/home/morio/workspace/geo2dr/geometric2dr/file_handling/MUTAG.Labels"
+class_labels_fname = "../data/MUTAG.Labels"
 graph_and_class_tuples = get_class_labels_tuples(graph_files, class_labels_fname)
 
 embedding_fname = "jsonEmbeddings.json"
