@@ -40,9 +40,9 @@ def linear_svm_classify(X_train, X_test, Y_train, Y_test):
 	"""
 	params = {'C':[0.001, 0.01, 0.1, 1, 10, 100, 1000]}
 	if len(set(Y_train)) == 2:
-		classifier = GridSearchCV(LinearSVC(max_iter=100000000), params, cv=10, scoring='f1', verbose=1)
+		classifier = GridSearchCV(LinearSVC(max_iter=100000000), params, cv=10, scoring='f1', verbose=1, n_jobs=-1)
 	else:
-		classifier = GridSearchCV(LinearSVC(max_iter=100000000), params, cv=10, scoring='f1_weighted', verbose=1)
+		classifier = GridSearchCV(LinearSVC(max_iter=100000000), params, cv=10, scoring='f1_weighted', verbose=1, n_jobs=-1)
 	classifier.fit(X_train, Y_train)
 	logging.info('best classifier models hyperparameters', classifier.best_params_)
 
@@ -69,9 +69,9 @@ def rbf_svm_classify(X_train, X_test, Y_train, Y_test):
 	"""
 	params = {'C':[0.001, 0.01, 0.1, 1, 10, 100, 1000]}
 	if len(set(Y_train)) == 2:
-		classifier = GridSearchCV(SVC(gamma="scale"), params, cv=10, scoring='f1', verbose=1)
+		classifier = GridSearchCV(SVC(gamma="scale"), params, cv=10, scoring='f1', verbose=1, n_jobs=-1)
 	else:
-		classifier = GridSearchCV(SVC(gamma="scale"), params, cv=10, scoring='f1_weighted', verbose=1)
+		classifier = GridSearchCV(SVC(gamma="scale"), params, cv=10, scoring='f1_weighted', verbose=1, n_jobs=-1)
 	classifier.fit(X_train, Y_train)
 
 	Y_pred = classifier.predict(X_test)

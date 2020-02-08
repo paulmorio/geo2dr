@@ -28,10 +28,11 @@ from embedding_methods.pvdm_trainer import PVDM_Trainer
 awe_lengths = [10] # paper says this is what they used
 label_setting = "nodes"
 
+# Paper Replication settings
 # Skipgram specific
 min_counts = [1] 
 embedding_dimensions = [128] # paper spec
-batch_size = [100, 500]
+batch_size = 500
 runs = 5
 epochs = 100
 initial_lr = 0.1
