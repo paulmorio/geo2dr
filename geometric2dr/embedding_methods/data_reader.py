@@ -10,7 +10,7 @@ from torch.utils.data import Dataset, DataLoader
 from collections import defaultdict, Counter
 from random import shuffle
 
-from embedding_methods.utils import get_files
+from utils import get_files
 
 np.random.seed(27)
 class Corpus(Dataset):
@@ -151,10 +151,12 @@ class Corpus(Dataset):
 		self.negatives = np.array(self.negatives)
 		np.random.shuffle(self.negatives)
 
-	# can stay as is line complete.
-	def getNegatives(self, target, size): # check equality with target
+	def getNegatives(self, target, size): 
 		response = self.negatives[self.negpos:self.negpos + size]
 		self.negpos = (self.negpos + size) % len(self.negatives)
+		if target in response: # check equality with target
+			for i in np.where(response == target):
+				response[i] = np.random.randint(0,self.num_subgraphs)
 		if len(response) != size:
 			return np.concatenate((response, self.negatives[0:self.negpos]))
 		return response
@@ -387,13 +389,16 @@ class InMemoryCorpus(Dataset):
 		self.negatives = np.array(self.negatives)
 		np.random.shuffle(self.negatives)
 
-	# can stay as is line complete.
-	def getNegatives(self, target, size): # check equality with target
+	def getNegatives(self, target, size): 
 		response = self.negatives[self.negpos:self.negpos + size]
 		self.negpos = (self.negpos + size) % len(self.negatives)
+		if target in response: # check equality with target
+			for i in np.where(response == target):
+				response[i] = np.random.randint(0,self.num_subgraphs)
 		if len(response) != size:
 			return np.concatenate((response, self.negatives[0:self.negpos]))
 		return response
+
 
 	def pre_load_corpus(self):
 		"""
@@ -641,12 +646,16 @@ class PVDMCorpus(Dataset):
 		self.negatives = np.array(self.negatives)
 		np.random.shuffle(self.negatives)
 
-	def getNegatives(self, target, size): # check equality with target
+	def getNegatives(self, target, size): 
 		response = self.negatives[self.negpos:self.negpos + size]
 		self.negpos = (self.negpos + size) % len(self.negatives)
+		if target in response: # check equality with target
+			for i in np.where(response == target):
+				response[i] = np.random.randint(0,self.num_subgraphs)
 		if len(response) != size:
 			return np.concatenate((response, self.negatives[0:self.negpos]))
 		return response
+
 
 	def pre_load_corpus(self):
 		"""
