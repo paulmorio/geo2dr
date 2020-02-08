@@ -25,7 +25,7 @@ import networkx as nx
 import pynauty
 
 # Internal
-from geometric2dr.decomposition.utils import get_files
+from decomposition.utils import get_files
 
 # Random seeds from reproduction
 random.seed(2018)
