@@ -22,25 +22,23 @@ import os
 import embedding_methods.utils as utils
 from decomposition.anonymous_walk_patterns import awe_corpus
 from embedding_methods.classify import cross_val_accuracy
-from embedding_methods.trainer import Trainer
+from embedding_methods.pvdm_trainer import PVDM_Trainer
 
 # Decomposition algorithm specfic
-awe_lengths = [4, 8]
+awe_lengths = [10] # paper says this is what they used
 label_setting = "nodes"
 
 # Skipgram specific
-min_counts = [1, 2]
-embedding_dimensions = [8, 16, 32, 64, 128]
-batch_size = 128
+min_counts = [1] 
+embedding_dimensions = [128] # paper spec
+batch_size = [100, 500]
 runs = 5
-epochs = 250
-initial_lr = 0.001
+epochs = 100
+initial_lr = 0.1
 
 embedding_folder = "embeddings"
 dataset = "MUTAG"
-corpus_dir = "/home/morio/workspace/geo2dr/geometric2dr/data/dortmund_gexf/" + dataset
-
-
+corpus_dir = "data/dortmund_gexf/" + dataset
 
 for embedding_dimension in embedding_dimensions:
 	for min_count in min_counts:
@@ -66,15 +64,15 @@ for embedding_dimension in embedding_dimensions:
 
 				# Use the graph documents in the directory to create a trainer which handles creation of datasets/corpus/dataloaders
 				# and the skipgram model.
-				trainer = Trainer(corpus_dir=corpus_dir, extension=extension, max_files=0, output_fh=output_fh,
+				trainer = PVDM_Trainer(corpus_dir=corpus_dir, extension=extension, max_files=0, window_size=7, output_fh=output_fh,
 				                  emb_dimension=embedding_dimension, batch_size=batch_size, epochs=epochs, initial_lr=initial_lr,
 				                  min_count=min_count)
 				trainer.train()
 
 				# Classification if needed
-				final_embeddings = trainer.skipgram.give_target_embeddings()
+				final_embeddings = trainer.pvdm.give_target_embeddings()
 				graph_files = trainer.corpus.graph_fname_list
-				class_labels_fname = "/home/morio/workspace/geo2dr/geometric2dr/data/MUTAG.Labels"
+				class_labels_fname = "data/"+ dataset + ".Labels"
 				embedding_fname = trainer.output_fh
 				classify_scores = cross_val_accuracy(corpus_dir, trainer.corpus.extension, embedding_fname, class_labels_fname)
 				mean_acc, std_dev = classify_scores

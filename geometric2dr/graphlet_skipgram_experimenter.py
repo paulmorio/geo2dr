@@ -24,23 +24,25 @@ import os
 import embedding_methods.utils as utils
 from decomposition.graphlet_patterns import graphlet_corpus
 from embedding_methods.classify import cross_val_accuracy
-from embedding_methods.trainer import Trainer
+from embedding_methods.trainer import Trainer, InMemoryTrainer
 
+# Lifted either from Paper or Source code
 # graphlet hyperparameters
-num_graphlets = range(2,9)
-samplesizes = range(1,10,2)
+num_graphlets = [7]
+samplesizes = range()
 
 # skipgram hyperparameters
-min_counts = [1, 2]
-embedding_dimensions = [8, 16, 32, 64, 128, 256]
-batch_size = 128
+min_counts = [1]
+# embedding_dimensions = [2,5,10,25,50]
+embedding_dimensions = [25,50]
+batch_size = 256
 runs = 5
-epochs = 500
-initial_lr = 0.001
+epochs = 100
+initial_lr = 0.0001
 
 embedding_folder = "embeddings"
 dataset = "MUTAG"
-corpus_dir = "/home/morio/workspace/geo2dr/geometric2dr/data/dortmund_gexf/" + dataset
+corpus_dir = "data/dortmund_gexf/" + dataset
 
 for num_graphlet in num_graphlets:
 	for samplesize in samplesizes:
@@ -63,7 +65,7 @@ for num_graphlet in num_graphlets:
 
 					# Use the graph documents in the directory to create a trainer which handles creation of datasets/corpus/dataloaders
 					# and the skipgram model.
-					trainer = Trainer(corpus_dir=corpus_dir, extension=extension, max_files=0, output_fh=output_fh,
+					trainer = InMemoryTrainer(corpus_dir=corpus_dir, extension=extension, max_files=0, output_fh=output_fh,
 					                  emb_dimension=embedding_dimension, batch_size=batch_size, epochs=epochs, initial_lr=initial_lr,
 					                  min_count=min_count)
 					trainer.train()
@@ -71,7 +73,7 @@ for num_graphlet in num_graphlets:
 					# Classification if needed
 					final_embeddings = trainer.skipgram.give_target_embeddings()
 					graph_files = trainer.corpus.graph_fname_list
-					class_labels_fname = "/home/morio/workspace/geo2dr/geometric2dr/data/MUTAG.Labels"
+					class_labels_fname = "data/"+ dataset + ".Labels"
 					embedding_fname = trainer.output_fh
 					classify_scores = cross_val_accuracy(corpus_dir, trainer.corpus.extension, embedding_fname, class_labels_fname)
 					mean_acc, std_dev = classify_scores
