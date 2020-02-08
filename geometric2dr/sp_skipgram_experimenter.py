@@ -33,7 +33,7 @@ initial_lr = 0.0001
 
 embedding_folder = "embeddings"
 dataset = "MUTAG"
-corpus_dir = "../data/dortmund_gexf/" + dataset
+corpus_dir = "data/dortmund_gexf/" + dataset
 
 extension = ".spp"
 for embedding_dimension in embedding_dimensions:

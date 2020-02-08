@@ -24,7 +24,6 @@ from time import time
 # 3rd party
 import numpy as np
 import networkx as nx
-import pynauty
 
 # Internal
 from decomposition.utils import get_files
