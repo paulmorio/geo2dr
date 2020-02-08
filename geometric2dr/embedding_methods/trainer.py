@@ -70,7 +70,7 @@ class Trainer(object):
 class InMemoryTrainer(object):
 	def __init__(self, corpus_dir, extension, max_files, output_fh, emb_dimension=128, batch_size=32, epochs=100, initial_lr=1e-3, min_count=1):
 		self.corpus = InMemoryCorpus(corpus_dir, extension, max_files, min_count)
-		self.dataloader = DataLoader(self.corpus, batch_size, shuffle=True, num_workers=0, collate_fn = self.corpus.collate)
+		self.dataloader = DataLoader(self.corpus, batch_size, shuffle=False, num_workers=0, collate_fn = self.corpus.collate)
 		
 		self.corpus_dir = corpus_dir
 		self.extension = extension
