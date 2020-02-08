@@ -122,7 +122,7 @@ class InMemoryTrainer(object):
 # Some test code
 if __name__ == '__main__':
 
-	corpus_dir = "/home/morio/workspace/geo2dr/geometric2dr/file_handling/dortmund_gexf/MUTAG" # A needed parameter
+	corpus_dir = "../data/dortmund_gexf/MUTAG" # A needed parameter
 	extension = ".wld2"
 	output_file = "Embeddings.json" # A needed parameter
 	emb_dimension = 64 # A needed parameter
@@ -131,7 +131,7 @@ if __name__ == '__main__':
 	initial_lr = 0.001 # A needed parameter
 	min_count= 0 # A needed parameter
 
-	trainer = Trainer(corpus_dir=corpus_dir, extension=extension, max_files=0, 
+	trainer = InMemoryTrainer(corpus_dir=corpus_dir, extension=extension, max_files=0, 
 					output_fh=output_file, emb_dimension=emb_dimension, batch_size=batch_size,
 					epochs=epochs, initial_lr=initial_lr, min_count=min_count)
 	trainer.train()
