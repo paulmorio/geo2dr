@@ -480,18 +480,19 @@ class InMemoryCorpus(Dataset):
 	def __len__(self):
 		# Return the number of total number of subgraphs
 		# print("The number of graph-subgraph pairs considering batchsize in the dataset is")
-		return self._subgraphcount
+		return self._subgraphcount-1
 
 	def __getitem__(self, idx):
-		if self.dataset_traverser == len(self.graph_fname_list):
-			self.dataset_traverser = 0
-			target_context_negatives = self.context_pair_dataset[self.dataset_traverser]
-			self.dataset_traverser += 1
-			return target_context_negatives
-		else:
-			target_context_negatives = self.context_pair_dataset[self.dataset_traverser]
-			self.dataset_traverser += 1
-			return target_context_negatives
+		# if self.dataset_traverser == len(self.graph_fname_list):
+		# 	self.dataset_traverser = 0
+		# 	target_context_negatives = self.context_pair_dataset[self.dataset_traverser]
+		# 	self.dataset_traverser += 1
+		# 	return target_context_negatives
+		# else:
+		# 	target_context_negatives = self.context_pair_dataset[self.dataset_traverser]
+		# 	self.dataset_traverser += 1
+		# 	return target_context_negatives
+		return self.context_pair_dataset[idx]
 
 	@staticmethod
 	def collate(batches):
@@ -741,18 +742,19 @@ class PVDMCorpus(Dataset):
 	def __len__(self):
 		# Return the number of total number of subgraphs
 		# print("The number of graph-subgraph pairs considering batchsize in the dataset is")
-		return self._subgraphcount
+		return self._subgraphcount-1
 
 	def __getitem__(self, idx):
-		if self.dataset_traverser == len(self.graph_fname_list):
-			self.dataset_traverser = 0
-			graph_targetSubgraph_subgraphContexts = self.context_pair_dataset[self.dataset_traverser]
-			self.dataset_traverser += 1
-			return graph_targetSubgraph_subgraphContexts
-		else:
-			graph_targetSubgraph_subgraphContexts = self.context_pair_dataset[self.dataset_traverser]
-			self.dataset_traverser += 1
-			return graph_targetSubgraph_subgraphContexts
+		# if self.dataset_traverser == len(self.graph_fname_list):
+		# 	self.dataset_traverser = 0
+		# 	graph_targetSubgraph_subgraphContexts = self.context_pair_dataset[self.dataset_traverser]
+		# 	self.dataset_traverser += 1
+		# 	return graph_targetSubgraph_subgraphContexts
+		# else:
+		# 	graph_targetSubgraph_subgraphContexts = self.context_pair_dataset[self.dataset_traverser]
+		# 	self.dataset_traverser += 1
+		# 	return graph_targetSubgraph_subgraphContexts
+		return self.context_pair_dataset[idx]
 
 	@staticmethod
 	def collate(batches):
