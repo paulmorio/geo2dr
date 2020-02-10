@@ -11,35 +11,38 @@ Popular sytems such as Deep Graph Kernels (Yanardag and Vishwanathan, 2015), Gra
 
 Once the distributed vector representations are learned for each of the graphs in a dataset. The graph embeddings may be used in any downstream application such as graph classification, regression, etc.
 
-Geo2DR implements a variety of graph reduction and vocabulary building algorithms (such as Weisfeiler-Lehman, anonymous walks, graphlets) and learning models which exploits the distributive hypothesis (such as skipgram, skipgram+negative sampling, GLoVe). This enables the quick creation of existing systems such as Graph2Vec or AWE but also the creation of new combinations leading to new systems capable of learning distributed representations, allowing enabling deeper studies into how we can build better representations of graphs and more reliable comparative analyses on the same codebase.
+Geo2DR implements a variety of graph reduction algorithms (such as Weisfeiler-Lehman, anonymous walks, graphlets) and learning models which exploits the distributive hypothesis (such as skipgram with noise contrastive sampling, PV-DM). This enables the quick creation of existing systems such as Graph2Vec or AWE but also the creation of new combinations leading to new systems capable of learning distributed representations. This also enables deeper studies into how we can build better representations of graphs and more reliable comparative analyses on the same codebase.
 
 The following substructure induction algorithms are implemented
 
 - Weisfeiler-Lehman rooted subgraph decomposition
+- Random walks
 - Anonymous walks
-- Graphlets
+- Graphlets (currently support graphlets of size 2-8)
 - Shortest paths
 
 The following embedding systems are included
-- skipgram with negative sampling (all methods use this)
-- GloVE
+- Skipgram with negative sampling
+- PV-DBOW with negative sampling
+- PV-DM with negative sampling
 
 The following methods are currently implemented (in examples)
-
 - Graph2Vec from Narayanan et al. [Graph2Vec: Learning Distributed Representations of Graphs](https://arxiv.org/abs/1707.05005) (2017 International Workshop on Mining and Learning with Graphs)
 - AWE-DD from from Ivanov and Burnaev [Anonymous Walk Embeddings](https://arxiv.org/abs/1805.11921) (ICML 2018)
 - Deep GK from Yanardag and Vishwanathan [Deep Graph Kernels](https://dl.acm.org/citation.cfm?id=2783417) (KDD 2015)
 - Deep SP from Yanardag and Vishwanathan [Deep Graph Kernels](https://dl.acm.org/citation.cfm?id=2783417) (KDD 2015)
 - Deep WL from Yanardag and Vishwanathan [Deep Graph Kernels](https://dl.acm.org/citation.cfm?id=2783417) (KDD 2015)
-<!-- - G2DR from A framework for creating models to learn distributed representations of graphs 
- -->
-<!-- ## QuickBuilder Example
-The library is designed a -->
 
-### PyNauty
 
-#### Installation
-The source and documentation of the most recent version of pynauty is available as a compressed tar-file.
+On top of this Geo2DR benefits from different classes handling the corpus datasets and dataloading into the learning models. These give the option of loading datasets from files in the hard drive or loading a corpus into memory for significant speedup in the learning process.
+
+## Installation
+We recommend following the installation within a virtual environment so that 
+In order to install the full version of Geo2DR 
+
+In order to extract graphlets in an efficient manner Geo2DR follows DGK's example and uses PyNauty (a python wrapper to the Nauty C++ library) and requires its installation prior to installation of Geo2DR.
+
+### Installing PyNauty
 
 #### Dependencies
 To build pynauty the following additional components are needed:
@@ -51,9 +54,9 @@ To build pynauty the following additional components are needed:
 In theory, pynauty should work on all platforms where Python is available and Nauty’s source can be complied. The instructions below are for Linux/Unix environment.
 
 #### Build
-Download pynauty’s sources as a compressed tar file and unpack it. That should create a directory like pynauty-X.Y.Z/ containing the source files.
+Download pynauty’s sources as a [compressed tart file](https://web.cs.dal.ca/~peter/software/pynauty/pynauty-0.6.0.tar.gz) and unpack it. That should create a directory like pynauty-X.Y.Z/ containing the source files.
 
-Download the most recent sources of nauty from Nauty or from Traces. That file should be something like nautyXYZ.tar.gz.
+Download the most recent sources of [nauty](http://pallini.di.uniroma1.it/nauty26r12.tar.gz) from Nauty. That file should be something like nautyXYZ.tar.gz.
 
 Change to the directory pynauty-X.Y.Z/ replacing X.Y.Z with the actual version of pynauty:
 
@@ -88,30 +91,22 @@ make tests
 The test exercises pynauty on a few graphs considered difficult.
 
 #### Install
-To install pynauty to the standard user location in your home directory type:
-
-```bash
-make user-ins
-```
-
-That puts the pynauty package files into ~/.local/lib/pythonM.N/site-packages, where M.N is your python’s version.
-To uninstall type:
-
-```bash
-make user-unins
-```
-
-If you used a virtualenv you can install/uninstall pynauty within it by:
+To install pynauty to the virtual environment call the following in the pynauty folder whilst the virtual environment is activated
 
 ```bash
 make virtenv-ins 
 ```
+
+To uninstall simply use the corresponding make command
 
 ```bash
 make virtenv-unins
 ```
 
 Please note, the install/unistall procedures use pip.
+
+
+### Installing Geo2DR
 
 
 ### FAQ:
@@ -121,7 +116,7 @@ Please note, the install/unistall procedures use pip.
 
 2. How is this different from other libraries for learning representations of graphs, such as PyTorch Geometric or Spektral?
 
-- *The systems produced learn distributed representations of graphs. These representations are built by taking the perspective that graphs are composed of discrete substructures which characterise the graph. The distributed vector representations are learned by exploiting the distributive hypothesis. Most of representations of graphs learned using systems created in PyTorch Geometric rely on a series of spectral/spatial graph convolutions to create node representations which are pooled in various ways to form graph level representations. The foundation of these algorithms can be found in the message-passing+pooling paradigm whereas our foundation is the distributive hypothesis. Hence this library is different and complementary to other existing libraries, and as far as I am aware this is the first.*
+- *The systems produced here learn distributed representations of graphs. These representations are built by taking the perspective that graphs are composed of discrete substructures which characterise the graph. The distributed vector representations are learned by exploiting the distributive hypothesis. Most of representations of graphs learned using systems such as created in PyTorch Geometric rely on a series of spectral/spatial graph convolutions to create node representations which are pooled in various ways to form graph level representations. The foundation of these algorithms can be found in the message-passing+pooling paradigm whereas our foundation is the distributive hypothesis. Hence this library is different and complementary to other existing libraries, and as far as I am aware this is the first.*
 
 3. Hey my published system for learning distributed representations is not here! You are awful!
 
