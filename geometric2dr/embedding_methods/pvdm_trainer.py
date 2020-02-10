@@ -55,11 +55,11 @@ class PVDM_Trainer(object):
 				if len(sample_batched[0]) > 1:
 					pos_target = sample_batched[0].to(self.device)
 					pos_context_target = sample_batched[1].to(self.device)
-					pos_contexts_for_target = sample_batched[2].to(self.device)
+					pos_contexts_for_context_target = sample_batched[2].to(self.device)
+					pos_negatives_for_context_target = sample_batched[3].to(self.device)
 
 					optimizer.zero_grad()
-					log_probs = self.pvdm.forward(pos_target, pos_context_target, pos_contexts_for_target)
-					loss = criterion(log_probs, pos_context_target)
+					loss = self.pvdm.forward(pos_target, pos_context_target, pos_contexts_for_context_target, pos_negatives_for_context_target)
 					loss.backward()
 					optimizer.step()
 					scheduler.step()

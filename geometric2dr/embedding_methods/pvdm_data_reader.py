@@ -13,7 +13,7 @@ from random import shuffle
 
 from embedding_methods.utils import get_files
 
-np.random.seed(27)
+# np.random.seed(27)
 
 #######################################################################################################
 #######################################################################################################
@@ -167,7 +167,7 @@ class PVDMCorpus(Dataset):
 		self.negpos = (self.negpos + size) % len(self.negatives)
 		if target in response: # check equality with target
 			for i in np.where(response == target):
-				response[i] = np.random.randint(0,self.num_subgraphs)
+				response[i] = self.negatives[np.random.randint(0,len(self.negatives))]
 		if len(response) != size:
 			return np.concatenate((response, self.negatives[0:self.negpos]))
 		return response
@@ -248,8 +248,9 @@ class PVDMCorpus(Dataset):
 			shuffle(target_context_pairs)
 			target_graph_ids, target_context_subgraph_ids, subgraph_contexts_ids= list(zip(*target_context_pairs))
 
-			graph_targetSubgraph_subgraphContexts = [(graphTarget, subgraphTarget, subgraphContext) for (graphTarget, subgraphTarget, subgraphContext) in zip(target_graph_ids, target_context_subgraph_ids, subgraph_contexts_ids)]
-			self.context_pair_dataset.append(graph_targetSubgraph_subgraphContexts)
+			negatives_per_context = [self.getNegatives(x,10) for x in target_context_subgraph_ids]
+			graph_targetSubgraph_subgraphContexts_negatives = [(graphTarget, subgraphTarget, subgraphContext, negatives) for (graphTarget, subgraphTarget, subgraphContext, negatives) in zip(target_graph_ids, target_context_subgraph_ids, subgraph_contexts_ids, negatives_per_context)]
+			self.context_pair_dataset.append(graph_targetSubgraph_subgraphContexts_negatives)
 		self.epoch_flag = False
 
 	def __len__(self):
@@ -260,11 +261,12 @@ class PVDMCorpus(Dataset):
 
 	@staticmethod
 	def collate(batches):
-		all_targets = [target for batch in batches for target, _, _ in batch if len(batch)>0]
-		all_contexts = [context for batch in batches for _, context, _ in batch if len(batch)>0]
-		all_subgraph_contexts = [neg_context for batch in batches for _, _, neg_context in batch if len(batch)>0]
+		all_targets = [target for batch in batches for target, _, _, _ in batch if len(batch)>0]
+		all_contexts = [context for batch in batches for _, context, _, _ in batch if len(batch)>0]
+		all_subgraph_contexts = [subgraphContext for batch in batches for _, _, subgraphContext, _ in batch if len(batch)>0]
+		all_neg_contexts = [neg_context for batch in batches for _, _, _, neg_context in batch if len(batch)>0]
 
-		return torch.LongTensor(all_targets), torch.LongTensor(all_contexts), torch.LongTensor(all_subgraph_contexts)
+		return torch.LongTensor(all_targets), torch.LongTensor(all_contexts), torch.LongTensor(all_subgraph_contexts), torch.LongTensor(all_neg_contexts)
 
 
 if __name__ == '__main__':
