@@ -29,14 +29,14 @@ from embedding_methods.trainer import Trainer, InMemoryTrainer
 # Lifted either from Paper or Source code
 # graphlet hyperparameters
 num_graphlets = [7]
-samplesizes = range()
+samplesizes = [25]
 
 # skipgram hyperparameters
 min_counts = [1]
 # embedding_dimensions = [2,5,10,25,50]
 embedding_dimensions = [25,50]
 batch_size = 256
-runs = 5
+runs = 1
 epochs = 100
 initial_lr = 0.0001
 
