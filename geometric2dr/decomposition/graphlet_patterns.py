@@ -46,11 +46,11 @@ def load_graph(file_handle):
 
 
 def get_maps(num_graphlets):
-    with open("/home/morio/workspace/geo2dr/geometric2dr/decomposition/canonical_maps/canonical_map_n%s.p"%(num_graphlets), 'rb') as handle:
+    with open("decomposition/canonical_maps/canonical_map_n%s.p"%(num_graphlets), 'rb') as handle:
         # canonical_map -> {canonical string id: {"graph", "idx", "n"}}
         canonical_map = pickle.load(handle, encoding="latin1")
 
-    with open("/home/morio/workspace/geo2dr/geometric2dr/decomposition/graphlet_counter_maps/graphlet_counter_nodebased_n%s.p"%(num_graphlets), 'rb') as handle:
+    with open("decomposition/graphlet_counter_maps/graphlet_counter_nodebased_n%s.p"%(num_graphlets), 'rb') as handle:
         # weight map -> {parent id: {child1: weight1, ...}}
         weight_map = pickle.load(handle, encoding="latin1")
 
