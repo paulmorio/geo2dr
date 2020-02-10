@@ -1,5 +1,7 @@
 """
-A class which faciliates training of the embedding methods by the set hyperparameters.
+Module containing class definitions of trainers on skipgram esque models such as Graph2Vec
+
+Author: Paul Scherer
 """
 import torch
 import torch.optim as optim

@@ -12,7 +12,7 @@ from collections import defaultdict, Counter
 from random import shuffle
 from tqdm import tqdm
 
-from utils import get_files
+from embedding_methods.utils import get_files
 
 np.random.seed(27)
 
@@ -157,13 +157,13 @@ class Corpus(Dataset):
 			self.negatives += [sg_id]*int(c)
 		self.negatives = np.array(self.negatives)
 		np.random.shuffle(self.negatives)
-
+		
 	def getNegatives(self, target, size): 
 		response = self.negatives[self.negpos:self.negpos + size]
 		self.negpos = (self.negpos + size) % len(self.negatives)
 		if target in response: # check equality with target
 			for i in np.where(response == target):
-				response[i] = np.random.randint(0,self.num_subgraphs)
+				response[i] = self.negatives[np.random.randint(0,len(self.negatives))]
 		if len(response) != size:
 			return np.concatenate((response, self.negatives[0:self.negpos]))
 		return response
@@ -398,7 +398,7 @@ class InMemoryCorpus(Dataset):
 		self.negpos = (self.negpos + size) % len(self.negatives)
 		if target in response: # check equality with target
 			for i in np.where(response == target):
-				response[i] = np.random.randint(0,self.num_subgraphs)
+				response[i] = self.negatives[np.random.randint(0,len(self.negatives))]
 		if len(response) != size:
 			return np.concatenate((response, self.negatives[0:self.negpos]))
 		return response
