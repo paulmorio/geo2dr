@@ -32,7 +32,7 @@ label_setting = "nodes"
 # Skipgram specific
 min_counts = [1] 
 embedding_dimensions = [128] # paper spec
-batch_size = 500
+batch_size = 1000
 runs = 5
 epochs = 100
 initial_lr = 0.1

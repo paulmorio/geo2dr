@@ -8,7 +8,7 @@ from torch.utils.data import DataLoader
 from tqdm import tqdm
 
 # Internal 
-from embedding_methods.data_reader import PVDMCorpus
+from embedding_methods.pvdm_data_reader import PVDMCorpus
 from embedding_methods.pvdm import PVDM
 from embedding_methods.utils import get_files, get_class_labels, get_class_labels_tuples, save_graph_embeddings
 
