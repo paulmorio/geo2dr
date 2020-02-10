@@ -746,7 +746,7 @@ class PVDMCorpus(Dataset):
 	def __len__(self):
 		# Return the number of total number of subgraphs
 		# print("The number of graph-subgraph pairs considering batchsize in the dataset is")
-		return self._subgraphcount-1
+		return len(self.context_pair_dataset) - 1
 
 	def __getitem__(self, idx):
 		# if self.dataset_traverser == len(self.graph_fname_list):
