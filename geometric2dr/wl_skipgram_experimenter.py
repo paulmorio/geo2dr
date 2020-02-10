@@ -24,8 +24,8 @@ wl_degrees = [2, 3]
 embedding_dimensions = [32, 1024]
 batch_size = 256
 runs = 5
-epochs = 499
-initial_lr = 0.5
+epochs = 250
+initial_lr = 0.1
 embedding_folder = "embeddings"
 
 dataset = "MUTAG"

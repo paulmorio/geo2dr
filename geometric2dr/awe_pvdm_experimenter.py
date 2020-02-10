@@ -31,11 +31,11 @@ label_setting = "nodes"
 # Paper Replication settings
 # Skipgram specific
 min_counts = [1] 
-embedding_dimensions = [128] # paper spec
-batch_size = 1000
+embedding_dimensions = [256] # paper spec
+batch_size = 100
 runs = 5
 epochs = 100
-initial_lr = 0.1
+initial_lr = 0.01
 
 embedding_folder = "embeddings"
 dataset = "MUTAG"
