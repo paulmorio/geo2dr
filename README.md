@@ -42,7 +42,7 @@ In order to install the full version of Geo2DR
 
 In order to extract graphlets in an efficient manner Geo2DR follows DGK's example and uses PyNauty (a python wrapper to the Nauty C++ library) and requires its installation prior to installation of Geo2DR.
 
-### Installing PyNauty
+### Installing dependencies: PyNauty and Pytorch
 
 #### Dependencies
 To build pynauty the following additional components are needed:
@@ -105,9 +105,22 @@ make virtenv-unins
 
 Please note, the install/unistall procedures use pip.
 
+### Installing PyTorch
+Pytorch is installed based on the available hardware of the machine (GPU or CPU) please follow the appropriate pip installation on the official PyTorch website.
 
 ### Installing Geo2DR
 
+Geo2DR can be installed into the virtualenvironment from the source folder. There are two main options:
+
+```bash
+pip install .
+```
+
+If you wish to modify some of the source code in `geometric2dr` for your own task, you can make a developer install. It is slightly slower, but immediately takes on any changes into the source code.
+
+```bash
+pip install -e .
+```
 
 ### FAQ:
 1. Why decompose graphs into different substructure patterns?
