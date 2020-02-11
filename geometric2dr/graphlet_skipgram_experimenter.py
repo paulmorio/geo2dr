@@ -36,7 +36,7 @@ min_counts = [1]
 # embedding_dimensions = [2,5,10,25,50]
 embedding_dimensions = [25,50]
 batch_size = 256
-runs = 1
+runs = 5
 epochs = 100
 initial_lr = 0.0001
 
