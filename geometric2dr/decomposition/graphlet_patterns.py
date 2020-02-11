@@ -29,7 +29,7 @@ import networkx as nx
 import pynauty # make sure to install this
 
 # Internal
-from decomposition.utils import get_files
+from .utils import get_files
 
 # Random seeds from Yanardag et al.
 random.seed(314124)
@@ -46,11 +46,13 @@ def load_graph(file_handle):
 
 
 def get_maps(num_graphlets):
-    with open("decomposition/canonical_maps/canonical_map_n%s.p"%(num_graphlets), 'rb') as handle:
+    data_path = os.path.join(os.path.dirname(__file__), 'canonical_maps') 
+    with open(data_path + "/canonical_map_n%s.p"%(num_graphlets), 'rb') as handle:
         # canonical_map -> {canonical string id: {"graph", "idx", "n"}}
         canonical_map = pickle.load(handle, encoding="latin1")
 
-    with open("decomposition/graphlet_counter_maps/graphlet_counter_nodebased_n%s.p"%(num_graphlets), 'rb') as handle:
+    data_path = os.path.join(os.path.dirname(__file__), 'graphlet_counter_maps') 
+    with open(data_path + "/graphlet_counter_nodebased_n%s.p"%(num_graphlets), 'rb') as handle:
         # weight map -> {parent id: {child1: weight1, ...}}
         weight_map = pickle.load(handle, encoding="latin1")
 
@@ -75,9 +77,17 @@ def get_graphlet(window, nsize):
     return cert
 
 def graphlet_corpus(corpus_dir, num_graphlets, samplesize):
+    """
+    Function which produces graphdocs with the graphlet patterns found inside of them
+    
+    Parameters
+    ----------
+    num_graphlets (int): the size of the graphlet patterns to be extracted 
+    samplesize (int): the number of samples to take from a graph.
+    """
+
     fallback_map = {1: 1, 2: 2, 3: 4, 4: 8, 5: 19, 6: 53, 7: 209, 8: 1253, 9: 13599}
     canonical_map, weight_map = get_maps(num_graphlets)
-    stat_arr = []
     vocabulary = set()
     corpus = []
 
@@ -93,6 +103,7 @@ def graphlet_corpus(corpus_dir, num_graphlets, samplesize):
         m = len(am)
         count_map = {} # graphlet countmap
         tmp_corpus = [] # temporary corpus for a single graph
+        cooccurence_corpus = [] # corpus which preserves cooccurence as in Yanardag et al.
 
         if m >=num_graphlets:
             for j in range(samplesize):
@@ -105,6 +116,7 @@ def graphlet_corpus(corpus_dir, num_graphlets, samplesize):
                     count_map[graphlet_idx] = count_map.get(graphlet_idx, 0) + 1
                     # for each node, pick a node it is connected to, and place a non-overlapping window
                     tmp_corpus.append(graphlet_idx)
+                    cooccurence_corpus.append([graphlet_idx])
                     vocabulary.add(graphlet_idx)
                     for node in r[0:n]:
                         # place a window to for each node in the original window
@@ -116,12 +128,13 @@ def graphlet_corpus(corpus_dir, num_graphlets, samplesize):
                         count_map[graphlet_idx2] = count_map.get(graphlet_idx2, 0) + 1
                         vocabulary.add(graphlet_idx2)
                         tmp_corpus.append(graphlet_idx2)
+                        cooccurence_corpus[-1].append(graphlet_idx2)
                     corpus.append(tmp_corpus)
         else:
             count_map[fallback_map[num_graphlets]] = samplesize # fallback to 0th node at that level
         graph_map[gidx] = count_map
         # print ("Graph: %s #nodes: %s  total samples: %s" % (gidx, len(nx_graph.nodes()), sum(list(graph_map[gidx].values()))))
-        save_graphlet_document(gexf_fh, gidx, graph_map, num_graphlets, samplesize)
+        save_graphlet_document(gexf_fh, gidx, graph_map, num_graphlets, samplesize, cooccurence_corpus)
 
     print ("Total size of the corpus: %s" % (len(corpus)))
     prob_map = {gidx: {graphlet: count/float(sum(graphlets.values())) \
@@ -130,18 +143,21 @@ def graphlet_corpus(corpus_dir, num_graphlets, samplesize):
 
     return corpus, vocabulary, prob_map, num_graphs, graph_map
 
-def save_graphlet_document(gexf_fh, gidx, graph_map, num_graphlets, samplesize):
+def save_graphlet_document(gexf_fh, gidx, graph_map, num_graphlets, samplesize, cooccurence_corpus):
     open_fname = gexf_fh + ".graphlet" + "_ng_" + str(num_graphlets) + "_ss_" + str(samplesize)
     if os.path.isfile(open_fname):
         return
     with open(open_fname,'w') as fh:
-        for graphlet_pattern in list(graph_map[gidx].keys()):
-            # write the pattern the count number of times
-            for _ in range(graph_map[gidx][graphlet_pattern]):
-                sentence=str(graph_map[gidx][graphlet_pattern])
-                print(sentence, file=fh)
+        # for graphlet_pattern in list(graph_map[gidx].keys()):
+        #     # write the pattern the count number of times
+        #     for _ in range(graph_map[gidx][graphlet_pattern]):
+        #         sentence=str(graph_map[gidx][graphlet_pattern])
+        #         print(sentence, file=fh)
+        for graphlet_neighbourhood in cooccurence_corpus:
+            sentence = str.join(" ", map(str, graphlet_neighbourhood))
+            print (sentence, file=fh)
 
 
 if __name__ == '__main__':
-    corpus_dir = corpus_dir = "/home/morio/workspace/geo2dr/geometric2dr/file_handling/dortmund_gexf/MUTAG/"
-    corpus, vocabulary, prob_map, num_graphs, graph_map = graphlet_corpus(corpus_dir, 5, 6)
+    corpus_dir = corpus_dir = "../data/dortmund_gexf/MUTAG/"
+    corpus, vocabulary, prob_map, num_graphs, graph_map = graphlet_corpus(corpus_dir, num_graphlets=8, samplesize=6)

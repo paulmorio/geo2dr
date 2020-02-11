@@ -41,7 +41,7 @@ def load_graph(file_handle):
     return graph, adj_matrix
 
 
-def save_sp_doc(gexf_fh, gidx, sp_corpus):
+def save_sp_doc(gexf_fh, gidx, sp_corpus, coocurrence_corpus):
 	"""
 	Saves a shortest path graph doc with the extension .spp
 	"""
@@ -49,13 +49,14 @@ def save_sp_doc(gexf_fh, gidx, sp_corpus):
 	if os.path.isfile(open_fname):
 	    return
 	with open(open_fname,'w') as fh:
-		for pattern in sp_corpus[gidx]:
-			print(pattern, file=fh)
+		for spp_neighbourhood in coocurrence_corpus:
+		    sentence = str.join(" ", map(str, spp_neighbourhood))
+		    print (sentence, file=fh)
 
 
 def sp_corpus(corpus_dir):
 	graph_files = get_files(corpus_dir, extension=".gexf")
-	vocabulary = set()
+	vocabulary = set() 
 	count_map = {}
 	sp_corpus = {}
 	corpus = []
@@ -67,22 +68,26 @@ def sp_corpus(corpus_dir):
 		count_map[gidx] = {}
 		sp_corpus[gidx] = []
 		label_map = [graph.nodes[nidx]["Label"] for nidx in sorted(list(graph.nodes()))]
+		coocurrence_corpus = []
 
 		G = graph
 		all_shortest_paths = nx.all_pairs_shortest_path(G) # nx.floyd_warshall(G)
 		tmp_corpus = []
 		for source, sink_map in list(all_shortest_paths):
+			paths_cooccurrence = []
 			for sink, path in sink_map.items():
 				sp_length=len(path)-1
 				label = "_".join(map(str, sorted([label_map[int(source)-1], label_map[int(sink)-1]]))) + "_" + str(sp_length)
 				tmp_corpus.append(label)
+				paths_cooccurrence.append(label)
 				count_map[gidx][label] = count_map[gidx].get(label,0) + 1
 				sp_corpus[gidx].append(label)
 				vocabulary.add(label)
+			coocurrence_corpus.append(paths_cooccurrence)
 		corpus.append(tmp_corpus)
 
 		# Save the document
-		save_sp_doc(gexf_fh, gidx, sp_corpus)
+		save_sp_doc(gexf_fh, gidx, sp_corpus, coocurrence_corpus)
 
 	num_graphs = len(count_map)
 	return sp_corpus, vocabulary, count_map, num_graphs
