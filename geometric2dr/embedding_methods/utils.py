@@ -79,3 +79,23 @@ def get_class_labels_tuples(graph_files, class_labels_fname):
         labels.append((int(g_num), graph_to_class_label_map[os.path.basename(g).split('.')[0]]))
     return labels
 
+
+def get_kernel_matrix_row_idx_with_class(corpus, extension, graph_files, class_labels_fname):
+    """
+    Returns two arrays, the first is an list of integers each referencing a row in
+    a kernel matrix and thereby a kernel vector corresponding to one of the graphs 
+    in the dataset, the second is a list of class labels whose value is the classification
+    of the graph in the same index of the first 
+    """
+    graph_id_to_class_tuples = []
+    graph_to_class_label_map = {l.split()[0]: int(l.split()[1].strip()) for l in open (class_labels_fname)}
+    for graph_fname in graph_files:
+        basename = os.path.basename(graph_fname)
+        clabel = graph_to_class_label_map[basename]
+        gidx = corpus._graph_name_to_id_map[graph_fname+extension]
+        graph_id_to_class_tuples.append((gidx, clabel))
+
+    graph_id_to_class_tuples.sort(key=lambda tup: tup[0])
+    kernel_row_x_id, kernel_row_y_id = zip(*graph_id_to_class_tuples)
+
+    return kernel_row_x_id, kernel_row_y_id
