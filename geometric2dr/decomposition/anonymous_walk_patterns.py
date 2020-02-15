@@ -24,7 +24,7 @@ import numpy as np
 import networkx as nx
 
 # Internal
-from decomposition.utils import get_files
+from .utils import get_files
 
 # Random seeds from reproduction
 random.seed(2018)

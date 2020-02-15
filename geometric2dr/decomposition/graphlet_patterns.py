@@ -9,7 +9,8 @@ The graph and its associated patterns (by IDs given through our hash function)
 are saved into a  <graphid>.wldr<depth> file which contains a line delimited
 list of all the substructure pattern ids.
 
-Inspired by deep_graph_kernel.py by Pinar Yanardag 2015
+Inspired and adapted from deep_graph_kernels.py by Pinar Yanardag 2015
+
 Author: Paul Scherer 2019.
 """
 

@@ -92,7 +92,7 @@ def wl_relabel(graph, it):
     return graph
 
 
-def save_sg2vec_str(fname,max_h,graph=None):
+def save_wl_doc(fname,max_h,graph=None):
     """
     Dumps the subgraph sentences in format <center> <context in it> <context in it-1> <context in it+1>
     In other words we are saving the relabelings of node from the WL algo into a text document
@@ -168,7 +168,7 @@ def wlk_relabeled_corpus(fnames, max_h, node_label_attr_name='Label'):
 
     t0 = time()
     for fname, g in zip(fnames, graphs):
-        save_sg2vec_str(fname, max_h, g)
+        save_wl_doc(fname, max_h, g)
     print ('dumped sentences in {} sec.'.format(round(time() - t0, 2)))
     return graphs
 
