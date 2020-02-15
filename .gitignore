@@ -5,11 +5,14 @@ pynauty-0.6.0
 *.testfile
 *.json
 
-# Data
+# Example Data
 examples/data/MUTAG/*.wld*
 examples/data/MUTAG/*.spp
 examples/data/MUTAG/*.awe*
 examples/data/MUTAG/*.graphlet*
+examples/data/*.json
+
+# In Package Data
 geometric2dr/file_handling/dortmund_data
 geometric2dr/file_handling/dortmund_gexf
 geometric2dr/file_handling/*.Labels

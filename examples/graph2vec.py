@@ -1,11 +1,9 @@
 """
-An example reimplementation of Graph2Vec (Narayanan et al) 
+An example reimplementation of Graph2Vec (Narayanan et al)
 using Geo2DR (geometric2dr)
 
 Author: Paul Scherer 2020
 """
-
-import os
 
 from geometric2dr.decomposition.weisfeiler_lehman_patterns import wlk_relabeled_corpus
 from geometric2dr.embedding_methods.pvdbow_trainer import InMemoryTrainer
