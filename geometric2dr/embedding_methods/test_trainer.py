@@ -8,13 +8,13 @@ from torch.utils.data import DataLoader
 from tqdm import tqdm
 
 # internal
-from data_reader import Corpus
+from pvdbow_data_reader import PVDBOWCorpus, PVDBOWInMemoryCorpus
 from skipgram import Skipgram
-from utils import get_files, get_class_labels, get_class_labels_tuples, save_graph_embeddings
+from utils import get_class_labels, get_class_labels_tuples, save_graph_embeddings
 from classify import perform_classification, cross_val_accuracy
 
 corpus_dir = "../data/dortmund_gexf/MUTAG" # A needed parameter
-corpus = Corpus(corpus_dir, extension=".wld2", max_files=0, min_count=0)
+corpus = PVDBOWCorpus(corpus_dir, extension=".wld2", max_files=0, min_count=0)
 dataloader = DataLoader(corpus, batch_size=256, shuffle=False, num_workers=0, collate_fn=corpus.collate)
 
 output_file = "Embeddings.testfile" # A needed parameter
@@ -23,7 +23,7 @@ num_targets = corpus.num_graphs
 vocab_size = corpus.num_subgraphs
 emb_dimension = 100 # A needed parameter
 batch_size = 256 # A needed parameter
-epochs = 250 # A needed parameter
+epochs = 100 # A needed parameter
 initial_lr = 0.001 # A needed parameter
 skipgram = Skipgram(num_targets, vocab_size, emb_dimension)
 

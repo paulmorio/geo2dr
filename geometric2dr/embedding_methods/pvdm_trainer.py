@@ -10,7 +10,7 @@ from tqdm import tqdm
 # Internal 
 from embedding_methods.pvdm_data_reader import PVDMCorpus
 from embedding_methods.pvdm import PVDM
-from embedding_methods.utils import get_files, get_class_labels, get_class_labels_tuples, save_graph_embeddings
+from embedding_methods.utils import save_graph_embeddings
 
 # For testing
 from embedding_methods.classify import perform_classification, cross_val_accuracy

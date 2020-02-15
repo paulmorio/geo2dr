@@ -178,7 +178,6 @@ class PVDMCorpus(Dataset):
 		Loads an entire context-pair dataset into memory
 		"""
 		print("#... Generating dataset in memory for quick dataloader access")
-		# Get a single item of data from the dataset.
 		self.context_pair_dataset = []
 
 		while self.epoch_flag == False:
