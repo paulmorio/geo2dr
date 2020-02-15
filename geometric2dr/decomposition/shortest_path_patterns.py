@@ -33,12 +33,12 @@ random.seed(314124)
 np.random.seed(2312312)
 
 def load_graph(file_handle):
-    """
-    Loads a numpy adjacency matrix of the GEXF file graph.
-    """
-    graph = nx.read_gexf(file_handle)
-    adj_matrix = nx.to_numpy_matrix(graph)
-    return graph, adj_matrix
+	"""
+	Loads a numpy adjacency matrix of the GEXF file graph.
+	"""
+	graph = nx.read_gexf(file_handle)
+	adj_matrix = nx.to_numpy_matrix(graph)
+	return graph, adj_matrix
 
 
 def save_sp_doc(gexf_fh, gidx, sp_corpus, coocurrence_corpus):
@@ -47,11 +47,11 @@ def save_sp_doc(gexf_fh, gidx, sp_corpus, coocurrence_corpus):
 	"""
 	open_fname = gexf_fh + ".spp"
 	if os.path.isfile(open_fname):
-	    return
+		return
 	with open(open_fname,'w') as fh:
 		for spp_neighbourhood in coocurrence_corpus:
-		    sentence = str.join(" ", map(str, spp_neighbourhood))
-		    print (sentence, file=fh)
+			sentence = str.join(" ", map(str, spp_neighbourhood))
+			print (sentence, file=fh)
 
 
 def sp_corpus(corpus_dir):
@@ -59,11 +59,13 @@ def sp_corpus(corpus_dir):
 	vocabulary = set() 
 	count_map = {}
 	sp_corpus = {}
+	prob_map = {}
 	corpus = []
 
 	for gexf_fh in graph_files:
 		gidx = int((os.path.basename(gexf_fh)).replace(".gexf", ""))
 		graph, am = load_graph(gexf_fh)
+		prob_map[gidx] = {}
 
 		count_map[gidx] = {}
 		sp_corpus[gidx] = []
@@ -80,17 +82,20 @@ def sp_corpus(corpus_dir):
 				label = "_".join(map(str, sorted([label_map[int(source)-1], label_map[int(sink)-1]]))) + "_" + str(sp_length)
 				tmp_corpus.append(label)
 				paths_cooccurrence.append(label)
+				prob_map[gidx][label] = prob_map[gidx].get(label, 0) + 1
 				count_map[gidx][label] = count_map[gidx].get(label,0) + 1
 				sp_corpus[gidx].append(label)
 				vocabulary.add(label)
 			coocurrence_corpus.append(paths_cooccurrence)
 		corpus.append(tmp_corpus)
-
 		# Save the document
 		save_sp_doc(gexf_fh, gidx, sp_corpus, coocurrence_corpus)
 
+	prob_map = {gidx: {path: count/float(sum(paths.values())) \
+		for path, count in paths.items()} for gidx, paths in prob_map.items()}
+
 	num_graphs = len(count_map)
-	return sp_corpus, vocabulary, count_map, num_graphs
+	return sp_corpus, vocabulary, prob_map, num_graphs, sp_corpus
 
 if __name__ == '__main__':
 	corpus_dir = "/home/morio/workspace/geo2dr/geometric2dr/file_handling/dortmund_gexf/MUTAG/"

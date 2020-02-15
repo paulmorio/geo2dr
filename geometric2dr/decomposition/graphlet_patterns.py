@@ -100,8 +100,8 @@ def graphlet_corpus(corpus_dir, num_graphlets, samplesize):
 
     for gexf_fh in graph_files:
         gidx = int((os.path.basename(gexf_fh)).replace(".gexf", ""))
-        nx_graph, am = load_graph(gexf_fh)
-        m = len(am)
+        nx_graph, adj_mat = load_graph(gexf_fh)
+        m = len(adj_mat)
         count_map = {} # graphlet countmap
         tmp_corpus = [] # temporary corpus for a single graph
         cooccurence_corpus = [] # corpus which preserves cooccurence as in Yanardag et al.
@@ -110,7 +110,7 @@ def graphlet_corpus(corpus_dir, num_graphlets, samplesize):
             for j in range(samplesize):
                 r =  np.random.permutation(range(m))
                 for n in [num_graphlets]:
-                    window = am[np.ix_(r[0:n],r[0:n])]
+                    window = adj_mat[np.ix_(r[0:n],r[0:n])]
                     g_type = canonical_map[str(get_graphlet(window, n), 'latin1')] # need str to handle weird encoding from py2
                     graphlet_idx = g_type["idx"]
                     level = g_type["n"]
@@ -123,7 +123,7 @@ def graphlet_corpus(corpus_dir, num_graphlets, samplesize):
                         # place a window to for each node in the original window
                         new_n_arr = r[n:][0:n-1] # select n-1 nodes
                         r2 = np.array(list(new_n_arr) + [node])
-                        window2 = am[np.ix_(r2,r2)]
+                        window2 = adj_mat[np.ix_(r2,r2)]
                         g_type2 = canonical_map[str(get_graphlet(window2, n), 'latin1')]
                         graphlet_idx2 = g_type2["idx"]
                         count_map[graphlet_idx2] = count_map.get(graphlet_idx2, 0) + 1
