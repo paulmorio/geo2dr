@@ -20,15 +20,6 @@ import logging
 
 from embedding_methods.utils import get_files, get_class_labels
 
-
-def subgraph2vec_tokenizer(s):
-	"""
-	Tokenize the string from subgraph2vec sentence (i.e. target context1 context2 ...) Just target is to be used and context strings are ignored
-	:param s: context of graph2vec file
-	:return: List of targets from graph2vec file.
-	"""
-	return [line.split(' ')[0] for line in s.split('\n')]
-
 def linear_svm_classify(X_train, X_test, Y_train, Y_test):
 	"""
 	Classifier with graph embeddings

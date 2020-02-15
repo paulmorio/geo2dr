@@ -44,6 +44,19 @@ def save_graph_embeddings(corpus, final_embeddings, opfname):
     with open(opfname, 'w') as filehandler:
         json.dump(dict_to_save, filehandler, indent=4)
 
+def save_subgraph_embeddings(corpus, final_embeddings, opfname):
+    """
+    Save the embeddings along with a map to the patterns and the corpus
+    """
+    dict_to_save = {}
+    for i in range(len(final_embeddings)):
+        subgraph_name = corpus._id_to_subgraph_map[i]
+        subgraph_embedding = final_embeddings[i,:].tolist()
+        dict_to_save[subgraph_name] =  subgraph_embedding
+
+    with open(opfname, 'w') as filehandler:
+        json.dump(dict_to_save, filehandler, indent=4)
+
 def get_class_labels(graph_files, class_labels_fname):
     """
     Given the list of graph files (as in get_files) and 
@@ -65,3 +78,4 @@ def get_class_labels_tuples(graph_files, class_labels_fname):
         g_num = os.path.basename(g).split('.')[0]
         labels.append((int(g_num), graph_to_class_label_map[os.path.basename(g).split('.')[0]]))
     return labels
+
