@@ -21,7 +21,7 @@ np.random.seed(27)
 # Harddrive version
 #######################################################################################################
 #######################################################################################################
-class Corpus(Dataset):
+class PVDBOWCorpus(Dataset):
 	"""
 	Class which representes all of the graph documents in a graph dataset
 	"""
@@ -152,7 +152,7 @@ class Corpus(Dataset):
 		pow_frequency = np.array(list(self.subgraph_id_freq_map.values()))**0.5
 		words_pow = sum(pow_frequency)
 		ratio = pow_frequency / words_pow
-		count = np.round(ratio * Corpus.NEGATIVE_TABLE_SIZE)
+		count = np.round(ratio * PVDBOWCorpus.NEGATIVE_TABLE_SIZE)
 		for sg_id, c in enumerate(count):
 			self.negatives += [sg_id]*int(c)
 		self.negatives = np.array(self.negatives)
@@ -254,7 +254,7 @@ class Corpus(Dataset):
 #######################################################################################################
 #######################################################################################################
 
-class InMemoryCorpus(Dataset):
+class PVDBOWInMemoryCorpus(Dataset):
 	"""
 	Class which representes all of the graph documents in a graph dataset, This version keeps the entire corpus with negatives in memory
 	which requires a larger initial creation time but is much quicker
@@ -387,7 +387,7 @@ class InMemoryCorpus(Dataset):
 		pow_frequency = np.array(list(self.subgraph_id_freq_map.values()))**0.5
 		words_pow = sum(pow_frequency)
 		ratio = pow_frequency / words_pow
-		count = np.round(ratio * InMemoryCorpus.NEGATIVE_TABLE_SIZE)
+		count = np.round(ratio * PVDBOWInMemoryCorpus.NEGATIVE_TABLE_SIZE)
 		for sg_id, c in enumerate(count):
 			self.negatives += [sg_id]*int(c)
 		self.negatives = np.array(self.negatives)
@@ -500,11 +500,11 @@ if __name__ == '__main__':
 	corpus_dir = "../data/dortmund_gexf/MUTAG"
 
 	# Normal Harddrive corpus
-	corpus = Corpus(corpus_dir, extension=".wld2", max_files=60)
+	corpus = PVDBOWCorpus(corpus_dir, extension=".wld2", max_files=60)
 	# additional_file = "/home/morio/workspace/geo2dr/geometric2dr/file_handling/dortmund_gexf/MUTAG/99.gexf.wld2"
 	# corpus.add_file(additional_file)
 	dataloader = DataLoader(corpus, batch_size=4, shuffle=False, num_workers=0, collate_fn=corpus.collate)
 
 	# In memory corpus
-	in_mem_corpus = InMemoryCorpus(corpus_dir, extension=".wld2", max_files=60)
+	in_mem_corpus = PVDBOWInMemoryCorpus(corpus_dir, extension=".wld2", max_files=60)
 	mem_dataloader = DataLoader(in_mem_corpus, batch_size=4, shuffle=False, num_workers=0, collate_fn=in_mem_corpus.collate)

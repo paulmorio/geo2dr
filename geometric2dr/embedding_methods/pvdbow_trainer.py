@@ -1,5 +1,5 @@
 """
-Module containing class definitions of trainers on skipgram esque models such as Graph2Vec
+Module containing class definitions of trainers on pvdbow esque models such as Graph2Vec
 
 Author: Paul Scherer
 """
@@ -9,16 +9,16 @@ from torch.utils.data import DataLoader
 from tqdm import tqdm
 
 # Internal 
-from embedding_methods.data_reader import Corpus, InMemoryCorpus
+from embedding_methods.pvdbow_data_reader import PVDBOWCorpus, PVDBOWInMemoryCorpus
 from embedding_methods.skipgram import Skipgram
-from embedding_methods.utils import get_files, get_class_labels, get_class_labels_tuples, save_graph_embeddings
+from embedding_methods.utils import save_graph_embeddings
 
-# For testing
-from embedding_methods.classify import perform_classification, cross_val_accuracy
+# # For testing
+# from embedding_methods.classify import perform_classification, cross_val_accuracy
 
 class Trainer(object):
 	def __init__(self, corpus_dir, extension, max_files, output_fh, emb_dimension=128, batch_size=32, epochs=100, initial_lr=1e-3, min_count=1):
-		self.corpus = Corpus(corpus_dir, extension, max_files, min_count)
+		self.corpus = PVDBOWCorpus(corpus_dir, extension, max_files, min_count)
 		self.dataloader = DataLoader(self.corpus, batch_size, shuffle=False, num_workers=0, collate_fn = self.corpus.collate)
 		
 		self.corpus_dir = corpus_dir
@@ -71,7 +71,7 @@ class Trainer(object):
 
 class InMemoryTrainer(object):
 	def __init__(self, corpus_dir, extension, max_files, output_fh, emb_dimension=128, batch_size=32, epochs=100, initial_lr=1e-3, min_count=1):
-		self.corpus = InMemoryCorpus(corpus_dir, extension, max_files, min_count)
+		self.corpus = PVDBOWInMemoryCorpus(corpus_dir, extension, max_files, min_count)
 		self.dataloader = DataLoader(self.corpus, batch_size, shuffle=False, num_workers=0, collate_fn = self.corpus.collate)
 		
 		self.corpus_dir = corpus_dir
@@ -140,9 +140,9 @@ if __name__ == '__main__':
 
 	final_embeddings = trainer.skipgram.give_target_embeddings()
 	graph_files = trainer.corpus.graph_fname_list
-	class_labels_fname = "/home/morio/workspace/geo2dr/geometric2dr/file_handling/MUTAG.Labels"
-	embedding_fname = trainer.output_fh
-	classify_scores = cross_val_accuracy(corpus_dir, trainer.corpus.extension, embedding_fname, class_labels_fname)
-	mean_acc, std_dev = classify_scores
-	print("Mean accuracy using 10 cross fold accuracy: %s with std %s" % (mean_acc, std_dev))
+	# class_labels_fname = "/home/morio/workspace/geo2dr/geometric2dr/file_handling/MUTAG.Labels"
+	# embedding_fname = trainer.output_fh
+	# classify_scores = cross_val_accuracy(corpus_dir, trainer.corpus.extension, embedding_fname, class_labels_fname)
+	# mean_acc, std_dev = classify_scores
+	# print("Mean accuracy using 10 cross fold accuracy: %s with std %s" % (mean_acc, std_dev))
 
