@@ -6,6 +6,10 @@ pynauty-0.6.0
 *.json
 
 # Data
+examples/data/MUTAG/*.wld*
+examples/data/MUTAG/*.spp
+examples/data/MUTAG/*.awe*
+examples/data/MUTAG/*.graphlet*
 geometric2dr/file_handling/dortmund_data
 geometric2dr/file_handling/dortmund_gexf
 geometric2dr/file_handling/*.Labels
