@@ -2,6 +2,11 @@
 Skipgram model
 
 Uses negative sampling to learn better representations (and quicker too)
+
+It is used by the SkipgamCorpus and PVDBOWCorpus to build complete Skipgram and PVDBOW systems respectively.
+SkipgramCorpus and PVDBOWCorpus are found in skipgram_data_reader and pvdbow_data_reader modules respectively
+
+Author: Paul Scherer
 """
 
 import torch
@@ -13,6 +18,9 @@ class Skipgram(nn.Module):
 	"""
 	Pytorch implementation of the skipgram with negative 
 	sampling as in Mikolov et al.
+
+	Based on the inputs it can be used as the skipgram described in the original Word2Vec paper, or as 
+	Doc2Vec (PV-DBOW) in Le and Mikolov
 	"""
 
 	def __init__(self, num_targets, vocab_size, embedding_dimension):
