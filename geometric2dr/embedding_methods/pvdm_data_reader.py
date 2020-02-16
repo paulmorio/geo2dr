@@ -165,7 +165,7 @@ class PVDMCorpus(Dataset):
 	def getNegatives(self, target, size): 
 		response = self.negatives[self.negpos:self.negpos + size]
 		self.negpos = (self.negpos + size) % len(self.negatives)
-		if target in response: # check equality with target
+		while target in response: # check equality with target
 			for i in np.where(response == target):
 				response[i] = self.negatives[np.random.randint(0,len(self.negatives))]
 		if len(response) != size:
