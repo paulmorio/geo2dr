@@ -125,16 +125,16 @@ pip install -e .
 ### FAQ:
 1. Why decompose graphs into different substructure patterns?
 
-- *This is because the useful properties of graphs in different datasets may be better captured using specialised decompositions. There is no one-size fits all.*  
+- *This is because the useful properties of graphs in different datasets may be better captured using specialised decompositions. There is no one-size fits all. There is no free sandwich. The cake is a lie.*  
 
 2. How is this different from other libraries for learning representations of graphs, such as PyTorch Geometric or Spektral?
 
-- *The systems produced here learn distributed representations of graphs. These representations are built by taking the perspective that graphs are composed of discrete substructures which characterise the graph. The distributed vector representations are learned by exploiting the distributive hypothesis. Most of representations of graphs learned using systems such as created in PyTorch Geometric rely on a series of spectral/spatial graph convolutions to create node representations which are pooled in various ways to form graph level representations. The foundation of these algorithms can be found in the message-passing+pooling paradigm whereas our foundation is the distributive hypothesis. Hence this library is different and complementary to other existing libraries, and as far as I am aware this is the first.*
+- *The systems produced here learn distributed representations of graphs. These representations are built by taking the perspective that graphs are composed of discrete substructures which characterise the graph in relation to the patterns found in other graphs of a collection under observation. The distributed vector representations are learned by exploiting the distributive hypothesis. Most of representations of graphs learned using systems such as created in PyTorch Geometric rely on a series of spectral/spatial graph convolutions to create node representations which are pooled in various ways to form graph level representations. The foundation of these algorithms can be found in the message-passing+pooling paradigm whereas our foundation is the distributive hypothesis. Hence this library is different and complementary to other existing libraries, and as far as I am aware this is the first.*
 
-3. Hey my published system for learning distributed representations is not here! You are awful!
+3. Hey my model for learning distributed representations is not implemented in the examples! You are awful!
 
-- *Thanks for telling us. Given the mass excitement in machine learning it is impossible to keep up with all the awesome papers in the world. Please open an issue and we will try to get it implemented as soon as possible*
+- *Thanks for telling us. Given the overloaded excitement in machine learning it is impossible to keep up with all the papers. Please open an issue and we will try to get it implemented as soon as possible. Similarly the intention of this library is to enable creation of existing/novel models quickly.*
 
 4. Do you accept contributions?
 
-- *Yes. Thank you for improving this library. We all benefit the better Geo2DR becomes.*
+- *Yes contributions are always very welcome. A contributions guideline will be made available in due time, the author is also still learning to navigate open source collaboration on GitHub*
