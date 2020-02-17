@@ -1,12 +1,18 @@
 """
 Anonymous walk based decomposition algorithm to create graph documents
 
-The main use case for this script is for the user to supply a path to the directory containing the .gexf file which contains .gexf files of each graph in a dataset. The decomposition function will produce a awe fle for each .gexf file which contains the anonymous walsk of graph given the vocabuary of patterns across the dataset.
+The main use case for this script is for the user to supply a path to 
+the directory containing the .gexf file which contains .gexf files of
+each graph in a dataset. The decomposition function will produce a awe
+file for each .gexf file which contains the anonymous walsk of graph
+given the vocabuary of patterns across the dataset.
 
-The algorithms are adapted from the original source code by Ivanov and Burnaev 2018 "Anonymous Walk Embeddings"
-https://github.com/nd7141/AWE
+The algorithms are adapted from the original source code by 
+Ivanov and Burnaev 2018 "Anonymous Walk Embeddings"
+https://github.com/nd7141/AWE Non-License 
 
 Author: Paul Scherer 2019
+Carry down MIT License
 """
 
 # Standard libraries
@@ -41,72 +47,72 @@ def load_graph(file_handle):
 	return graph, adj_matrix
 
 def all_paths(paths, steps, keep_last = False):
-    '''Get all possible anonymous walks of length up to steps.'''
-    new_paths = []
-    last_step_paths = [[0, 1]]
-    for i in range(2, steps+1):
-        current_step_paths = []
-        for j in range(i + 1):
-            for walks in last_step_paths:
-                if walks[-1] != j and j <= max(walks) + 1:
-                    new_paths.append(walks + [j])
-                    current_step_paths.append(walks + [j])
-        last_step_paths = current_step_paths
-    # filter only on n-steps walks
-    if keep_last:
-        new_paths = list(filter(lambda path: len(path) ==  steps + 1, new_paths))
-    paths[steps] = new_paths
-    return new_paths
+	'''Get all possible anonymous walks of length up to steps.'''
+	new_paths = []
+	last_step_paths = [[0, 1]]
+	for i in range(2, steps+1):
+		current_step_paths = []
+		for j in range(i + 1):
+			for walks in last_step_paths:
+				if walks[-1] != j and j <= max(walks) + 1:
+					new_paths.append(walks + [j])
+					current_step_paths.append(walks + [j])
+		last_step_paths = current_step_paths
+	# filter only on n-steps walks
+	if keep_last:
+		new_paths = list(filter(lambda path: len(path) ==  steps + 1, new_paths))
+	paths[steps] = new_paths
+	return new_paths
 
 def all_paths_edges(paths, steps, keep_last = True):
-    '''Get all possible anonymous walks of length up to steps, using edge labels'''
-    new_paths = []
-    last_step_paths = [[]]
-    for i in range(0, steps):
-        current_step_paths = []
-        for j in range(i + 1):
-            for walks in last_step_paths:
-                if j <= max(walks + [0]) + 1:
-                    new_paths.append(walks + [j])
-                    current_step_paths.append(walks + [j])
-        last_step_paths = current_step_paths
-    if keep_last:
-        new_paths = last_step_paths
-    paths[steps] = new_paths
-    return new_paths
+	'''Get all possible anonymous walks of length up to steps, using edge labels'''
+	new_paths = []
+	last_step_paths = [[]]
+	for i in range(0, steps):
+		current_step_paths = []
+		for j in range(i + 1):
+			for walks in last_step_paths:
+				if j <= max(walks + [0]) + 1:
+					new_paths.append(walks + [j])
+					current_step_paths.append(walks + [j])
+		last_step_paths = current_step_paths
+	if keep_last:
+		new_paths = last_step_paths
+	paths[steps] = new_paths
+	return new_paths
 
 def all_paths_nodes(paths, steps, keep_last = True):
-    '''Get all possible anonymous walks of length up to steps, using node labels'''
-    new_paths = []
-    last_step_paths = [[0]]
-    for i in range(1, steps+1):
-        current_step_paths = []
-        for j in range(i + 1):
-            for walks in last_step_paths:
-                if j <= max(walks) + 1:
-                    new_paths.append(walks + [j])
-                    current_step_paths.append(walks + [j])
-        last_step_paths = current_step_paths
-    if keep_last:
-        new_paths = last_step_paths
-    paths[steps] = new_paths
-    return new_paths
+	'''Get all possible anonymous walks of length up to steps, using node labels'''
+	new_paths = []
+	last_step_paths = [[0]]
+	for i in range(1, steps+1):
+		current_step_paths = []
+		for j in range(i + 1):
+			for walks in last_step_paths:
+				if j <= max(walks) + 1:
+					new_paths.append(walks + [j])
+					current_step_paths.append(walks + [j])
+		last_step_paths = current_step_paths
+	if keep_last:
+		new_paths = last_step_paths
+	paths[steps] = new_paths
+	return new_paths
 
 def all_paths_edges_nodes(paths, steps, keep_last = True):
-    '''Get all possible anonymous walks of length up to steps, using edge-node labels'''
-    edge_paths = all_paths_edges(paths, steps, keep_last=keep_last)
-    node_paths = all_paths_nodes(paths, steps, keep_last=keep_last)
-    new_paths = []
-    for p1 in edge_paths:
-        for p2 in node_paths:
-            if len(p2) == len(p1) + 1:
-                current_path = [p2[0]]
-                for ix in range(len(p1)):
-                    current_path.append(p1[ix])
-                    current_path.append(p2[ix+1])
-                new_paths.append(current_path)
-    paths[steps] = new_paths
-    return new_paths
+	'''Get all possible anonymous walks of length up to steps, using edge-node labels'''
+	edge_paths = all_paths_edges(paths, steps, keep_last=keep_last)
+	node_paths = all_paths_nodes(paths, steps, keep_last=keep_last)
+	new_paths = []
+	for p1 in edge_paths:
+		for p2 in node_paths:
+			if len(p2) == len(p1) + 1:
+				current_path = [p2[0]]
+				for ix in range(len(p1)):
+					current_path.append(p1[ix])
+					current_path.append(p2[ix+1])
+				new_paths.append(current_path)
+	paths[steps] = new_paths
+	return new_paths
 
 
 def create_random_walk_graph(nx_graph):
@@ -215,7 +221,7 @@ def random_walk_with_label_edges_nodes(graph, rw_graph, node, steps):
 
 
 def anonymous_walk_node(graph, rw_graph, node, steps, label_setting=None):
-	'''Creates anonymous walk for a node.'''
+	'''Creates anonymous walk from a node.'''
 	if label_setting is None:
 		return random_walk_node(rw_graph, node, steps)
 	elif label_setting == 'nodes':
@@ -245,14 +251,10 @@ def awe_corpus(corpus_dir, awe_length, label_setting, neighborhood_size=10, savi
 	which records string identifiers of the anonymous walks present in each graph
 	"""
 	graph_files = get_files(corpus_dir, extension=".gexf")
-	vocabulary = set()
-	count_map = {}
 	awe_corpus = {}
-	corpus = []
 
-	# Anonymous walk stuff
+	# Map of possible anonymous walks
 	paths = dict()
-
 	if label_setting is None:
 		all_paths(paths, awe_length, keep_last=True)
 	elif label_setting == 'nodes':
@@ -288,10 +290,29 @@ def awe_corpus(corpus_dir, awe_length, label_setting, neighborhood_size=10, savi
 				for aw in aws_graph:
 					fh.write(' '.join(aw) + '\n')
 
-	return awe_corpus
+	corpus = []
+	vocabulary = set()
+	graph_map = {}
+	
+	for gidx in sorted(awe_corpus.keys()):
+		count_map = {}
+		tmp_corpus = []
+		for node_neighborhood_awalks in awe_corpus[gidx]:
+			for pattern_str in node_neighborhood_awalks:
+				vocabulary.add(pattern_str)
+				count_map[pattern_str] = count_map.get(pattern_str, 0) + 1
+				tmp_corpus.append(pattern_str)
+		corpus.append(tmp_corpus)
+		graph_map[gidx] = count_map
+
+	# Normalise the probabilities of a graphlet in a graph.
+	prob_map = {gidx: {graphlet: count/float(sum(anon_walk_patterns.values())) \
+		for graphlet, count in anon_walk_patterns.items()} for gidx, anon_walk_patterns in graph_map.items()}
+	num_graphs = len(graph_map)
+	return corpus, vocabulary, prob_map, num_graphs, graph_map
 
 if __name__ == '__main__':
-	corpus_dir = "/home/morio/workspace/geo2dr/geometric2dr/file_handling/dortmund_gexf/MUTAG/"
+	corpus_dir = "../data/dortmund_gexf/MUTAG/"
 	awe_length = 4
 	label_setting = 'nodes'
-	corpus = awe_corpus(corpus_dir, awe_length, label_setting, saving_graph_docs=True)
+	corpus, vocabulary, prob_map, num_graphs, graph_map = awe_corpus(corpus_dir, awe_length, label_setting, saving_graph_docs=True)
