@@ -11,7 +11,9 @@ Popular sytems such as Deep Graph Kernels (Yanardag and Vishwanathan, 2015), Gra
 
 Once the distributed vector representations are learned for each of the graphs in a dataset. The graph embeddings may be used in any downstream application such as graph classification, regression, etc.
 
-Geo2DR implements a variety of graph reduction algorithms (such as Weisfeiler-Lehman, anonymous walks, graphlets) and learning models which exploits the distributive hypothesis (such as skipgram with noise contrastive sampling, PV-DM). This enables the quick creation of existing systems such as Graph2Vec or AWE but also the creation of new combinations leading to new systems capable of learning distributed representations. This also enables deeper studies into how we can build better representations of graphs and more reliable comparative analyses on the same codebase.
+Geo2DR implements a variety of graph reduction algorithms (such as Weisfeiler-Lehman, anonymous walks, graphlets) and learning models which exploits the distributive hypothesis (such as skipgram with noise contrastive sampling, PV-DM). This enables the quick recreation of existing systems such as Graph2Vec or AWE but also the creation of new combinations leading to new(!) systems capable of learning distributed representations. This enables deeper studies into how we can build better representations of graphs and more reliable comparative analyses on the same codebase. 
+
+Of course care was taken so that modules can act independently so that users can use their own implementations for decompositions/learning algorithms even with different learning frameworks and implementations to allow more freedom.
 
 The following substructure induction algorithms are implemented
 
@@ -26,12 +28,13 @@ The following embedding systems are included
 - PV-DBOW with negative sampling
 - PV-DM with negative sampling
 
-The following methods are currently implemented (in examples)
+The following methods are currently implemented in the examples ()
 - Graph2Vec from Narayanan et al. [Graph2Vec: Learning Distributed Representations of Graphs](https://arxiv.org/abs/1707.05005) (2017 International Workshop on Mining and Learning with Graphs)
 - AWE-DD from from Ivanov and Burnaev [Anonymous Walk Embeddings](https://arxiv.org/abs/1805.11921) (ICML 2018)
 - Deep GK from Yanardag and Vishwanathan [Deep Graph Kernels](https://dl.acm.org/citation.cfm?id=2783417) (KDD 2015)
 - Deep SP from Yanardag and Vishwanathan [Deep Graph Kernels](https://dl.acm.org/citation.cfm?id=2783417) (KDD 2015)
 - Deep WL from Yanardag and Vishwanathan [Deep Graph Kernels](https://dl.acm.org/citation.cfm?id=2783417) (KDD 2015)
+- MLE graph kernels to showcase different induced substructure patterns.  
 
 
 On top of this Geo2DR benefits from different classes handling the corpus datasets and dataloading into the learning models. These give the option of loading datasets from files in the hard drive or loading a corpus into memory for significant speedup in the learning process.
