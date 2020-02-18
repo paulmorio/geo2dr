@@ -8,6 +8,7 @@ Author: Paul Scherer 2019
 
 import numpy as np
 import torch
+import itertools
 from torch.utils.data import Dataset, DataLoader
 from collections import defaultdict, Counter
 from random import shuffle
@@ -210,12 +211,23 @@ class SkipgramCorpus(Dataset):
 
 		target_graph = graph_name
 
-		if target_subgraph in self._subgraph_to_id_map:
-			for subgraph_context in subgraph_contexts:
-				if subgraph_context in self._subgraph_to_id_map:
-					target_subgraph_ids.append(self._subgraph_to_id_map[target_subgraph])
-					context_subgraph_ids.append(self._subgraph_to_id_map[subgraph_context])
+		# TODO MAKE THIS PART AN OPTION (BASED ON GRAPHLET ETC.)
 
+		# if target_subgraph in self._subgraph_to_id_map:
+		# 	for subgraph_context in subgraph_contexts:
+		# 		if subgraph_context in self._subgraph_to_id_map:
+		# 			target_subgraph_ids.append(self._subgraph_to_id_map[target_subgraph])
+		# 			context_subgraph_ids.append(self._subgraph_to_id_map[subgraph_context])
+
+		permuts = [target_subgraph] + subgraph_contexts
+		for tgt, ctx in list(itertools.permutations(permuts, 2)):
+			if tgt in self._subgraph_to_id_map and ctx in self._subgraph_to_id_map:
+				target_subgraph_ids.append(self._subgraph_to_id_map[tgt])
+				context_subgraph_ids.append(self._subgraph_to_id_map[ctx])
+
+
+
+				
 		# move on to the next subgraph
 		self.subgraph_index += 1
 
@@ -449,11 +461,20 @@ class InMemorySkipgramCorpus(Dataset):
 
 			target_graph = graph_name
 
-			if target_subgraph in self._subgraph_to_id_map:
-				for subgraph_context in subgraph_contexts:
-					if subgraph_context in self._subgraph_to_id_map:
-						target_subgraph_ids.append(self._subgraph_to_id_map[target_subgraph])
-						context_subgraph_ids.append(self._subgraph_to_id_map[subgraph_context])
+			# TODO MAKE THIS PART AN OPTION (BASED ON GRAPHLET ETC.)
+
+			# if target_subgraph in self._subgraph_to_id_map:
+			# 	for subgraph_context in subgraph_contexts:
+			# 		if subgraph_context in self._subgraph_to_id_map:
+			# 			target_subgraph_ids.append(self._subgraph_to_id_map[target_subgraph])
+			# 			context_subgraph_ids.append(self._subgraph_to_id_map[subgraph_context])
+
+			permuts = [target_subgraph] + subgraph_contexts
+			for tgt, ctx in list(itertools.permutations(permuts, 2)):
+				if tgt in self._subgraph_to_id_map and ctx in self._subgraph_to_id_map:
+					target_subgraph_ids.append(self._subgraph_to_id_map[tgt])
+					context_subgraph_ids.append(self._subgraph_to_id_map[ctx])
+
 
 			# move on to the next subgraph
 			self.subgraph_index += 1
