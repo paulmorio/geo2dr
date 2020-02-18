@@ -27,7 +27,7 @@ min_count_patterns = 0 # min number of occurrences to be considered in vocabular
 # We keep permanent files for sake of deeper post studies and testing
 #######
 graph_files = utils.get_files(corpus_data_dir, ".gexf", max_files=0)
-wlk_relabeled_corpus(graph_files, wl_depth)
+wl_corpus(graph_files, wl_depth)
 extension = ".wld" + str(wl_depth) # Extension of the graph document
 
 ######
