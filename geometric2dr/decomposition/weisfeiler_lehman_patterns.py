@@ -11,6 +11,10 @@ are saved into a  <graphid>.wldr<depth> file which contains a line delimited
 list of all the substructure pattern ids.
 
 Author: Paul Scherer 2019.
+
+Based on the implementation available by the authors of Graph2Vec
+https://github.com/MLDroid/graph2vec_tf No License
+Carry down MIT License
 """
 
 import os
@@ -105,9 +109,9 @@ def save_wl_doc(fname,max_h,graph=None):
     """
     open_fname = fname + '.wld' + str(max_h)
 
-    # no need to write if it already exists
-    if os.path.isfile(open_fname):
-        return
+    # # no need to write if it already exists
+    # if os.path.isfile(open_fname):
+    #     return
 
     # otherwise we write into the file
     with open(open_fname,'w') as fh:
@@ -117,25 +121,26 @@ def save_wl_doc(fname,max_h,graph=None):
                     center = d['relabel'][it]
                 except:
                     continue
-                neis_labels_prev_deg = []
-                neis_labels_next_deg = []
+                # neis_labels_prev_deg = []
+                # neis_labels_next_deg = []
 
-                if it != 0:
-                    neis_labels_prev_deg = list(set([graph.nodes[nei]['relabel'][it-1] for nei in nx.all_neighbors(graph, n)]))
-                    neis_labels_prev_deg.sort()
+                # if it != 0:
+                #     neis_labels_prev_deg = list(set([graph.nodes[nei]['relabel'][it-1] for nei in nx.all_neighbors(graph, n)]))
+                #     neis_labels_prev_deg.sort()
                 NeisLabelsSameDeg = list(set([graph.nodes[nei]['relabel'][it] for nei in nx.all_neighbors(graph,n)])) # neighbours  on iteration it basically
-                if it != max_h:
-                    neis_labels_next_deg = list(set([graph.nodes[nei]['relabel'][it+1] for nei in nx.all_neighbors(graph,n)]))
-                    neis_labels_next_deg.sort()
+                # if it != max_h:
+                #     neis_labels_next_deg = list(set([graph.nodes[nei]['relabel'][it+1] for nei in nx.all_neighbors(graph,n)]))
+                #     neis_labels_next_deg.sort()
 
-                nei_list = NeisLabelsSameDeg + neis_labels_prev_deg + neis_labels_next_deg
-                nei_list = ' '.join (nei_list)
+                # nei_list = NeisLabelsSameDeg + neis_labels_prev_deg + neis_labels_next_deg
+                nei_list = NeisLabelsSameDeg
+                nei_list = ' '.join(nei_list)
 
                 sentence = center + ' ' + nei_list
                 print(sentence, file=fh)
                 
 
-def wlk_relabeled_corpus(fnames, max_h, node_label_attr_name='Label'):
+def wl_corpus(fnames, max_h, node_label_attr_name='Label'):
     """
     Given a set of graphs from the dataset, a maximum h for WL, and the label attribute name used in 
     the gexf files we initially relabel the original labels into a compliant relabeling (caesar shift for ease)
@@ -143,19 +148,17 @@ def wlk_relabeled_corpus(fnames, max_h, node_label_attr_name='Label'):
     versions of the rooted subgraphs for each node in the graph. These are all present in the nx graph objects's nodes
     as attributes, with the original label being 'Label' and our subsequent relabelings in the "relabel" attribute
     """
-
     global label_to_compressed_label_map
     compressed_labels_map_list = [] # list of compressed labels maps that can be used to go backwards
 
     # Read each graph as a networkx graph
-    t0 = time()
     graphs = [nx.read_gexf(fname) for fname in fnames]
-    print ('loaded all graphs in {} sec'.format(round(time() - t0, 2)))
+    assert len(graphs) > 0, "fnames parameter does not contain valid .gexf files"
+    print ('#... Loaded all the graphs')
 
     # Do an initial relabeling of each nxgraph g in graphs
-    t0 = time()
-    graphs = [initial_relabel(g,node_label_attr_name) for g in graphs]
-    print ('initial relabeling done in {} sec'.format(round(time() - t0, 2)))
+    graphs = [initial_relabel(g, node_label_attr_name) for g in graphs]
+    print ('#... initial relabeling done in')
 
     # Perform the Weisfeiler-Lehman Relabeling Process for h iterations (up to h depth rooted subgraphs)
     for it in range(1, max_h + 1):
@@ -166,24 +169,51 @@ def wlk_relabeled_corpus(fnames, max_h, node_label_attr_name='Label'):
         print ('WL iteration {} done in {} sec.'.format(it, round(time() - t0, 2)))
         print ('num of WL rooted subgraphs in iter {} is {}'.format(it, len(label_to_compressed_label_map)))
 
-    t0 = time()
+    # Save the patterns into graph documents
     for fname, g in zip(fnames, graphs):
         save_wl_doc(fname, max_h, g)
-    print ('dumped sentences in {} sec.'.format(round(time() - t0, 2)))
-    return graphs
 
-# Test
-def main():
-    ip_folder = "/home/morio/workspace/geo2dr/geometric2dr/file_handling/dortmund_gexf/MUTAG"
+    # Match return signatures of other decomposition algorithms
+    corpus = []
+    vocabulary = set()
+    graph_map = {}
+
+    for fname, g in zip(fnames, graphs):
+        gidx = int((os.path.basename(fname)).replace(".gexf", ""))
+        tmp_corpus = []
+        count_map = {}
+        for n, d in g.nodes(data=True):
+            for it in range(0, max_h+1):
+                try:
+                    pattern_at_node = d['relabel'][it]
+                    vocabulary.add(pattern_at_node)
+                    tmp_corpus.append(pattern_at_node)
+                    count_map[pattern_at_node] = count_map.get(pattern_at_node, 0) + 1
+                except:
+                    continue      
+
+                NeisLabelsSameDeg = list(set([g.nodes[nei]['relabel'][it] for nei in nx.all_neighbors(g,n)]))
+                for nei_pattern in NeisLabelsSameDeg:
+                    vocabulary.add(nei_pattern)
+                    tmp_corpus.append(nei_pattern)
+                    count_map[nei_pattern] = count_map.get(nei_pattern, 0) + 1
+        
+        corpus.append(tmp_corpus)
+        graph_map[gidx] = count_map
+
+    # Normalise the probabilities of a graphlet in a graph.
+    prob_map = {gidx: {graphlet: count/float(sum(graphlets.values())) \
+        for graphlet, count in graphlets.items()} for gidx, graphlets in graph_map.items()}
+    num_graphs = len(prob_map)          
+
+    return corpus, vocabulary, prob_map, num_graphs, graph_map
+
+# Manual test
+if __name__ == "__main__":
+    ip_folder ="../data/dortmund_gexf/MUTAG"
     max_h = 2
 
     all_files = sorted(glob.glob(os.path.join(ip_folder, '*gexf')))
     print("Loaded %s files in total" % (str(len(all_files))))
 
-    # Relabel nodes using WL algorithm and generate graph documents
-    graphs = wlk_relabeled_corpus(all_files, max_h)
-    return graphs
-
-if __name__ == "__main__":
-    graphs = main()
-
+    corpus, vocabulary, prob_map, num_graphs, graph_map = wl_corpus(all_files, max_h)
