@@ -8,12 +8,12 @@ from torch.utils.data import DataLoader
 from tqdm import tqdm
 
 # Internal 
-from embedding_methods.pvdm_data_reader import PVDMCorpus
-from embedding_methods.pvdm import PVDM
-from embedding_methods.utils import save_graph_embeddings
+from .pvdm_data_reader import PVDMCorpus
+from .pvdm import PVDM
+from .utils import save_graph_embeddings
 
 # For testing
-from embedding_methods.classify import perform_classification, cross_val_accuracy
+from .classify import perform_classification, cross_val_accuracy
 
 class PVDM_Trainer(object):
 	def __init__(self, corpus_dir, extension, max_files, window_size, output_fh, emb_dimension=128, batch_size=32, epochs=100, initial_lr=1e-3, min_count=1):
@@ -46,21 +46,25 @@ class PVDM_Trainer(object):
 		for epoch in range(self.epochs):
 			print("### Epoch: " + str(epoch))
 			criterion = nn.NLLLoss()
-			optimizer = optim.Adam(self.pvdm.parameters(), lr=self.initial_lr)
+			optimizer = optim.SGD(self.pvdm.parameters(), lr=self.initial_lr)
 			scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, len(self.dataloader))
 
 			running_loss = 0.0
 			for i, sample_batched in enumerate(tqdm(self.dataloader)):
 
 				if len(sample_batched[0]) > 1:
-					pos_target = sample_batched[0].to(self.device)
-					pos_context_target = sample_batched[1].to(self.device)
-					pos_contexts_for_context_target = sample_batched[2].to(self.device)
-					pos_negatives_for_context_target = sample_batched[3].to(self.device)
+					pos_target_graph = sample_batched[0].to(self.device)
+					pos_target_subgraph = sample_batched[1].to(self.device)
+					pos_contexts_for_subgraph_target = sample_batched[2].to(self.device)
+					pos_negatives = sample_batched[3].to(self.device)
 
 					optimizer.zero_grad()
-					loss = self.pvdm.forward(pos_target, pos_context_target, pos_contexts_for_context_target, pos_negatives_for_context_target)
-					loss.backward()
+					# loss = self.pvdm.forward(pos_target_graph, pos_target_subgraph, pos_contexts_for_subgraph_target, pos_negatives)
+					# loss.backward()
+
+					log_probs = self.pvdm(pos_target_graph, pos_target_subgraph, pos_contexts_for_subgraph_target, pos_negatives)
+					loss = criterion(log_probs, torch.tensor(pos_target_subgraph, dtype=torch.long))
+
 					optimizer.step()
 					scheduler.step()
 
