@@ -51,7 +51,7 @@ for wl_h in wl_degrees:
                       (str(len(graph_files))))
                 print(output_fh)
                 # This takes the gexf graphfiles and produces .wld<wl_h> graph document files
-                wlk_relabeled_corpus(graph_files, wl_h)
+                wl_corpus(graph_files, wl_h)
 
                 # Use the graph documents in the directory to create a trainer which handles creation of datasets/corpus/dataloaders
                 # and the skipgram model.
