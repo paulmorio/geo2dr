@@ -47,7 +47,7 @@ import numpy as np
 import networkx as nx
 
 # Internal
-from utils import get_files
+from .utils import get_files
 
 # Random seeds from Yanardag et al.
 random.seed(314124)
