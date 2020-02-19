@@ -46,8 +46,7 @@ class PVDM_Trainer(object):
 		for epoch in range(self.epochs):
 			print("### Epoch: " + str(epoch))
 			criterion = nn.NLLLoss()
-			optimizer = optim.SGD(self.pvdm.parameters(), lr=self.initial_lr)
-			scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, len(self.dataloader))
+			optimizer = optim.Adagrad(self.pvdm.parameters(), lr=self.initial_lr, lr_decay=0.01)
 
 			running_loss = 0.0
 			for i, sample_batched in enumerate(tqdm(self.dataloader)):
@@ -66,7 +65,6 @@ class PVDM_Trainer(object):
 					loss = criterion(log_probs, torch.tensor(pos_target_subgraph, dtype=torch.long))
 
 					optimizer.step()
-					scheduler.step()
 
 					running_loss = running_loss * 0.9 + loss.item() * 0.1
 			print(" Loss: " + str(running_loss))

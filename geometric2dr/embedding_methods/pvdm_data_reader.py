@@ -182,7 +182,7 @@ class PVDMCorpus(Dataset):
 
 		while self.epoch_flag == False:
 			target_graph_ids = []
-			target_context_subgraph_ids = []
+			target_subgraph_ids = []
 			subgraph_contexts_ids = []
 
 			# Extract a random graph and read its contents
@@ -204,26 +204,45 @@ class PVDMCorpus(Dataset):
 				graph_name = self.graph_fname_list[self.graph_ids_for_batch_traversal[self.graph_index]]
 				graph_contents = open(graph_name).readlines()
 
-			# Given that we haven't gotten enough graphs for our batch
-			# We traverse the file at graph_name and graph the center as the (context subgraph)
-			# which is a bit counter-intuitive but we consider the centers as the "context" of the
-			# graph as a whole.
-			# while len(context_subgraph_ids) < batch_size:
-			# while len(context_subgraph_ids) < 1:
+
+			# Read substructure patterns per graph
 			line_id = self.subgraph_index
-			target_context = graph_contents[line_id].split()[0] # first item on the line is the center
-			subgraph_contexts = graph_contents[line_id].split()[1:1+self.window_size] # the contexts of the center we try to predict
+			target_subgraph = graph_contents[line_id].split()[0] # first item on the line is the center
+			context_subgraphs = graph_contents[line_id].split()[1:1+self.window_size] # the contexts of the center we try to predict
 
 			target_graph = graph_name
 
-			if target_context in self._subgraph_to_id_map:
-				target_context_subgraph_ids.append(self._subgraph_to_id_map[target_context]) # add the ids of the subgraph into the context
-				target_graph_ids.append(self._graph_name_to_id_map[target_graph]) # add the id of the graph for the target
-				temp_subgraph_contexts = []
-				for subgraph_context in subgraph_contexts:
-					if subgraph_context in self._subgraph_to_id_map:
-						temp_subgraph_contexts.append(self._subgraph_to_id_map[subgraph_context])
-				subgraph_contexts_ids.append(temp_subgraph_contexts)
+			# if target_subgraph in self._subgraph_to_id_map:
+			# 	target_subgraph_ids.append(self._subgraph_to_id_map[target_subgraph]) # add the ids of the subgraph into the context
+			# 	target_graph_ids.append(self._graph_name_to_id_map[target_graph]) # add the id of the graph for the target
+			# 	temp_subgraph_contexts = []
+			# 	for subgraph_context in context_subgraphs:
+			# 		if subgraph_context in self._subgraph_to_id_map:
+			# 			temp_subgraph_contexts.append(self._subgraph_to_id_map[subgraph_context])
+			# 	subgraph_contexts_ids.append(temp_subgraph_contexts)
+
+
+			# permuts = [target_subgraph] + context_subgraphs
+			# for tgt, ctx in list(itertools.permutations(permuts, 2)):
+			# 	if tgt in self._subgraph_to_id_map and ctx in self._subgraph_to_id_map:
+			# 		target_graph_ids.append(self._graph_name_to_id_map[target_graph])
+			# 		target_subgraph_ids.append(self._subgraph_to_id_map[tgt])
+			# 		context_subgraph_ids.append(self._subgraph_to_id_map[ctx])
+
+			subgraphs_on_line = [target_subgraph] + context_subgraphs
+			for i in range(len(subgraphs_on_line)):
+				subgraphs_on_line_copy = subgraphs_on_line.copy()
+				target_subgraph = subgraphs_on_line_copy.pop(i)
+				if target_subgraph in self._subgraph_to_id_map:
+					target_graph_ids.append(self._graph_name_to_id_map[target_graph])
+					target_subgraph_ids.append(self._subgraph_to_id_map[target_subgraph])
+					temp_subgraph_contexts = []
+					for subgraph_context in context_subgraphs:
+						if subgraph_context in self._subgraph_to_id_map:
+							temp_subgraph_contexts.append(self._subgraph_to_id_map[subgraph_context])
+					subgraph_contexts_ids.append(temp_subgraph_contexts)									
+
+
 
 			# move on to the next subgraph
 			self.subgraph_index += 1
@@ -243,12 +262,12 @@ class PVDMCorpus(Dataset):
 			
 			# Once we've built 'batch_size' number worth of targets and contexts
 			# we zip them, shuffle them, and unzip the pairs in shuffled order (keeping the pairing)
-			target_context_pairs = list(zip(target_graph_ids, target_context_subgraph_ids, subgraph_contexts_ids))
+			target_context_pairs = list(zip(target_graph_ids, target_subgraph_ids, subgraph_contexts_ids))
 			shuffle(target_context_pairs)
-			target_graph_ids, target_context_subgraph_ids, subgraph_contexts_ids= list(zip(*target_context_pairs))
+			target_graph_ids, target_subgraph_ids, subgraph_contexts_ids= list(zip(*target_context_pairs))
 
-			negatives_per_context = [self.getNegatives(x,10) for x in target_context_subgraph_ids]
-			graph_targetSubgraph_subgraphContexts_negatives = [(graphTarget, subgraphTarget, subgraphContext, negatives) for (graphTarget, subgraphTarget, subgraphContext, negatives) in zip(target_graph_ids, target_context_subgraph_ids, subgraph_contexts_ids, negatives_per_context)]
+			negatives_per_context = [self.getNegatives(x,10) for x in target_subgraph_ids]
+			graph_targetSubgraph_subgraphContexts_negatives = [(graphTarget, subgraphTarget, subgraphContext, negatives) for (graphTarget, subgraphTarget, subgraphContext, negatives) in zip(target_graph_ids, target_subgraph_ids, subgraph_contexts_ids, negatives_per_context)]
 			self.context_pair_dataset.append(graph_targetSubgraph_subgraphContexts_negatives)
 		self.epoch_flag = False
 
@@ -260,10 +279,10 @@ class PVDMCorpus(Dataset):
 
 	@staticmethod
 	def collate(batches):
-		all_targets = [target for batch in batches for target, _, _, _ in batch if len(batch)>0]
-		all_contexts = [context for batch in batches for _, context, _, _ in batch if len(batch)>0]
-		all_subgraph_contexts = [subgraphContext for batch in batches for _, _, subgraphContext, _ in batch if len(batch)>0]
-		all_neg_contexts = [neg_context for batch in batches for _, _, _, neg_context in batch if len(batch)>0]
+		all_targets = [tgraph for batch in batches for tgraph, _, _, _ in batch if len(batch)>0]
+		all_contexts = [tsubgraph for batch in batches for _, tsubgraph, _, _ in batch if len(batch)>0]
+		all_subgraph_contexts = [csubgraph for batch in batches for _, _, csubgraph, _ in batch if len(batch)>0]
+		all_neg_contexts = [neg_tsubgraph for batch in batches for _, _, _, neg_tsubgraph in batch if len(batch)>0]
 
 		return torch.LongTensor(all_targets), torch.LongTensor(all_contexts), torch.LongTensor(all_subgraph_contexts), torch.LongTensor(all_neg_contexts)
 

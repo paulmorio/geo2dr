@@ -39,7 +39,7 @@ class PVDM(nn.Module):
     def forward(self, pos_graph_emb, pos_context_target, pos_contexts, pos_negatives):
         # Be aware pos_contexts is typically several context embeddings
         emb_target_graph = self.target_embeddings(pos_graph_emb)
-        mean_contexts_subgraphs = torch.sum(self.context_embeddings(pos_contexts), dim=1)
+        mean_contexts_subgraphs = torch.mean(self.context_embeddings(pos_contexts), dim=1)
 
         stack_target_contexts = torch.cat((emb_target_graph, mean_contexts_subgraphs), dim=1)
         h = self.linear1(stack_target_contexts)
