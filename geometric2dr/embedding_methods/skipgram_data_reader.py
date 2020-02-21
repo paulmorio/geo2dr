@@ -227,7 +227,7 @@ class SkipgramCorpus(Dataset):
 
 		# Dark lord hack which needs to be refactored later but also respects 
 		# random uniform sampling of original
-		ri = randint(0, len(target_subgraph)-1)
+		ri = randint(0, len(target_subgraph_ids)-1)
 		target_subgraph_ids = [target_subgraph_ids[ri]]
 		context_subgraph_ids = [context_subgraph_ids[ri]]
 				
@@ -481,7 +481,7 @@ class InMemorySkipgramCorpus(Dataset):
 
 			# Dark lord hack which needs to be refactored later but also respects 
 			# random uniform sampling of original
-			ri = randint(0, len(target_subgraph)-1)
+			ri = randint(0, len(target_subgraph_ids)-1)
 			target_subgraph_ids = [target_subgraph_ids[ri]]
 			context_subgraph_ids = [context_subgraph_ids[ri]]
 
