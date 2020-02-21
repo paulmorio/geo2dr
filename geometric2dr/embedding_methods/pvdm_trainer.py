@@ -1,6 +1,7 @@
 """
 A class which faciliates training of the embedding methods by the set hyperparameters.
 """
+import numpy as np
 import torch
 import torch.optim as optim
 import torch.nn as nn
@@ -45,8 +46,8 @@ class PVDM_Trainer(object):
 	def train(self):
 		for epoch in range(self.epochs):
 			print("### Epoch: " + str(epoch))
-			criterion = nn.NLLLoss()
-			optimizer = optim.Adagrad(self.pvdm.parameters(), lr=self.initial_lr, lr_decay=0.01)
+			criterion = nn.CrossEntropyLoss()
+			optimizer = optim.Adagrad(self.pvdm.parameters(), lr=self.initial_lr, lr_decay=0.00001)
 
 			running_loss = 0.0
 			for i, sample_batched in enumerate(tqdm(self.dataloader)):
@@ -58,11 +59,14 @@ class PVDM_Trainer(object):
 					pos_negatives = sample_batched[3].to(self.device)
 
 					optimizer.zero_grad()
-					# loss = self.pvdm.forward(pos_target_graph, pos_target_subgraph, pos_contexts_for_subgraph_target, pos_negatives)
-					# loss.backward()
+					loss = self.pvdm.forward(pos_target_graph, pos_target_subgraph, pos_contexts_for_subgraph_target, pos_negatives)
+					loss.backward()
 
-					log_probs = self.pvdm(pos_target_graph, pos_target_subgraph, pos_contexts_for_subgraph_target, pos_negatives)
-					loss = criterion(log_probs, torch.tensor(pos_target_subgraph, dtype=torch.long))
+					# log_probs = self.pvdm(pos_target_graph, pos_target_subgraph, pos_contexts_for_subgraph_target, pos_negatives)
+					# print(log_probs)
+					# print("Most Likely Class %s " % ([np.argmax(x.detach().numpy()) for x in log_probs] ) ) 
+					# print("True Class %s " % (pos_target_subgraph.detach().numpy()))
+					# loss = criterion(log_probs, torch.tensor(pos_target_subgraph, dtype=torch.long))
 
 					optimizer.step()
 

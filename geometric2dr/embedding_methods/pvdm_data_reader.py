@@ -9,7 +9,7 @@ import numpy as np
 import torch
 from torch.utils.data import Dataset, DataLoader
 from collections import defaultdict, Counter
-from random import shuffle, randint
+from random import shuffle, randint, choice
 from tqdm import tqdm
 
 from .utils import get_files
@@ -208,8 +208,10 @@ class PVDMCorpus(Dataset):
 
 			# Read substructure patterns per graph
 			line_id = self.subgraph_index
-			target_subgraph = graph_contents[line_id].split()[0] # first item on the line is the center
-			context_subgraphs = graph_contents[line_id].split()[1:1+self.window_size] # the contexts of the center we try to predict
+			# target_subgraph = graph_contents[line_id].split()[0] # first item on the line is the center
+			# context_subgraphs = graph_contents[line_id].split()[1:self.window_size] # the contexts of the center we try to predict
+			subgraphs_on_line = graph_contents[line_id].split(" ")[:self.window_size+1]
+
 
 			target_graph = graph_name
 
@@ -230,7 +232,7 @@ class PVDMCorpus(Dataset):
 			# 		target_subgraph_ids.append(self._subgraph_to_id_map[tgt])
 			# 		context_subgraph_ids.append(self._subgraph_to_id_map[ctx])
 
-			subgraphs_on_line = [target_subgraph] + context_subgraphs
+			# subgraphs_on_line = [target_subgraph] + context_subgraphs
 			for i in range(len(subgraphs_on_line)):
 				subgraphs_on_line_copy = subgraphs_on_line.copy()
 				target_subgraph = subgraphs_on_line_copy.pop(i)
@@ -238,7 +240,11 @@ class PVDMCorpus(Dataset):
 					target_graph_ids.append(self._graph_name_to_id_map[target_graph])
 					target_subgraph_ids.append(self._subgraph_to_id_map[target_subgraph])
 					temp_subgraph_contexts = []
-					for subgraph_context in context_subgraphs:
+					for subgraph_context in subgraphs_on_line_copy:
+						if subgraph_context in self._subgraph_to_id_map:
+							temp_subgraph_contexts.append(self._subgraph_to_id_map[subgraph_context])
+					while len(temp_subgraph_contexts) < self.window_size:
+						subgraph_context = choice(subgraphs_on_line_copy)
 						if subgraph_context in self._subgraph_to_id_map:
 							temp_subgraph_contexts.append(self._subgraph_to_id_map[subgraph_context])
 					subgraph_contexts_ids.append(temp_subgraph_contexts)
@@ -249,6 +255,8 @@ class PVDMCorpus(Dataset):
 			target_graph_ids = [target_graph_ids[ri]]
 			target_subgraph_ids = [target_subgraph_ids[ri]]
 			subgraph_contexts_ids = [subgraph_contexts_ids[ri]]
+
+
 
 			# move on to the next subgraph
 			self.subgraph_index += 1
@@ -289,6 +297,12 @@ class PVDMCorpus(Dataset):
 		all_contexts = [tsubgraph for batch in batches for _, tsubgraph, _, _ in batch if len(batch)>0]
 		all_subgraph_contexts = [csubgraph for batch in batches for _, _, csubgraph, _ in batch if len(batch)>0]
 		all_neg_contexts = [neg_tsubgraph for batch in batches for _, _, _, neg_tsubgraph in batch if len(batch)>0]
+
+		# print("targets len %s" % (len(all_targets)))
+		# print("all_contexts len %s" % (len(all_contexts)))
+		# print("all_subgraph_contexts len %s" % (len(all_subgraph_contexts)))
+		# print("all_subgraph_contexts sub_len %s" % ([len(x) for x in all_subgraph_contexts]))
+		# print("all_neg_contexts len %s" % (len(all_neg_contexts)))
 
 		return torch.LongTensor(all_targets), torch.LongTensor(all_contexts), torch.LongTensor(all_subgraph_contexts), torch.LongTensor(all_neg_contexts)
 
