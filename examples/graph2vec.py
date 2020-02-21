@@ -5,7 +5,7 @@ using Geo2DR (geometric2dr)
 Author: Paul Scherer 2020
 """
 
-from geometric2dr.decomposition.weisfeiler_lehman_patterns import wlk_relabeled_corpus
+from geometric2dr.decomposition.weisfeiler_lehman_patterns import wl_corpus
 from geometric2dr.embedding_methods.pvdbow_trainer import InMemoryTrainer
 from geometric2dr.embedding_methods.classify import cross_val_accuracy
 import geometric2dr.embedding_methods.utils as utils
