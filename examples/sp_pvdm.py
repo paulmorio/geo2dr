@@ -1,5 +1,6 @@
 """
-An example reimplementation of AWE-DD (Burnaev and Ivanov) 
+An example implementation of AWE-DD  (Burnaev and Ivanov) 
+using shortest paths instead of anonymous walks 
 using Geo2DR (geometric2dr)
 
 Author: Paul Scherer 2020
@@ -7,40 +8,35 @@ Author: Paul Scherer 2020
 import os
 
 import geometric2dr.embedding_methods.utils as utils
-from geometric2dr.decomposition.anonymous_walk_patterns import awe_corpus
+from geometric2dr.decomposition.shortest_path_patterns import sp_corpus
 from geometric2dr.embedding_methods.classify import cross_val_accuracy
 from geometric2dr.embedding_methods.pvdm_trainer import PVDM_Trainer # Note use of PVDM
 
-aw_length = 10
-label_setting = "nodes" # AWE is quite nice and versatile allowing for different node-label/edge-label settings
 
 # Input data paths
 dataset = "MUTAG"
 corpus_data_dir = "data/" + dataset
 
 # Desired output paths
-output_embedding_fh = "AWE_Embeddings.json"
+output_embedding_fh = "WL_PVDM_Embeddings.json"
 
 #######
 # Step 1 Create corpus data for neural language model
 # We keep permanent files for sake of deeper post studies and testing
 #######
 graph_files = utils.get_files(corpus_data_dir, ".gexf", max_files=0)
-# awe_corpus(corpus_data_dir, aw_length, label_setting, saving_graph_docs=True)
-# extension = ".awe_" + str(aw_length) + "_" + label_setting
+corpus, vocabulary, prob_map, num_graphs, graph_map = sp_corpus(corpus_data_dir) # will produce .spp files
+extension = ".spp"
 
 cumacc = []
 for _ in range(10):
-	awe_corpus(corpus_data_dir, aw_length, label_setting, saving_graph_docs=True)
-	extension = ".awe_" + str(aw_length) + "_" + label_setting
-
 	######
 	# Step 2 Train a neural language model to learn distributed representations
 	# 		 of the graphs directly or of its substructures. Here we learn it directly
 	#		 for an example of the latter check out the DGK models.
 	######
-	trainer = PVDM_Trainer(corpus_dir=corpus_data_dir, extension=extension, max_files=0, window_size=16, output_fh=output_embedding_fh,
-	                  emb_dimension=32, batch_size=100, epochs=25, initial_lr=0.001, min_count=1)
+	trainer = PVDM_Trainer(corpus_dir=corpus_data_dir, extension=extension, max_files=0, window_size=10, output_fh=output_embedding_fh,
+	                  emb_dimension=32, batch_size=100, epochs=15, initial_lr=0.001, min_count=1)
 	trainer.train()
 
 	#######
@@ -56,4 +52,4 @@ for _ in range(10):
 	cumacc.append(mean_acc)
 
 import numpy as np
-print("Overall AWE-DD + SVM Mean accuracy using 10 cross fold accuracy: %s with std %s" % (np.mean(cumacc), np.std(cumacc)))
+print("Overall SP-PVDM + SVM Mean accuracy using 10 cross fold accuracy: %s with std %s" % (np.mean(cumacc), np.std(cumacc)))
