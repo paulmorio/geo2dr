@@ -18,7 +18,7 @@ from random import randint
 import numpy as np
 import logging
 
-from embedding_methods.utils import get_files, get_class_labels
+from .utils import get_files, get_class_labels
 
 def linear_svm_classify(X_train, X_test, Y_train, Y_test):
 	"""

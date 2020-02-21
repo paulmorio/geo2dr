@@ -9,9 +9,9 @@ from torch.utils.data import DataLoader
 from tqdm import tqdm
 
 # Internal 
-from embedding_methods.pvdbow_data_reader import PVDBOWCorpus, PVDBOWInMemoryCorpus
-from embedding_methods.skipgram import Skipgram
-from embedding_methods.utils import save_graph_embeddings
+from .pvdbow_data_reader import PVDBOWCorpus, PVDBOWInMemoryCorpus
+from .skipgram import Skipgram
+from .utils import save_graph_embeddings
 
 # # For testing
 # from embedding_methods.classify import perform_classification, cross_val_accuracy
