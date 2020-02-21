@@ -11,11 +11,11 @@ import torch
 import itertools
 from torch.utils.data import Dataset, DataLoader
 from collections import defaultdict, Counter
-from random import shuffle
+from random import shuffle, randint
 from tqdm import tqdm
 
 # from embedding_methods.utils import get_files
-from embedding_methods.utils import get_files
+from .utils import get_files
 np.random.seed(27)
 
 #######################################################################################################
@@ -225,8 +225,11 @@ class SkipgramCorpus(Dataset):
 				target_subgraph_ids.append(self._subgraph_to_id_map[tgt])
 				context_subgraph_ids.append(self._subgraph_to_id_map[ctx])
 
-
-
+		# Dark lord hack which needs to be refactored later but also respects 
+		# random uniform sampling of original
+		ri = randint(0, len(target_subgraph)-1)
+		target_subgraph_ids = [target_subgraph_ids[ri]]
+		context_subgraph_ids = [context_subgraph_ids[ri]]
 				
 		# move on to the next subgraph
 		self.subgraph_index += 1
@@ -475,6 +478,12 @@ class InMemorySkipgramCorpus(Dataset):
 					target_subgraph_ids.append(self._subgraph_to_id_map[tgt])
 					context_subgraph_ids.append(self._subgraph_to_id_map[ctx])
 
+
+			# Dark lord hack which needs to be refactored later but also respects 
+			# random uniform sampling of original
+			ri = randint(0, len(target_subgraph)-1)
+			target_subgraph_ids = [target_subgraph_ids[ri]]
+			context_subgraph_ids = [context_subgraph_ids[ri]]
 
 			# move on to the next subgraph
 			self.subgraph_index += 1

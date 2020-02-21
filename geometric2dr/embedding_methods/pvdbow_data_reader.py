@@ -12,7 +12,7 @@ from collections import defaultdict, Counter
 from random import shuffle
 from tqdm import tqdm
 
-from embedding_methods.utils import get_files
+from .utils import get_files
 
 np.random.seed(27)
 

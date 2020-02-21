@@ -9,9 +9,10 @@ import numpy as np
 import torch
 from torch.utils.data import Dataset, DataLoader
 from collections import defaultdict, Counter
-from random import shuffle
+from random import shuffle, randint
+from tqdm import tqdm
 
-from embedding_methods.utils import get_files
+from .utils import get_files
 
 # np.random.seed(27)
 
@@ -180,7 +181,7 @@ class PVDMCorpus(Dataset):
 		print("#... Generating dataset in memory for quick dataloader access")
 		self.context_pair_dataset = []
 
-		while self.epoch_flag == False:
+		for _ in tqdm(range(self._subgraphcount)):
 			target_graph_ids = []
 			target_subgraph_ids = []
 			subgraph_contexts_ids = []
@@ -240,9 +241,14 @@ class PVDMCorpus(Dataset):
 					for subgraph_context in context_subgraphs:
 						if subgraph_context in self._subgraph_to_id_map:
 							temp_subgraph_contexts.append(self._subgraph_to_id_map[subgraph_context])
-					subgraph_contexts_ids.append(temp_subgraph_contexts)									
+					subgraph_contexts_ids.append(temp_subgraph_contexts)
 
-
+			# Dark lord hack which needs to be refactored later but also respects 
+			# random uniform sampling of original
+			ri = randint(0, len(target_graph_ids)-1)
+			target_graph_ids = [target_graph_ids[ri]]
+			target_subgraph_ids = [target_subgraph_ids[ri]]
+			subgraph_contexts_ids = [subgraph_contexts_ids[ri]]
 
 			# move on to the next subgraph
 			self.subgraph_index += 1
