@@ -3,6 +3,8 @@ DataReader Module for PVDM models
 
 This module describes the classes which handles graph corpi and datasets
 which can be loaded into PyTorch dataloaders.
+
+Author: Paul Scherer
 """
 
 import numpy as np
@@ -14,7 +16,7 @@ from tqdm import tqdm
 
 from .utils import get_files
 
-# np.random.seed(27)
+np.random.seed(27)
 
 #######################################################################################################
 #######################################################################################################
@@ -210,7 +212,7 @@ class PVDMCorpus(Dataset):
 			line_id = self.subgraph_index
 			# target_subgraph = graph_contents[line_id].split()[0] # first item on the line is the center
 			# context_subgraphs = graph_contents[line_id].split()[1:self.window_size] # the contexts of the center we try to predict
-			subgraphs_on_line = graph_contents[line_id].split(" ")[:self.window_size+1]
+			subgraphs_on_line = graph_contents[line_id].split()[:self.window_size+1]
 
 
 			target_graph = graph_name
