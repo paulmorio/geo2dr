@@ -71,7 +71,7 @@ class DortmundGexf(object):
 		self.output_dir_for_graph_files = output_dir_for_graph_files
 		self.folder_for_graph_files = output_dir_for_graph_files + dataset
 
-	def format_dataset(self):
+	def format_dataset(self):  
 		if os.path.isdir(self.folder_for_graph_files):
 			print("#... The dataset %s already exists, closing program ...#" % (self.folder_for_graph_files))
 		else:
@@ -83,9 +83,12 @@ class DortmundGexf(object):
 			nodes = open(self.graph_indicator_fname).readlines()
 			nodes = [int(x.strip()) for x in nodes]
 
+			nodes_to_graph = {}
+
 			node_id = 1
 			for gindex in nodes:
 				graph_nodes[gindex].append(node_id)
+				nodes_to_graph[node_id] = gindex
 				node_id += 1
 			del(nodes)
 
@@ -97,15 +100,27 @@ class DortmundGexf(object):
 			edges = [(int(x.strip()), int(y.strip())) for x,y in edges] # nice little list of tuples
 
 			todoedges = len(edges)
+			# for x,y in tqdm(edges):
+			# 	## TAKES A LOT OF TIME, TODO: parallel or smarter algo (it gets worse over time)
+			# 	for gindex in graph_nodes.keys():
+			# 		if (x in graph_nodes[gindex] and y in graph_nodes[gindex]):
+			# 			graph_edges[gindex].append((x,y))
+			# 			break # no need to continue going through graphs checking for this edge
+			# 		else:
+			# 			continue
+
+			# new version
+			new_graph_edges = defaultdict(list)
 			for x,y in tqdm(edges):
-				## TAKES A LOT OF TIME, TODO: parallel or smarter algo (it gets worse over time)
-				for gindex in graph_nodes.keys():
-					if (x in graph_nodes[gindex] and y in graph_nodes[gindex]):
-						graph_edges[gindex].append((x,y))
-						break # no need to continue going through graphs checking for this edge
-					else:
-						continue
+				x_gindex = nodes_to_graph[x]
+				y_gindex = nodes_to_graph[y]
+				if x_gindex == y_gindex:
+					new_graph_edges[x_gindex].append((x,y))
 			del(edges)
+
+			# self.graph_edges = graph_edges
+			# self.new_graph_edges = new_graph_edges
+			# Check tested.
 
 			print("#... Generating NX Graph dictionary ...#")
 			# The more you know, the defaultdict is a factory pattern
@@ -116,8 +131,6 @@ class DortmundGexf(object):
 					G.add_edge(u,v)
 				graph_nx[gindex] = G
 			del(graph_edges)
-
-
 
 			print("#... Relabeling nodes as necessary via attribute file ...#")
 			# Our system finds unique substructures across the dataset using the node labels
