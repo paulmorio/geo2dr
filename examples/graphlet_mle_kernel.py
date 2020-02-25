@@ -9,7 +9,7 @@ import numpy as np
 import geometric2dr.embedding_methods.utils as utils
 from geometric2dr.decomposition.graphlet_patterns import graphlet_corpus
 from geometric2dr.embedding_methods.skipgram_trainer import Trainer
-from geometric2dr.embedding_methods.classify import cross_val_accuracy_precomputed_kernel_matrix
+from geometric2dr.embedding_methods.classify import cross_val_accuracy_rbf_bag_of_words
 
 # Input data paths
 dataset = "MUTAG"
@@ -46,5 +46,5 @@ xylabels = utils.get_class_labels_tuples(graph_files,class_labels_fname)
 xylabels.sort(key=lambda tup: tup[0])
 kernel_row_x_id, kernel_row_y_id = zip(*xylabels)
 
-acc, std = cross_val_accuracy_precomputed_kernel_matrix(K, kernel_row_y_id)
+acc, std = cross_val_accuracy_rbf_bag_of_words(P, kernel_row_y_id)
 print ('#... Accuracy score: %0.3f, Standard deviation: %0.3f' % (acc, std))

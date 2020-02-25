@@ -1,5 +1,5 @@
 """
-An example of Anonymous Walk MLE Kernel
+An example reimplementation of DGK-WL (Yanardag and Vishwanathan 2015) 
 using Geo2DR (geometric2dr)
 
 Author: Paul Scherer 2020
@@ -7,20 +7,23 @@ Author: Paul Scherer 2020
 import numpy as np
 
 import geometric2dr.embedding_methods.utils as utils
-from geometric2dr.decomposition.anonymous_walk_patterns import awe_corpus
-from geometric2dr.embedding_methods.skipgram_trainer import Trainer
+from geometric2dr.decomposition.weisfeiler_lehman_patterns import wl_corpus
+from geometric2dr.embedding_methods.skipgram_trainer import InMemoryTrainer
 from geometric2dr.embedding_methods.classify import cross_val_accuracy_rbf_bag_of_words
 
 # Input data paths
 dataset = "MUTAG"
 corpus_data_dir = "data/" + dataset
 
+# WL decomposition hyperparameters
+wl_depth = 2
+
 ############
 # Step 1
-# Run the decomposition algorithm to get anonymous walk patterns across the graphs of MUTAG
+# Run the decomposition algorithm to get subgraph patterns across the graphs of MUTAG
 ############
-graph_files = sorted(utils.get_files(corpus_data_dir, ".gexf", max_files=0))
-corpus, vocabulary, prob_map, num_graphs, graph_map = awe_corpus(corpus_data_dir, awe_length=10, label_setting='nodes', neighborhood_size=10)
+graph_files = utils.get_files(corpus_data_dir, ".gexf", max_files=0)
+corpus, vocabulary, prob_map, num_graphs, graph_map = wl_corpus(graph_files, wl_depth)
 
 ############
 # Step 2
