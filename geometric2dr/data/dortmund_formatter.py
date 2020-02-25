@@ -94,7 +94,6 @@ class DortmundGexf(object):
 
 			# Now get the edges for each graph making sure the edge nodes are actually in the graph as well
 			print("#... Generating graph edges dictionary ...#") # Choke point of algorithm (but we realistically only do it once.)
-			graph_edges = defaultdict(list)
 			edges = open(self.graph_A_fname).readlines()
 			edges = [x.split(",") for x in edges]
 			edges = [(int(x.strip()), int(y.strip())) for x,y in edges] # nice little list of tuples
@@ -110,17 +109,13 @@ class DortmundGexf(object):
 			# 			continue
 
 			# new version
-			new_graph_edges = defaultdict(list)
+			graph_edges = defaultdict(list)
 			for x,y in tqdm(edges):
 				x_gindex = nodes_to_graph[x]
 				y_gindex = nodes_to_graph[y]
 				if x_gindex == y_gindex:
-					new_graph_edges[x_gindex].append((x,y))
+					graph_edges[x_gindex].append((x,y))
 			del(edges)
-
-			# self.graph_edges = graph_edges
-			# self.new_graph_edges = new_graph_edges
-			# Check tested.
 
 			print("#... Generating NX Graph dictionary ...#")
 			# The more you know, the defaultdict is a factory pattern
