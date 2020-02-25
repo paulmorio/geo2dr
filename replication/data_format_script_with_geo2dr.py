@@ -6,7 +6,7 @@ to format compatible with geo2dr
 from geometric2dr.data import DortmundGexf
 
 # Inputs
-dataset = "REDDIT-BINARY"
+dataset = "Mutagenicity"
 directory_with_dataset = "data/dortmund_data/"
 relative_output_directory = "data/"
 
