@@ -68,7 +68,7 @@ class DortmundGexf(object):
 		self.graph_indicator_fname = path_to_dataset + dataset + "/" + dataset + "_graph_indicator.txt"
 		self.graph_labels_fname = path_to_dataset + dataset + "/" + dataset + "_graph_labels.txt"
 		self.node_labels_fname = path_to_dataset + dataset + "/" + dataset + "_node_labels.txt"
-
+		self.output_dir_for_graph_files = output_dir_for_graph_files
 		self.folder_for_graph_files = output_dir_for_graph_files + dataset
 
 	def format_dataset(self):
@@ -187,7 +187,7 @@ class DortmundGexf(object):
 
 				# Write the labels
 				print("Writing classification labels file for graphs in dataset")
-				name_of_labels_file = self.dataset + ".Labels"
+				name_of_labels_file = self.output_dir_for_graph_files + self.dataset + ".Labels"
 				with open(name_of_labels_file, "w") as fh:
 					for gindex in sorted(graph_classes.keys()):
 						graph_fname = str(gindex) + ".gexf"
