@@ -79,9 +79,9 @@ def rbf_svm_classify(X_train, X_test, Y_train, Y_test):
 def perform_classification(corpus_dir, extension, embedding_fname, class_labels_fname):
 	"""
 	Perform classification from 
-	:param corpus_dir: folder containing subgraph2vec sentence files
-	:param extension: extension of the subgraph2vec sentence files
-	:param embedding_fname: file containing subgraph vectors in word2vec format
+	:param corpus_dir: folder containing graphdoc files
+	:param extension: extension of the graphdoc files
+	:param embedding_fname: file containing embeddings
 	:param class_labels_fname: files containing labels of each graph
 	:return:None
 	"""
@@ -108,9 +108,9 @@ def cross_val_accuracy(corpus_dir, extension, embedding_fname, class_labels_fnam
 	Performs 10 (default) fold cross validation, returns the mean accuracy and associated 
 	standard deviation
 
-	:param corpus_dir: folder containing subgraph2vec sentence files
-	:param extension: extension of the subgraph2vec sentence files
-	:param embedding_fname: file containing subgraph vectors in word2vec format
+	:param corpus_dir: folder containing graphdoc files
+	:param extension: extension of the graphdoc files
+	:param embedding_fname: file containing embeddings
 	:param class_labels_fname: files containing labels of each graph
 	:param cv: integer stating number of folds and therefore experiments to carry out
 	"""
