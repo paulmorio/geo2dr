@@ -170,9 +170,9 @@ def cross_val_accuracy_rbf_bag_of_words(P, y_ids, cv=10):
 	"""
 	acc_results = []
 	Y = np.array(y_ids)
-
+	seeds = range(cv)
 	for i in range(cv):
-		seed = randint(0,1000)
+		seed = seeds[i]
 		X_train, X_test, Y_train, Y_test = train_test_split(P, Y, test_size = 0.1, random_state = seed)
 		scores = rbf_svm_classify(X_train, X_test, Y_train, Y_test)
 		acc_results.append(scores[0])
