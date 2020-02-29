@@ -17,7 +17,7 @@ replication/data/
 replication/Graph2Vec_Embeddings/
 replication/graph2vec_MUTAG_results.csv
 replication/graph2vec_MUTAGfullCV_results.csv
-
+replication/*.graph
 # In Package Data
 geometric2dr/file_handling/dortmund_data
 geometric2dr/file_handling/dortmund_gexf
