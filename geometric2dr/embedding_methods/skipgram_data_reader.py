@@ -439,11 +439,6 @@ class InMemorySkipgramCorpus(Dataset):
 			graph_name = self.graph_fname_list[self.graph_ids_for_batch_traversal[self.graph_index]] # pull out a random graph (its filename here)
 			graph_contents = open(graph_name).readlines()
 			
-			# tldr: random graph traverser 
-			# If we've looked at all the subgraphs we go to the next graph
-			# We set the epoch flag true if we've also gone through n graphs (in a n graph dataset)
-			# we then grab the next graph file whether that be the next graph in the shuffled list
-			# or the first graph in a reshuffled list of graph files
 			while self.subgraph_index >= len(graph_contents):
 				self.subgraph_index = 0
 				self.graph_index += 1
@@ -454,23 +449,11 @@ class InMemorySkipgramCorpus(Dataset):
 				graph_name = self.graph_fname_list[self.graph_ids_for_batch_traversal[self.graph_index]]
 				graph_contents = open(graph_name).readlines()
 
-			# Given that we haven't gotten enough graphs for our batch
-			# We traverse the file at graph_name and graph the center as the (context subgraph)
-			# which is a bit counter-intuitive but we consider the centers as the "context" of the
-			# graph as a whole.
 			line_id = self.subgraph_index
 			target_subgraph = graph_contents[line_id].split()[0] # first item on the line
 			subgraph_contexts = graph_contents[line_id].split()[1:1+self.window_size]
 
 			target_graph = graph_name
-
-			# TODO MAKE THIS PART AN OPTION (BASED ON GRAPHLET ETC.)
-
-			# if target_subgraph in self._subgraph_to_id_map:
-			# 	for subgraph_context in subgraph_contexts:
-			# 		if subgraph_context in self._subgraph_to_id_map:
-			# 			target_subgraph_ids.append(self._subgraph_to_id_map[target_subgraph])
-			# 			context_subgraph_ids.append(self._subgraph_to_id_map[subgraph_context])
 
 			permuts = [target_subgraph] + subgraph_contexts
 			for tgt, ctx in list(itertools.permutations(permuts, 2)):
@@ -509,7 +492,30 @@ class InMemorySkipgramCorpus(Dataset):
 			negatives_per_context = [self.getNegatives(x,10) for x in target_subgraph_ids]
 			target_context_negatives = [(target, context, negatives) for (target, context, negatives) in zip(target_subgraph_ids, context_subgraph_ids, negatives_per_context)]
 			self.context_pair_dataset.append(target_context_negatives)
+			
+			# TODO Figure out how to skip the collate function
 		self.epoch_flag = False
+
+		print("Doing some magic")
+		self.context_pair_batches = []
+		temp_batch_target = []
+		temp_batch_context = []
+		temp_batch_neg = []
+		for inner in self.context_pair_dataset:
+			x,y,z = inner.pop()
+			# print(x)
+			if len(temp_batch_target) == 128 and len(temp_batch_context) == 128 and len(temp_batch_neg) == 128:
+				self.context_pair_batches.append((torch.LongTensor(temp_batch_target), torch.LongTensor(temp_batch_context), torch.LongTensor(temp_batch_neg)))
+				temp_batch_target = []
+				temp_batch_context = []
+				temp_batch_neg = []
+			temp_batch_target.append(x)
+			temp_batch_context.append(y)
+			temp_batch_neg.append(z)
+		if temp_batch_target:
+			self.context_pair_batches.append((torch.LongTensor(temp_batch_target), torch.LongTensor(temp_batch_context), torch.LongTensor(temp_batch_neg)))
+		# print(self.context_pair_batches[0])
+
 
 	def __len__(self):
 		return len(self.context_pair_dataset)-1
