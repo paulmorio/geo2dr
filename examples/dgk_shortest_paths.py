@@ -9,7 +9,7 @@ import numpy as np
 import geometric2dr.embedding_methods.utils as utils
 from geometric2dr.decomposition.shortest_path_patterns import sp_corpus
 from geometric2dr.embedding_methods.skipgram_trainer import InMemoryTrainer
-from geometric2dr.embedding_methods.classify import cross_val_accuracy_precomputed_kernel_matrix
+from geometric2dr.embedding_methods.classify import cross_val_accuracy_rbf_bag_of_words
 
 # Input data paths
 dataset = "MUTAG"
@@ -51,16 +51,17 @@ M = np.zeros((len(vocabulary), len(vocabulary)))
 for i in range(len(vocabulary)):
 	for j in range(len(vocabulary)):
 		M[i][j] = np.dot(final_subgraph_embeddings[trainer.corpus._subgraph_to_id_map[str(vocabulary[i])]], final_subgraph_embeddings[trainer.corpus._subgraph_to_id_map[str(vocabulary[j])]])
-K = (P.dot(M)).dot(P.T)
+K = (P.dot(M)).dot(P.T) # Full Gram Matrix which can be used with SVM as well
+S = (P.dot(M))
 
 ###########
 # Step 4
-# Use some kernel method, such as an SVM to compute classifications on the graph kernel matrix
+# Use some kernel method, such as an SVM to compute classifications
 ###########
 class_labels_fname = "data/"+ dataset + ".Labels"
 xylabels = utils.get_class_labels_tuples(graph_files,class_labels_fname)
 xylabels.sort(key=lambda tup: tup[0])
 kernel_row_x_id, kernel_row_y_id = zip(*xylabels)
 
-acc, std = cross_val_accuracy_precomputed_kernel_matrix(K, kernel_row_y_id)
-print ('#... Accuracy score: %0.3f, Standard deviation: %0.3f' % (acc, std))
+acc, std = cross_val_accuracy_rbf_bag_of_words(S, kernel_row_y_id)
+print ('#... Accuracy score: %0.4f, Standard deviation: %0.4f' % (acc, std))

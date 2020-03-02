@@ -1,6 +1,6 @@
 """
 An example reimplementation of DGK-Graphlets (Yanardag and Vishwanathan 2015) 
-using Geo2DR (geometric2dr)
+using Geo2DR (geometric2dr) and Gensim to show compatibility
 
 Author: Paul Scherer 2020
 """
@@ -9,7 +9,9 @@ import numpy as np
 import geometric2dr.embedding_methods.utils as utils
 from geometric2dr.decomposition.graphlet_patterns import graphlet_corpus
 from geometric2dr.embedding_methods.skipgram_trainer import Trainer, InMemoryTrainer
-from geometric2dr.embedding_methods.classify import cross_val_accuracy_precomputed_kernel_matrix
+from geometric2dr.embedding_methods.classify import cross_val_accuracy_rbf_bag_of_words
+
+from gensim.models import Word2Vec
 
 # Input data paths
 dataset = "MUTAG"
@@ -19,8 +21,9 @@ corpus_data_dir = "data/" + dataset
 output_embedding_fh = "Graphlet_Subgraph_Embeddings.json"
 
 # Graphlet decomposition hyperparameters
-num_graphlet = 7 # size of the graphlets to extract
+num_graphlet = 8 # size of the graphlets to extract
 sample_size = 50 # number of graphlets samples to extract
+
 
 ############
 # Step 1
@@ -30,42 +33,39 @@ graph_files = utils.get_files(corpus_data_dir, ".gexf", max_files=0)
 corpus, vocabulary, prob_map, num_graphs, graph_map = graphlet_corpus(corpus_data_dir, num_graphlet, sample_size)
 extension = ".graphlet_ng_"+str(num_graphlet)+"_ss_"+str(sample_size)
 
+corpus = [[str(x) for x in group] for group in corpus] # as gensim doesn't like integers
+
 ############
 # Step 2
 # Train a skipgram (w. Negative Sampling) model to learn distributed representations of the subgraph patterns
 ############
-trainer = InMemoryTrainer(corpus_dir=corpus_data_dir, extension=extension, max_files=0, window_size=10, output_fh=output_embedding_fh,
-				  emb_dimension=50, batch_size=128, epochs=10, initial_lr=0.1,
-				  min_count=1)
-trainer.train()
-final_subgraph_embeddings = trainer.skipgram.give_target_embeddings()
+model = Word2Vec(corpus, size=32, window=10, min_count=0, sg=1, hs=0, iter=5, negative=10, batch_words=128)
 
 ############
 # Step 3
 # Create a kernel matrix of the graphs using the embeddings of the substructures
 ############
-K = np.zeros((num_graphs, num_graphs))
-vocabulary = list(sorted(trainer.corpus._subgraph_to_id_map.keys())) # Use the vocabulary used in training embeddings
-vocab_size = trainer.vocab_size
-P = np.zeros((num_graphs, trainer.vocab_size))
+def l2_norm(vec):
+	return  np.sqrt(np.dot(vec, vec))
+
+# deep substructure embeddings w/l2 norm
+P = np.zeros((num_graphs, len(vocabulary)))
 for i in range(num_graphs):
 	for jdx, j in enumerate(vocabulary):
 		P[i][jdx] = prob_map[i+1].get(j,0)
 M = np.zeros((len(vocabulary), len(vocabulary)))
-for i in range(len(vocabulary)):
-	for j in range(len(vocabulary)):
-		M[i][j] = np.dot(final_subgraph_embeddings[trainer.corpus._subgraph_to_id_map[str(vocabulary[i])]], final_subgraph_embeddings[trainer.corpus._subgraph_to_id_map[str(vocabulary[j])]])
-K = (P.dot(M)).dot(P.T)
-
+for idx,i in enumerate(vocabulary):
+	M[idx][idx] = l2_norm(model[str(i)])
+S = (P.dot(M))
 
 ###########
 # Step 4
 # Use some kernel method, such as an SVM to compute classifications on the graph kernel matrix
 ###########
 class_labels_fname = "data/"+ dataset + ".Labels"
-xylabels = utils.get_class_labels_tuples(graph_files, class_labels_fname)
+xylabels = utils.get_class_labels_tuples(graph_files,class_labels_fname)
 xylabels.sort(key=lambda tup: tup[0])
 kernel_row_x_id, kernel_row_y_id = zip(*xylabels)
 
-acc, std = cross_val_accuracy_precomputed_kernel_matrix(K, kernel_row_y_id)
-print ('#... Accuracy score: %0.3f, Standard deviation: %0.3f' % (acc, std))
+acc, std = cross_val_accuracy_rbf_bag_of_words(S, kernel_row_y_id)
+print ('#... Accuracy score: %0.4f, Standard deviation: %0.4f' % (acc, std))
