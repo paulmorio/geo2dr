@@ -19,7 +19,7 @@ from .utils import save_subgraph_embeddings
 class Trainer(object):
 	def __init__(self, corpus_dir, extension, max_files, window_size, output_fh, emb_dimension=128, batch_size=32, epochs=100, initial_lr=1e-3, min_count=1):
 		self.corpus = CbowCorpus(corpus_dir, extension, max_files, min_count, window_size)
-		self.dataloader = DataLoader(self.corpus, batch_size, shuffle=False, num_workers=0, collate_fn = self.corpus.collate)
+		self.dataloader = DataLoader(self.corpus, batch_size, shuffle=False, num_workers=4, collate_fn = self.corpus.collate)
 
 		self.corpus_dir = corpus_dir
 		self.extension = extension
