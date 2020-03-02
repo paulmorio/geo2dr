@@ -7,7 +7,7 @@ from geometric2dr.embedding_methods.skipgram_trainer import InMemoryTrainer
 from geometric2dr.embedding_methods.classify import cross_val_accuracy_rbf_bag_of_words
 
 # Input data paths
-dataset = "MUTAG"
+dataset = "ENZYMES"
 corpus_data_dir = "data/" + dataset
 
 # Output Embeddings folder
@@ -22,6 +22,8 @@ num_epochs = [5, 100]
 initial_lrs = [0.1, 0.01]
 cvs = 3
 
+mean_accs = []
+
 for emb_dimension in emb_dimensions:
 	for batch_size in batch_sizes:
 		for epochs in num_epochs:
@@ -34,7 +36,7 @@ for emb_dimension in emb_dimensions:
 					output_perf_fh = output_folder + "/" + output_fh_signature
 					if os.path.exists(output_perf_fh):
 						print("%s exists no need to learn embeddings" % (output_perf_fh))
-						# continue # no need to learn
+						continue # no need to learn
 					else:
 						print("Learning embeddings for %s " % (output_perf_fh))
 
@@ -77,10 +79,10 @@ for emb_dimension in emb_dimensions:
 					temp_accs.append(acc)
 
 				if not np.isnan(np.mean(temp_accs)):
-					means_accs.append(np.mean(temp_accs))
+					mean_accs.append(np.mean(temp_accs))
 
-avg_max = np.max(means_accs)
-print("The best average of average scores was: %s" % (np.max(means_accs)))
+avg_max = np.max(mean_accs)
+print("The best average of average scores was: %s" % (np.max(mean_accs)))
 
 with open("best_sp", "w") as fh:
 	print("%s" % (avg_max), file=fh)
