@@ -19,7 +19,7 @@ from .utils import save_graph_embeddings
 class Trainer(object):
 	def __init__(self, corpus_dir, extension, max_files, output_fh, emb_dimension=128, batch_size=32, epochs=100, initial_lr=1e-3, min_count=1):
 		self.corpus = PVDBOWCorpus(corpus_dir, extension, max_files, min_count)
-		self.dataloader = DataLoader(self.corpus, batch_size, shuffle=False, num_workers=0, collate_fn = self.corpus.collate)
+		self.dataloader = DataLoader(self.corpus, batch_size, shuffle=False, num_workers=4, collate_fn = self.corpus.collate)
 		
 		self.corpus_dir = corpus_dir
 		self.extension = extension
@@ -49,7 +49,7 @@ class Trainer(object):
 			scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, len(self.dataloader))
 
 			running_loss = 0.0
-			for i, sample_batched in enumerate(tqdm(self.dataloader)):
+			for sample_batched in tqdm(self.dataloader):
 
 				if len(sample_batched[0]) > 1:
 					pos_target = sample_batched[0].to(self.device)
@@ -72,7 +72,7 @@ class Trainer(object):
 class InMemoryTrainer(object):
 	def __init__(self, corpus_dir, extension, max_files, output_fh, emb_dimension=128, batch_size=32, epochs=100, initial_lr=1e-3, min_count=1):
 		self.corpus = PVDBOWInMemoryCorpus(corpus_dir, extension, max_files, min_count)
-		self.dataloader = DataLoader(self.corpus, batch_size, shuffle=False, num_workers=0, collate_fn = self.corpus.collate)
+		self.dataloader = DataLoader(self.corpus, batch_size, shuffle=False, num_workers=4, collate_fn = self.corpus.collate)
 		
 		self.corpus_dir = corpus_dir
 		self.extension = extension
@@ -98,11 +98,11 @@ class InMemoryTrainer(object):
 	def train(self):
 		for epoch in range(self.epochs):
 			print("### Epoch: " + str(epoch))
-			optimizer = optim.SparseAdam(self.skipgram.parameters(), lr=self.initial_lr)
+			optimizer = optim.SGD(self.skipgram.parameters(), lr=self.initial_lr)
 			scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, len(self.dataloader))
 
 			running_loss = 0.0
-			for i, sample_batched in enumerate(tqdm(self.dataloader)):
+			for i, sample_batched in enumerate(self.dataloader):
 
 				if len(sample_batched[0]) > 1:
 					pos_target = sample_batched[0].to(self.device)

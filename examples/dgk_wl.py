@@ -9,7 +9,7 @@ import numpy as np
 import geometric2dr.embedding_methods.utils as utils
 from geometric2dr.decomposition.weisfeiler_lehman_patterns import wl_corpus
 from geometric2dr.embedding_methods.skipgram_trainer import InMemoryTrainer
-from geometric2dr.embedding_methods.classify import cross_val_accuracy_precomputed_kernel_matrix
+from geometric2dr.embedding_methods.classify import cross_val_accuracy_rbf_bag_of_words
 
 # Input data paths
 dataset = "MUTAG"
@@ -34,7 +34,7 @@ extension = ".wld" + str(wl_depth) # Extension of the graph document
 # Train a skipgram (w. Negative Sampling) model to learn distributed representations of the subgraph patterns
 ############
 trainer = InMemoryTrainer(corpus_dir=corpus_data_dir, extension=extension, max_files=0, window_size=10, output_fh=output_embedding_fh,
-				  emb_dimension=32, batch_size=128, epochs=50, initial_lr=0.1, min_count=1)
+				  emb_dimension=25, batch_size=10000, epochs=5, initial_lr=0.1, min_count=1)
 trainer.train()
 final_subgraph_embeddings = trainer.skipgram.give_target_embeddings()
 
@@ -53,7 +53,8 @@ M = np.zeros((len(vocabulary), len(vocabulary)))
 for i in range(len(vocabulary)):
 	for j in range(len(vocabulary)):
 		M[i][j] = np.dot(final_subgraph_embeddings[trainer.corpus._subgraph_to_id_map[str(vocabulary[i])]], final_subgraph_embeddings[trainer.corpus._subgraph_to_id_map[str(vocabulary[j])]])
-K = (P.dot(M)).dot(P.T)
+K = (P.dot(M)).dot(P.T) # DGK gram matrix of graphs 
+S = (P.dot(M))
 
 ###########
 # Step 4
@@ -64,5 +65,5 @@ xylabels = utils.get_class_labels_tuples(graph_files,class_labels_fname)
 xylabels.sort(key=lambda tup: tup[0])
 kernel_row_x_id, kernel_row_y_id = zip(*xylabels)
 
-acc, std = cross_val_accuracy_precomputed_kernel_matrix(K, kernel_row_y_id)
-print ('#... Accuracy score: %0.3f, Standard deviation: %0.3f' % (acc, std))
+acc, std = cross_val_accuracy_rbf_bag_of_words(S, kernel_row_y_id)
+print ('#... Accuracy score: %0.4f, Standard deviation: %0.4f' % (acc, std))
