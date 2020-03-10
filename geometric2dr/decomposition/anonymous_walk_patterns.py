@@ -24,6 +24,7 @@ import itertools
 import random
 from collections import defaultdict
 from time import time
+from tqdm import tqdm
 
 # 3rd party
 import numpy as np
@@ -272,7 +273,12 @@ def awe_corpus(corpus_dir, awe_length, label_setting, neighborhood_size=10, savi
 	if label_setting is not None:
 		label_suffix = label_setting
 
-	for gexf_fh in graph_files:
+	for gexf_fh in tqdm(graph_files):
+		open_fname = gexf_fh + ".awe_" + str(awe_length) + "_" + label_suffix
+		if os.path.exists(open_fname):
+			continue
+
+
 		gidx = int((os.path.basename(gexf_fh)).replace(".gexf", ""))
 		graph, am = load_graph(gexf_fh)
 
