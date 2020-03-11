@@ -18,7 +18,6 @@ Of course care was taken so that modules can act independently so that users can
 The following substructure induction algorithms are implemented
 
 - Weisfeiler-Lehman rooted subgraph decomposition
-- Random walks
 - Anonymous walks
 - Graphlets (currently support graphlets of size 2-8)
 - Shortest paths
@@ -37,27 +36,23 @@ The following methods are currently implemented in the examples ()
 - MLE graph kernels to showcase different induced substructure patterns.  
 
 
-On top of this Geo2DR benefits from different classes handling the corpus datasets and dataloading into the learning models. These give the option of loading datasets from files in the hard drive or loading a corpus into memory for significant speedup in the learning process.
+<!-- On top of this Geo2DR benefits from different classes handling the corpus datasets and dataloading into the learning models. These give the option of loading datasets from files in the hard drive or loading a corpus into memory for significant speedup in the learning process. -->
 
 ## Installation
-We recommend following the installation within a virtual environment so that 
-In order to install the full version of Geo2DR 
-
-In order to extract graphlets in an efficient manner Geo2DR follows DGK's example and uses PyNauty (a python wrapper to the Nauty C++ library) and requires its installation prior to installation of Geo2DR.
+We recommend following the installation procedure within a virtual environment.
 
 ### Installing dependencies: PyNauty and Pytorch
+In order to extract graphlets in an efficient manner Geo2DR uses PyNauty (a python wrapper to the Nauty C++ library) and requires its installation prior to installation of Geo2DR. If you are not interested in inducing graphlets you may skip the installation of PyNauty and move to installing PyTorch. 
 
 #### Dependencies
-To build pynauty the following additional components are needed:
+To build pynauty the following components are needed:
 
 - Python 2.7 or Python 3.5
 - The most recent version of Nauty.
 - An ANSI C compiler.
 
-In theory, pynauty should work on all platforms where Python is available and Nauty’s source can be complied. The instructions below are for Linux/Unix environment.
-
-#### Build
-Download pynauty’s sources as a [compressed tart file](https://web.cs.dal.ca/~peter/software/pynauty/pynauty-0.6.0.tar.gz) and unpack it. That should create a directory like pynauty-X.Y.Z/ containing the source files.
+#### Building of Nauty and linking with PyNauty
+Download pynauty’s sources as a [compressed tar file](https://web.cs.dal.ca/~peter/software/pynauty/pynauty-0.6.0.tar.gz) and unpack it. That should create a directory like pynauty-X.Y.Z/ containing the source files.
 
 Download the most recent sources of [nauty](http://pallini.di.uniroma1.it/nauty26r12.tar.gz) from Nauty. That file should be something like nautyXYZ.tar.gz.
 
@@ -75,25 +70,19 @@ ln -s nautyXYZ nauty
 
 Pynauty can be built both for Python 2.7 or Python 3.5.
 
-At this stage you have the option to create and activate a virtualenv and continue the building process within it. Otherwise the building process just picks your system wide python version which would be fine for most users.
-
-To build pynauty use the command:
+To build pynauty use the command (make sure to do this within the virtualenvironment):
 
 ```bash
 make pynauty
 ```
 
-That takes care compiling the necessary object files from nauty’s source than compiling the pynauty Python extension module.
-
-To run all the tests coming with the package type:
+That takes care compiling the necessary object files from nauty’s source and compiling the pynauty Python extension module. To run all the tests coming with the package type:
 
 ```bash
 make tests
 ```
 
-The test exercises pynauty on a few graphs considered difficult.
-
-#### Install
+##### Installation of PyNauty
 To install pynauty to the virtual environment call the following in the pynauty folder whilst the virtual environment is activated
 
 ```bash
@@ -134,10 +123,10 @@ pip install -e .
 
 - *The systems produced here learn distributed representations of graphs. These representations are built by taking the perspective that graphs are composed of discrete substructures which characterise the graph in relation to the patterns found in other graphs of a collection under observation. The distributed vector representations are learned by exploiting the distributive hypothesis. Most of representations of graphs learned using systems such as created in PyTorch Geometric rely on a series of spectral/spatial graph convolutions to create node representations which are pooled in various ways to form graph level representations. The foundation of these algorithms can be found in the message-passing+pooling paradigm whereas our foundation is the distributive hypothesis. Hence this library is different and complementary to other existing libraries, and as far as I am aware this is the first.*
 
-3. Hey my model for learning distributed representations is not implemented in the examples! You are awful!
+3. Hey my model for learning distributed representations is not implemented in the examples!
 
 - *Thanks for telling us. Given the overloaded excitement in machine learning it is impossible to keep up with all the papers. Please open an issue and we will try to get it implemented as soon as possible. Similarly the intention of this library is to enable creation of existing/novel models quickly.*
 
 4. Do you accept contributions?
 
-- *Yes contributions are always very welcome. A contributions guideline will be made available in due time, the author is also still learning to navigate open source collaboration on GitHub*
+- *Yes contributions are very welcome. A contributions guideline will be made available in due time, the author is also still learning to navigate open source collaboration on GitHub*
