@@ -4,12 +4,13 @@ with open('README.md') as f:
 	long_description = f.read()
 
 setup(name="geometric2dr",
-      version='0.6.0',
+      version='0.1.1',
       description="Geo2DR: Library to build distributed representations of graphs",
       long_description = long_description,
+      long_description_content_type="text/markdown",
       url="https://github.com/paulmorio/geo2dr",
       author="Paul Scherer",
-      author_email="test@test.ac.uk",
+      author_email="paul.geo2dr@gmail.com",
       license="MIT",
       packages=["geometric2dr"],
       install_requires=['numpy', 'scikit-learn', 'networkx', 'tqdm', 'ipython'],

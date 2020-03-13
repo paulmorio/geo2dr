@@ -1,5 +1,5 @@
 """
-A development trainer
+A development trainer mainly for testing out functions when developing
 """
 
 import torch

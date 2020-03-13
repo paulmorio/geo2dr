@@ -7,7 +7,7 @@ from geometric2dr.embedding_methods.skipgram_trainer import InMemoryTrainer
 from geometric2dr.embedding_methods.classify import cross_val_accuracy_rbf_bag_of_words
 
 # Input data paths
-dataset = "ENZYMES"
+dataset = "MUTAG"
 corpus_data_dir = "data/" + dataset
 
 # Output Embeddings folder
@@ -20,7 +20,7 @@ emb_dimensions = [2,5,10,25,50]
 batch_sizes = [10000, 1000] # Same as gensim default in their paper
 num_epochs = [5, 100]
 initial_lrs = [0.1, 0.01]
-cvs = 3
+cvs = 10 # how many times to train embeddings to get better MC image of average embedding performance in later SVM 
 
 mean_accs = []
 
@@ -83,6 +83,3 @@ for emb_dimension in emb_dimensions:
 
 avg_max = np.max(mean_accs)
 print("The best average of average scores was: %s" % (np.max(mean_accs)))
-
-with open("best_sp", "w") as fh:
-	print("%s" % (avg_max), file=fh)

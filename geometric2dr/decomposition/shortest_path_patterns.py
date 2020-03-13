@@ -81,6 +81,10 @@ def sp_corpus(corpus_dir):
 	corpus = []
 
 	for gexf_fh in graph_files:
+		open_fname = gexf_fh + ".spp"
+		if os.path.exists(open_fname):
+			continue
+		
 		gidx = int((os.path.basename(gexf_fh)).replace(".gexf", ""))
 		graph, am = load_graph(gexf_fh)
 

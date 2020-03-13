@@ -13,59 +13,59 @@ from geometric2dr.embedding_methods.pvdbow_trainer import Trainer, InMemoryTrain
 from geometric2dr.embedding_methods.classify import cross_val_accuracy
 import geometric2dr.embedding_methods.utils as utils
 
-# # Input data paths
-# dataset = "MUTAG"
-# corpus_data_dir = "data/" + dataset
+# Input data paths
+dataset = "MUTAG"
+corpus_data_dir = "data/" + dataset
 
-# wl_depth = 2
-# min_count = 0
-
-
-# emb_dimension = 128
-# batch_size = 1024
-# epochs = 100
-# initial_lr = 0.1
+wl_depth = 2
+min_count = 0
 
 
-# # Learn embeddings
-# graph_files = utils.get_files(corpus_data_dir, ".gexf", max_files=0)
-# wl_corpus(graph_files, wl_depth)
-# extension = ".wld" + str(wl_depth) # Extension of the graph document
-# output_embedding_fh = "runtime_analysis_embeddings"
+emb_dimension = 128
+batch_size = 1024
+epochs = 100
+initial_lr = 0.1
 
 
-# # Load from disk trainer
-# hd_times = []
-# for _ in range(10):
-# 	trainer = Trainer(corpus_dir=corpus_data_dir, extension=extension, max_files=0, output_fh=output_embedding_fh,
-# 	                  emb_dimension=emb_dimension, batch_size=batch_size, epochs=epochs, initial_lr=initial_lr,
-# 	                  min_count=min_count)
-# 	start_time = time.time()
-# 	trainer.train()
-# 	end_time = (time.time() - start_time)
-# 	hd_times.append(end_time)
-
-# mean_hd_time = np.mean(hd_times)
-# std_hd_time = np.std(hd_times)
+# Learn embeddings
+graph_files = utils.get_files(corpus_data_dir, ".gexf", max_files=0)
+wl_corpus(graph_files, wl_depth)
+extension = ".wld" + str(wl_depth) # Extension of the graph document
+output_embedding_fh = "runtime_analysis_embeddings"
 
 
-# # Use memory trainer
-# memory_times = []
-# for _ in range(10):
-# 	trainer = InMemoryTrainer(corpus_dir=corpus_data_dir, extension=extension, max_files=0, output_fh=output_embedding_fh,
-# 	                  emb_dimension=emb_dimension, batch_size=batch_size, epochs=epochs, initial_lr=initial_lr,
-# 	                  min_count=min_count)
-	# start_time = time.time()
-	# trainer.train()
-	# end_time = (time.time() - start_time)
-	# memory_times.append(end_time)
+# Load from disk trainer
+hd_times = []
+for _ in range(10):
+	trainer = Trainer(corpus_dir=corpus_data_dir, extension=extension, max_files=0, output_fh=output_embedding_fh,
+	                  emb_dimension=emb_dimension, batch_size=batch_size, epochs=epochs, initial_lr=initial_lr,
+	                  min_count=min_count)
+	start_time = time.time()
+	trainer.train()
+	end_time = (time.time() - start_time)
+	hd_times.append(end_time)
 
-# mean_mem_time = np.mean(memory_times)
-# std_mem_time = np.std(memory_times)
+mean_hd_time = np.mean(hd_times)
+std_hd_time = np.std(hd_times)
 
 
-# # print("Hard Drive Geo2DR Graph2Vec mean time: %.4f standard dev: %.4f " % (mean_hd_time, std_hd_time))
-# print("In Memory Geo2DR Graph2Vec mean time: %.4f standard dev: %.4f " % (mean_mem_time, std_mem_time))
+# Use memory trainer
+memory_times = []
+for _ in range(10):
+	trainer = InMemoryTrainer(corpus_dir=corpus_data_dir, extension=extension, max_files=0, output_fh=output_embedding_fh,
+	                  emb_dimension=emb_dimension, batch_size=batch_size, epochs=epochs, initial_lr=initial_lr,
+	                  min_count=min_count)
+	start_time = time.time()
+	trainer.train()
+	end_time = (time.time() - start_time)
+	memory_times.append(end_time)
+
+mean_mem_time = np.mean(memory_times)
+std_mem_time = np.std(memory_times)
+
+
+# print("Hard Drive Geo2DR Graph2Vec mean time: %.4f standard dev: %.4f " % (mean_hd_time, std_hd_time))
+print("In Memory Geo2DR Graph2Vec mean time: %.4f standard dev: %.4f " % (mean_mem_time, std_mem_time))
 
 
 
@@ -119,138 +119,138 @@ print("In Memory Geo2DR AWE-DD mean time: %.4f standard dev: %.4f " % (mean_mem_
 
 
 
-# import os
-# import time
-# import numpy as np
+import os
+import time
+import numpy as np
 
-# import geometric2dr.embedding_methods.utils as utils
-# from geometric2dr.decomposition.weisfeiler_lehman_patterns import wl_corpus
-# from geometric2dr.embedding_methods.skipgram_trainer import InMemoryTrainer
+import geometric2dr.embedding_methods.utils as utils
+from geometric2dr.decomposition.weisfeiler_lehman_patterns import wl_corpus
+from geometric2dr.embedding_methods.skipgram_trainer import InMemoryTrainer
 
-# # DGK-WL
-# # Input data paths
-# dataset = "MUTAG"
-# corpus_data_dir = "data/" + dataset
+# DGK-WL
+# Input data paths
+dataset = "MUTAG"
+corpus_data_dir = "data/" + dataset
 
-# # Desired output paths for subgraph embeddings
-# output_embedding_fh = "WL_Subgraph_Embeddings.json"
+# Desired output paths for subgraph embeddings
+output_embedding_fh = "WL_Subgraph_Embeddings.json"
 
-# # WL decomposition hyperparameters
-# wl_depth = 2
+# WL decomposition hyperparameters
+wl_depth = 2
 
-# ############
-# # Step 1
-# # Run the decomposition algorithm to get subgraph patterns across the graphs of MUTAG
-# ############
-# graph_files = utils.get_files(corpus_data_dir, ".gexf", max_files=0)
-# corpus, vocabulary, prob_map, num_graphs, graph_map = wl_corpus(graph_files, wl_depth)
-# extension = ".wld" + str(wl_depth) # Extension of the graph document
+############
+# Step 1
+# Run the decomposition algorithm to get subgraph patterns across the graphs of MUTAG
+############
+graph_files = utils.get_files(corpus_data_dir, ".gexf", max_files=0)
+corpus, vocabulary, prob_map, num_graphs, graph_map = wl_corpus(graph_files, wl_depth)
+extension = ".wld" + str(wl_depth) # Extension of the graph document
 
-# ############
-# # Step 2
-# # Train a skipgram (w. Negative Sampling) model to learn distributed representations of the subgraph patterns
-# ############
-# memory_times = []
-# for _ in range(5):
-# 	trainer = InMemoryTrainer(corpus_dir=corpus_data_dir, extension=extension, max_files=0, window_size=10, output_fh=output_embedding_fh,
-# 					  emb_dimension=32, batch_size=1280, epochs=100, initial_lr=0.1, min_count=1)
-# 	start_time = time.time()
-# 	trainer.train()
-# 	end_time = (time.time() - start_time)
-# 	memory_times.append(end_time)
+############
+# Step 2
+# Train a skipgram (w. Negative Sampling) model to learn distributed representations of the subgraph patterns
+############
+memory_times = []
+for _ in range(10):
+	trainer = InMemoryTrainer(corpus_dir=corpus_data_dir, extension=extension, max_files=0, window_size=10, output_fh=output_embedding_fh,
+					  emb_dimension=32, batch_size=1280, epochs=100, initial_lr=0.1, min_count=1)
+	start_time = time.time()
+	trainer.train()
+	end_time = (time.time() - start_time)
+	memory_times.append(end_time)
 
-# mean_mem_time = np.mean(memory_times)
-# std_mem_time = np.std(memory_times)
-# print("In Memory Geo2DR DGK-WL mean time: %.4f standard dev: %.4f " % (mean_mem_time, std_mem_time))
-
-
-# # DGK-SP
-# import os
-# import time
-# import numpy as np
-
-# import geometric2dr.embedding_methods.utils as utils
-# from geometric2dr.decomposition.shortest_path_patterns import sp_corpus
-# from geometric2dr.embedding_methods.skipgram_trainer import InMemoryTrainer
-
-# # Input data paths
-# dataset = "MUTAG"
-# corpus_data_dir = "data/" + dataset
-
-# # Desired output paths for subgraph embeddings
-# output_embedding_fh = "SPP_Subgraph_Embeddings.json"
+mean_mem_time = np.mean(memory_times)
+std_mem_time = np.std(memory_times)
+print("In Memory Geo2DR DGK-WL mean time: %.4f standard dev: %.4f " % (mean_mem_time, std_mem_time))
 
 
-# ############
-# # Step 1
-# # Run the decomposition algorithm to get subgraph patterns across the graphs of MUTAG
-# ############
-# graph_files = utils.get_files(corpus_data_dir, ".gexf", max_files=0)
-# corpus, vocabulary, prob_map, num_graphs, graph_map = sp_corpus(corpus_data_dir) # will produce .spp files
-# extension = ".spp"
-# ############
-# # Step 2
-# # Train a skipgram (w. Negative Sampling) model to learn distributed representations of the subgraph patterns
-# ############
-# memory_times = []
-# for _ in range(5):
-# 	trainer = InMemoryTrainer(corpus_dir=corpus_data_dir, extension=extension, max_files=0, window_size=10, output_fh=output_embedding_fh,
-# 				  emb_dimension=32, batch_size=128, epochs=100, initial_lr=0.1,
-# 				  min_count=1)
-# 	start_time = time.time()
-# 	trainer.train()
-# 	end_time = (time.time() - start_time)
-# 	memory_times.append(end_time)
+# DGK-SP
+import os
+import time
+import numpy as np
 
-# mean_mem_time = np.mean(memory_times)
-# std_mem_time = np.std(memory_times)
-# print("In Memory Geo2DR DGK-SP mean time: %.4f standard dev: %.4f " % (mean_mem_time, std_mem_time))
+import geometric2dr.embedding_methods.utils as utils
+from geometric2dr.decomposition.shortest_path_patterns import sp_corpus
+from geometric2dr.embedding_methods.skipgram_trainer import InMemoryTrainer
+
+# Input data paths
+dataset = "MUTAG"
+corpus_data_dir = "data/" + dataset
+
+# Desired output paths for subgraph embeddings
+output_embedding_fh = "SPP_Subgraph_Embeddings.json"
 
 
+############
+# Step 1
+# Run the decomposition algorithm to get subgraph patterns across the graphs of MUTAG
+############
+graph_files = utils.get_files(corpus_data_dir, ".gexf", max_files=0)
+corpus, vocabulary, prob_map, num_graphs, graph_map = sp_corpus(corpus_data_dir) # will produce .spp files
+extension = ".spp"
+############
+# Step 2
+# Train a skipgram (w. Negative Sampling) model to learn distributed representations of the subgraph patterns
+############
+memory_times = []
+for _ in range(10):
+	trainer = InMemoryTrainer(corpus_dir=corpus_data_dir, extension=extension, max_files=0, window_size=10, output_fh=output_embedding_fh,
+				  emb_dimension=32, batch_size=128, epochs=100, initial_lr=0.1,
+				  min_count=1)
+	start_time = time.time()
+	trainer.train()
+	end_time = (time.time() - start_time)
+	memory_times.append(end_time)
+
+mean_mem_time = np.mean(memory_times)
+std_mem_time = np.std(memory_times)
+print("In Memory Geo2DR DGK-SP mean time: %.4f standard dev: %.4f " % (mean_mem_time, std_mem_time))
 
 
-# # # DGK-GK
-# import os
-# import time
-# import numpy as np
 
-# import geometric2dr.embedding_methods.utils as utils
-# from geometric2dr.decomposition.graphlet_patterns import graphlet_corpus
-# from geometric2dr.embedding_methods.skipgram_trainer import Trainer, InMemoryTrainer
 
-# # Input data paths
-# dataset = "MUTAG"
-# corpus_data_dir = "data/" + dataset
+# # DGK-GK
+import os
+import time
+import numpy as np
 
-# # Desired output paths for subgraph embeddings
-# output_embedding_fh = "Graphlet_Subgraph_Embeddings.json"
+import geometric2dr.embedding_methods.utils as utils
+from geometric2dr.decomposition.graphlet_patterns import graphlet_corpus
+from geometric2dr.embedding_methods.skipgram_trainer import Trainer, InMemoryTrainer
 
-# # Graphlet decomposition hyperparameters
-# num_graphlet = 7 # size of the graphlets to extract
-# sample_size = 100 # number of graphlets samples to extract
+# Input data paths
+dataset = "MUTAG"
+corpus_data_dir = "data/" + dataset
 
-# ############
-# # Step 1
-# # Run the decomposition algorithm to get subgraph patterns across the graphs of MUTAG
-# ############
-# graph_files = utils.get_files(corpus_data_dir, ".gexf", max_files=0)
-# corpus, vocabulary, prob_map, num_graphs, graph_map = graphlet_corpus(corpus_data_dir, num_graphlet, sample_size)
-# extension = ".graphlet_ng_"+str(num_graphlet)+"_ss_"+str(sample_size)
+# Desired output paths for subgraph embeddings
+output_embedding_fh = "Graphlet_Subgraph_Embeddings.json"
 
-# ############
-# # Step 2
-# # Train a skipgram (w. Negative Sampling) model to learn distributed representations of the subgraph patterns
-# ############
-# memory_times = []
-# for _ in range(5):
-# 	trainer = InMemoryTrainer(corpus_dir=corpus_data_dir, extension=extension, max_files=0, window_size=10, output_fh=output_embedding_fh,
-# 					  emb_dimension=32, batch_size=128, epochs=100, initial_lr=0.1,
-# 					  min_count=0)
-# 	start_time = time.time()
-# 	trainer.train()
-# 	end_time = (time.time() - start_time)
-# 	memory_times.append(end_time)
+# Graphlet decomposition hyperparameters
+num_graphlet = 7 # size of the graphlets to extract
+sample_size = 100 # number of graphlets samples to extract
 
-# mean_mem_time = np.mean(memory_times)
-# std_mem_time = np.std(memory_times)
-# print("In Memory Geo2DR DGK-GRAPHLET mean time: %.4f standard dev: %.4f " % (mean_mem_time, std_mem_time))
+############
+# Step 1
+# Run the decomposition algorithm to get subgraph patterns across the graphs of MUTAG
+############
+graph_files = utils.get_files(corpus_data_dir, ".gexf", max_files=0)
+corpus, vocabulary, prob_map, num_graphs, graph_map = graphlet_corpus(corpus_data_dir, num_graphlet, sample_size)
+extension = ".graphlet_ng_"+str(num_graphlet)+"_ss_"+str(sample_size)
+
+############
+# Step 2
+# Train a skipgram (w. Negative Sampling) model to learn distributed representations of the subgraph patterns
+############
+memory_times = []
+for _ in range(10):
+	trainer = InMemoryTrainer(corpus_dir=corpus_data_dir, extension=extension, max_files=0, window_size=10, output_fh=output_embedding_fh,
+					  emb_dimension=32, batch_size=128, epochs=100, initial_lr=0.1,
+					  min_count=0)
+	start_time = time.time()
+	trainer.train()
+	end_time = (time.time() - start_time)
+	memory_times.append(end_time)
+
+mean_mem_time = np.mean(memory_times)
+std_mem_time = np.std(memory_times)
+print("In Memory Geo2DR DGK-GRAPHLET mean time: %.4f standard dev: %.4f " % (mean_mem_time, std_mem_time))

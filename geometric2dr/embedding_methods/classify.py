@@ -2,7 +2,6 @@
 Module containing various functions for classification (on top of the learned embeddings)
 mainly useful for providing convenience functions on common benchmark classification methods
 
-TODO: Add more "complicated" classifiers to eke out the next classification benchmark
 """
 import json
 
@@ -136,33 +135,6 @@ def cross_val_accuracy(corpus_dir, extension, embedding_fname, class_labels_fnam
 		acc_results.append(scores[0])
 
 	return np.mean(acc_results), np.std(acc_results)
-
-# def cross_val_accuracy_precomputed_kernel_matrix(kernel_matrix, y_ids, cv=10):
-# 	"""
-# 	10 fold cross validation, returns mean accuracy and associated standard deviation
-
-# 	Params
-# 	-------
-# 	kernel_matrix (np.array): a nxn kernel matrix where n is the number of observations (num graphs)
-# 	y_ids ([int]): a list of the true classifications of each row in the kernel matrix
-# 	cv (int): number of cross validations to perform
-# 	"""
-# 	acc_results = []
-# 	Y = np.array(y_ids)
-
-# 	for i in range(cv):
-# 		seed = randint(0,1000)
-# 		params = {'C':[0.0001, 0.001, 0.01, 0.1, 1, 10, 100, 1000]}
-# 		if len(set(Y)) == 2:
-# 			classifier = GridSearchCV(SVC(kernel="precomputed"), params, cv=10, scoring='f1', verbose=1, n_jobs=-1)
-# 		else:
-# 			classifier = GridSearchCV(SVC(kernel="precomputed"), params, cv=10, scoring='f1_weighted', verbose=1, n_jobs=-1)
-# 		classifier.fit(kernel_matrix, Y)
-# 		Y_pred = classifier.predict(kernel_matrix)
-# 		acc = accuracy_score(Y, Y_pred)
-
-# 		acc_results.append(acc)
-# 	return np.mean(acc_results), np.std(acc_results)
 
 def cross_val_accuracy_rbf_bag_of_words(P, y_ids, cv=10):
 	"""

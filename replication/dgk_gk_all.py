@@ -24,14 +24,14 @@ if not os.path.exists(output_folder):
 	os.mkdir(output_folder)
 
 # WL Hyperparameters as in Yanardag and Vishwanathan
-num_graphlets = [7,8]
+num_graphlets = [7]
 sample_sizes = [2,5,10,25,50]
 
 # Skipgram hyperparameters
 emb_dimensions = [2,5,10,25,50]
 batch_sizes = [10000, 1000] # Same as gensim default in their paper
 num_epochs = [5, 100]
-cvs = 3
+mcs = 10 # how many times to train embeddings to get better MC image of average embedding performance in later SVM 
 
 def l2_norm(vec):
 	return  np.sqrt(np.dot(vec, vec))
@@ -45,7 +45,7 @@ for num_graphlet in num_graphlets:
 			for batch_size in batch_sizes:
 				for epochs in num_epochs:
 					temp_accs = []
-					for run in range(cvs):
+					for run in range(mcs):
 						# Create embedding signature and check
 						output_fh_signature = "_".join([dataset, str(num_graphlet), str(sample_size), str(emb_dimension), str(batch_size), str(epochs), str(run)])
 						output_perf_fh = output_folder + "/" + output_fh_signature
@@ -92,6 +92,3 @@ for num_graphlet in num_graphlets:
 
 avg_max = np.max(means_accs)
 print("The best average of average scores was: %s" % (np.max(means_accs)))
-
-with open("best_gk", "w") as fh:
-	print("%s" % (avg_max), file=fh)

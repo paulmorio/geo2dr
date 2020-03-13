@@ -1,5 +1,6 @@
 """
-PVDM model as used in AWE
+PVDM model originally introduced in doc2vec paper by Le and Mikolov (2014)
+Used by AWE-DD model of Anonymous Walk Embeddings by Ivanov and Burnaev (2018)
 
 Author: Paul Scherer 2019
 """

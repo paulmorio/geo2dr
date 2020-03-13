@@ -32,7 +32,7 @@ extension = ".wld" + str(wl_depth) # Extension of the graph document
 # Train a skipgram (w. Negative Sampling) model to learn distributed representations of the subgraph patterns
 ############
 memory_times = []
-for _ in range(5):
+for _ in range(10):
 	start = time.time()
 	model = Word2Vec(corpus, size=32, window=10, min_count=0, sg=1, hs=0, iter=100, negative=10, batch_words=128)
 	end = time.time()
@@ -73,7 +73,7 @@ extension = ".spp"
 # Train a skipgram (w. Negative Sampling) model to learn distributed representations of the subgraph patterns
 ############
 memory_times = []
-for _ in range(5):
+for _ in range(10):
 	start = time.time()
 	model = Word2Vec(corpus, size=32, window=10, min_count=0, sg=1, hs=0, iter=100, negative=10, batch_words=128)
 	end = time.time()
@@ -120,7 +120,7 @@ extension = ".graphlet_ng_"+str(num_graphlet)+"_ss_"+str(sample_size)
 # Train a skipgram (w. Negative Sampling) model to learn distributed representations of the subgraph patterns
 ############
 memory_times = []
-for _ in range(5):
+for _ in range(10):
 	start = time.time()
 	model = Word2Vec(corpus, size=32, window=10, min_count=0, sg=1, hs=0, iter=100, negative=10, batch_words=128)
 	end = time.time()
