@@ -1,5 +1,7 @@
 """
-A class which faciliates training of the embedding methods by the set hyperparameters.
+A trainer class which faciliates training of the embedding methods by the set hyperparameters.
+
+Author: Paul Scherer 2020
 """
 import numpy as np
 import torch

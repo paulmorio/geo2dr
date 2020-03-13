@@ -1,5 +1,6 @@
 """
-Skipgram model
+General Skipgram model with negative sampling originally introduced by word2vec paper
+Mikolov et al (2013). Used by DGK and Graph2Vec to learn substructure and graph level embeddings 
 
 Uses negative sampling to learn better representations (and quicker too)
 
