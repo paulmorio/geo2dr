@@ -18,39 +18,28 @@ dataset = "MUTAG"
 corpus_data_dir = "data/" + dataset
 
 # Output Embeddings folder
-output_folder = "Graph2Vec_Embeddings"
+output_folder = "Graph2vec_Embeddings_" + dataset
 if not os.path.exists(output_folder):
 	os.mkdir(output_folder)
 
 # Graph2Vec Hyperparameters
-wl_depths = [2,3]
+wl_depths = [2]
 min_count = 0
 
 # PVDBOW Hyperparameters
 emb_dimensions = [8, 16, 32, 64, 128]
-batch_sizes = [128, 256, 512]
+batch_sizes = [512, 1024, 2048, 10000]
 num_epochs = [25, 50, 100]
-initial_lrs = [0.1, 0.01, 0.001]
-cvs = 10
+initial_lrs = [0.1]
+mcs = 10 # how many trainings of embeddings for later summarization of 10 times mc over 10 fold CV (better picture of avg performance)
 
-
-# # Graph2Vec Hyperparameters
-# wl_depths = [2]
-# min_count = 0
-
-# # PVDBOW Hyperparameters
-# emb_dimensions = [8, 16]
-# batch_sizes = [128]
-# num_epochs = [5, 10]
-# initial_lrs = [0.1]
-# cvs = 10
 
 for wl_depth in wl_depths:
 	for emb_dimension in emb_dimensions:
 		for batch_size in batch_sizes:
 			for epochs in num_epochs:
 				for initial_lr in initial_lrs:
-					for run in range(cvs):
+					for run in range(mcs):
 						# Create embedding signature and check
 						output_fh_signature = "_".join([dataset, str(wl_depth), str(emb_dimension), str(batch_size), str(epochs), str(initial_lr), str(run)])
 						output_embedding_fh = output_folder + "/" + output_fh_signature
