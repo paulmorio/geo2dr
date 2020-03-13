@@ -30,7 +30,7 @@ emb_dimensions = [2,5,10,25,50]
 batch_sizes = [10000, 1000] # Same as gensim default in their paper
 num_epochs = [5, 100]
 initial_lrs = [0.1, 0.01]
-cvs = 3
+mcs = 10 # how many times to train embeddings to get better MC image of average embedding performance in later SVM 
 
 # Quickcheck list
 means_accs = []
@@ -40,7 +40,7 @@ for emb_dimension in emb_dimensions:
 		for epochs in num_epochs:
 			for initial_lr in initial_lrs:
 				temp_accs = []
-				for run in range(cvs):
+				for run in range(mcs):
 					# Create embedding signature and check
 					output_fh_signature = "_".join([dataset, str(wl_depth), str(emb_dimension), str(batch_size), str(epochs), str(initial_lr), str(run)])
 					output_perf_fh = output_folder + "/" + output_fh_signature
