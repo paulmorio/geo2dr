@@ -92,6 +92,3 @@ for num_graphlet in num_graphlets:
 
 avg_max = np.max(means_accs)
 print("The best average of average scores was: %s" % (np.max(means_accs)))
-
-with open("best_gk", "w") as fh:
-	print("%s" % (avg_max), file=fh)

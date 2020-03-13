@@ -92,6 +92,3 @@ for emb_dimension in emb_dimensions:
 
 avg_max = np.max(means_accs)
 print("The best average of average scores was: %s" % (np.max(means_accs)))
-
-with open("best_wl", "w") as fh:
-	print("%s" % (avg_max), file=fh)
