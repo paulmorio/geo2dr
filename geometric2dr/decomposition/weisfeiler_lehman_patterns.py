@@ -1,6 +1,6 @@
 """
 Weisfeiler Lehman graph decomposition algorithm via node relabeling
-(Shershavidze et al) with VocabBuilder and GraphDoc outputs.
+(Shershavidze et al)
 
 The main use case is for the user to input a path containing individual
 graphs of the dataset in gexf format.
@@ -12,7 +12,7 @@ list of all the substructure pattern ids.
 
 Author: Paul Scherer 2019.
 
-Based on the implementation available by the authors of Graph2Vec
+Based on the implementation available by the authors of Graph2Vec and adapted for Geo2DR
 https://github.com/MLDroid/graph2vec_tf No License
 Carry down MIT License
 """
