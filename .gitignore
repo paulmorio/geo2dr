@@ -4,7 +4,7 @@ pynauty-0.6.0
 # Sandbox files or files to temporarily ignore
 *.testfile
 *.json
-
+/dev_files/
 # Example Data
 examples/data/MUTAG/*.wld*
 examples/data/MUTAG/*.spp
