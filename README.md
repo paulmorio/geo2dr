@@ -82,14 +82,6 @@ To install pynauty to the virtual environment call the following in the pynauty 
 make virtenv-ins 
 ```
 
-To uninstall simply use the corresponding make command
-
-```bash
-make virtenv-unins
-```
-
-Please note, the install/unistall procedures use pip.
-
 ### Installing PyTorch
 Pytorch is installed based on the available hardware of the machine (GPU or CPU) please follow the appropriate pip installation on the official PyTorch website.
 
@@ -138,7 +130,7 @@ pip install -e .
 If this toolkit or any of the examples of pre-existing methods were useful, please cite the original authors and consider citing the library.
 
 ```
-@misc{scherer2020learning,
+@misc{geometric2dr,
     title={Learning distributed representations of graphs with Geo2DR},
     author={Paul Scherer and Pietro Lio},
     year={2020},
