@@ -52,13 +52,42 @@ np.random.seed(2312312)
 
 
 def load_graph(file_handle):
+    """ Load the gexf format file as a nx_graph and an adjacency matrix.
+
+    Parameters
+    ----------
+    file_handle : str
+        path to gexf file
+
+    Returns
+    -------
+    graph : networkx graph
+        Networkx graph instance of input gexf file
+    adj_matrix : numpy ndarray
+        The adjacency matrix of the graph
+
+    """
 
     graph = nx.read_gexf(file_handle)
     adj_matrix = nx.to_numpy_matrix(graph)
     return graph, adj_matrix
 
 def get_maps(num_graphlets):
+    """Load certificates created by the canonical representations of 
+    graphlets into canonical maps dictionary for quick isomorphism
+    check when we extract graphlets from graphs in the users dataset
 
+    Parameters
+    ----------
+    num_graphlets : int
+        The number of nodes in the graphlet pattern, aka the size of a graphlet pattern
+
+    Returns
+    -------
+    canonical_map : dict
+        A dict of Nauty certificates of the canonical representations of graphlets of the size `num_graphlets`.
+
+    """
 
     data_path = os.path.join(os.path.dirname(__file__), 'canonical_maps')
     # data_path = "canonical_maps"
