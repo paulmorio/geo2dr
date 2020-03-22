@@ -1,19 +1,16 @@
-"""
-Anonymous walk based decomposition algorithm to create graph documents
-
-The main use case for this script is for the user to supply a path to 
-the directory containing the .gexf file which contains .gexf files of
-each graph in a dataset. The decomposition function will produce a awe
-file for each .gexf file which contains the anonymous walsk of graph
-given the vocabuary of patterns across the dataset.
+"""This module contains algorithms useful for inducing anonymous walks in graphs.
 
 The algorithms are adapted from the original source code by 
-Ivanov and Burnaev 2018 "Anonymous Walk Embeddings"
-https://github.com/nd7141/AWE Non-License 
+Ivanov and Burnaev 2018 "Anonymous Walk Embeddings" [1]_.
 
-Author: Paul Scherer 2019
-Carry down MIT License
+Original reference implementation can be found in: https://github.com/nd7141/AWE
+
+.. [1]  Sergey Ivanov, Evgeny Burnaev. "Anonymous Walk Embeddings". Proceedings of the 35th International Conference on Machine Learning, PMLR 80:2186-2195, 2018. 
+
 """
+
+# Author: Paul Scherer 2019
+# Carry down MIT License
 
 # Standard libraries
 import sys
@@ -39,16 +36,35 @@ np.random.seed(2018)
 
 
 def load_graph(file_handle):
-	"""
-	Loads a nx graph object and a corresponding adjacency matrix given a GEXF
-	file graph.
+	"""Loads a nx graph object and a corresponding numpy adjacency 
+	matrix given a GEXF file graph.
+
+	Parameters
+	----------
+	file_handle : str
+		path to gexf file
+
+	Returns
+	-------
+	graph : networkx graph
+		Networkx graph instance of input gexf file
+	adj_matrix : numpy ndarray
+		The adjacency matrix of the graph
+
 	"""
 	graph = nx.read_gexf(file_handle)
 	adj_matrix = nx.to_numpy_matrix(graph)
 	return graph, adj_matrix
 
 def all_paths(paths, steps, keep_last = False):
-	'''Get all possible anonymous walks of length up to steps.'''
+	'''Get all possible anonymous walks of length up to steps.
+	
+	Parameters
+	----------
+
+	Returns
+	-------
+	'''
 	new_paths = []
 	last_step_paths = [[0, 1]]
 	for i in range(2, steps+1):
@@ -66,7 +82,10 @@ def all_paths(paths, steps, keep_last = False):
 	return new_paths
 
 def all_paths_edges(paths, steps, keep_last = True):
-	'''Get all possible anonymous walks of length up to steps, using edge labels'''
+	'''Get all possible anonymous walks of length up to steps, 
+	using edge labels
+
+	'''
 	new_paths = []
 	last_step_paths = [[]]
 	for i in range(0, steps):
@@ -83,7 +102,10 @@ def all_paths_edges(paths, steps, keep_last = True):
 	return new_paths
 
 def all_paths_nodes(paths, steps, keep_last = True):
-	'''Get all possible anonymous walks of length up to steps, using node labels'''
+	'''Get all possible anonymous walks of length up to steps, 
+	using node labels
+	
+	'''
 	new_paths = []
 	last_step_paths = [[0]]
 	for i in range(1, steps+1):
@@ -100,7 +122,10 @@ def all_paths_nodes(paths, steps, keep_last = True):
 	return new_paths
 
 def all_paths_edges_nodes(paths, steps, keep_last = True):
-	'''Get all possible anonymous walks of length up to steps, using edge-node labels'''
+	'''Get all possible anonymous walks of length up to steps, 
+	using edge-node labels
+
+	'''
 	edge_paths = all_paths_edges(paths, steps, keep_last=keep_last)
 	node_paths = all_paths_nodes(paths, steps, keep_last=keep_last)
 	new_paths = []
@@ -117,10 +142,11 @@ def all_paths_edges_nodes(paths, steps, keep_last = True):
 
 
 def create_random_walk_graph(nx_graph):
-	"""
-	Generate a random walk graph equivalent of a graph as 
+	"""Generate a random walk graph equivalent of a graph as 
 	described in anonymous walk embeddings
+
 	"""
+
 	# get name of the label on graph edges (assume all label names are the same)
 	label_name = 'weight'
 
@@ -137,8 +163,11 @@ def create_random_walk_graph(nx_graph):
 
 
 def random_step_node(rw_graph, node):
-	'''Moves one step from the current according to probabilities of outgoing edges.
-	Return next node.'''
+	'''Moves one step from the current according to probabilities of 
+	outgoing edges. Return next node.
+
+	'''
+
 	r = random.uniform(0, 1)
 	low = 0
 	for v in rw_graph[node]:
@@ -150,7 +179,10 @@ def random_step_node(rw_graph, node):
 
 def random_walk_node(rw_graph, node, steps):
 	'''Creates anonymous walk from a node for arbitrary steps.
-	Returns a tuple with consequent nodes.'''
+	Returns a tuple with consequent nodes.
+
+	'''
+	
 	d = dict()
 	d[node] = 0
 	count = 1
@@ -167,7 +199,10 @@ def random_walk_node(rw_graph, node, steps):
 
 def random_walk_with_label_nodes(graph, rw_graph, node, steps):
 	'''Creates anonymous walk from a node for arbitrary steps with usage of node labels.
-	Returns a tuple with consequent nodes.'''
+	Returns a tuple with consequent nodes.
+
+	'''
+	
 	d = dict()
 	count = 0
 	pattern = []
@@ -183,7 +218,10 @@ def random_walk_with_label_nodes(graph, rw_graph, node, steps):
 
 def random_walk_with_label_edges(graph, rw_graph, node, steps):
 	'''Creates anonymous walk from a node for arbitrary steps with usage of edge labels.
-	Returns a tuple with consequent nodes.'''
+	Returns a tuple with consequent nodes.
+
+	'''
+	
 	idx = 0
 	pattern = []
 	d = dict()
@@ -199,7 +237,10 @@ def random_walk_with_label_edges(graph, rw_graph, node, steps):
 
 def random_walk_with_label_edges_nodes(graph, rw_graph, node, steps):
 	'''Creates anonymous walk from a node for arbitrary steps with usage of edge and node labels.
-	Returns a tuple with consequent nodes.'''
+	Returns a tuple with consequent nodes.
+
+	'''
+	
 	node_idx = 0
 	edge_idx = 0
 	pattern = [0]
@@ -222,7 +263,10 @@ def random_walk_with_label_edges_nodes(graph, rw_graph, node, steps):
 
 
 def anonymous_walk_node(graph, rw_graph, node, steps, label_setting=None):
-	'''Creates anonymous walk from a node.'''
+	'''Creates anonymous walk from a node.
+
+	'''
+	
 	if label_setting is None:
 		return random_walk_node(rw_graph, node, steps)
 	elif label_setting == 'nodes':
@@ -234,8 +278,8 @@ def anonymous_walk_node(graph, rw_graph, node, steps, label_setting=None):
 
 
 def anonymous_walks(graph, neighborhood_size, walk_ids, awe_length, label_setting):
-	"""
-	Generates anonymous walks for a given graph and input hyperparameters
+	"""Generates anonymous walks for a given graph and input hyperparameters
+	
 	"""
 	rw_graph = create_random_walk_graph(graph)
 	aws = []
@@ -246,10 +290,41 @@ def anonymous_walks(graph, neighborhood_size, walk_ids, awe_length, label_settin
 	return aws
 
 def awe_corpus(corpus_dir, awe_length, label_setting, neighborhood_size=10, saving_graph_docs=True):
-	"""
-	This function extracts anonymous walks of <awe_length> across the graphs
+	"""Induces anonymous walks up to a supplied length across a set of graphs.
+
+	This function extracts anonymous walks of `awe_length` across the graphs
 	in a dataset into a vocabulary. The function saves a graphdoc for each graph
 	which records string identifiers of the anonymous walks present in each graph
+
+	The main use case for this function is for the user to supply a path to 
+	the directory containing the .gexf file which contains .gexf files of
+	each graph in a dataset. The decomposition function will produce a file 
+	with the extension *.awe_<`awe_length`>_<`label_setting`>*  for each .gexf 
+	file which contains the anonymous walks patterns specified by a string hash
+	controlled by the vocabulary of patterns across the list of graphs being studied. 
+
+	Parameters
+	----------
+	corpus_dir : str
+		path to folder containing gexf graph files on which the substructure 
+		patterns should be induced
+	awe_length : int
+		desired length of anonymous walk patterns
+	label_setting : str
+		information of node/edge labels that should be used; this can be None, 'nodes', 'edges', 'edges_nodes'
+	neighborhood_size : int (default=10)
+		the number of anonymous walks to take from a source node
+	saving_graph_docs : bool (default=True)
+		boolean value which dictates whether graph documents will be generated and saved. 
+
+	Returns
+	-------
+	None
+		Induces the anonymous walks of `awe_length` across the list of gexf file paths
+		supplied in `corpus_dir`. Graph "documents" with the extension 
+		*.awe_<`awe_length`>_<`label_setting`>* are created for each of the gexf files in the
+		same directory containing string identifiers of the patterns induced in each graph.
+		
 	"""
 	graph_files = get_files(corpus_dir, extension=".gexf")
 	awe_corpus = {}
