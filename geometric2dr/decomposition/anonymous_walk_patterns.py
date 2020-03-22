@@ -1,9 +1,8 @@
 """This module contains algorithms useful for inducing anonymous walks in graphs.
 
 The algorithms are adapted from the original source code by 
-Ivanov and Burnaev 2018 "Anonymous Walk Embeddings" [1]_.
-
-Original reference implementation can be found in: https://github.com/nd7141/AWE
+Ivanov and Burnaev 2018 "Anonymous Walk Embeddings" [1]_. Original reference 
+implementation can be found in: https://github.com/nd7141/AWE
 
 .. [1]  Sergey Ivanov, Evgeny Burnaev. "Anonymous Walk Embeddings". Proceedings of the 35th International Conference on Machine Learning, PMLR 80:2186-2195, 2018. 
 
@@ -324,7 +323,7 @@ def awe_corpus(corpus_dir, awe_length, label_setting, neighborhood_size=10, savi
 		supplied in `corpus_dir`. Graph "documents" with the extension 
 		*.awe_<`awe_length`>_<`label_setting`>* are created for each of the gexf files in the
 		same directory containing string identifiers of the patterns induced in each graph.
-		
+
 	"""
 	graph_files = get_files(corpus_dir, extension=".gexf")
 	awe_corpus = {}
