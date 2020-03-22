@@ -1,17 +1,6 @@
+"""Gexifier for TU Dortmund graph kernel based datasets.
+
 """
-Gexifier for TU Dortmund graph kernel based datasets.
-
-This class helps turn datasets from the format with which TU Graph Kernel datasets 
-are written into Gexf datasets, which Geo2DR can work with
-
-It reads the DS_A.txt, DS_graph_indicator.txt, and DS_graph_labels.txt to create a 
-folder of graphs in GEXF format and a graph-id to graph-classification label file.
-
-The saved format will be 
-dataset_name/dataset_name/<name>.gexf : folder containing individual gexf files of each graph.
-dataset_name/dataset_name.Labels : a file denoting each gexf file to the integer class label
-"""
-
 
 import pickle
 import sys
@@ -52,13 +41,33 @@ from tqdm import tqdm
 
 
 class DortmundGexf(object):
-	"""
-	A class which reads TU Dortmund style datasets and processes them
+	"""A class which reads TU Dortmund style datasets and processes them
 	into a corresponding set of .gexf graphs and an associated .Labels file
+	
+	This class helps turn datasets from the format with which 
+	TU Graph Kernel datasets are written into Gexf datasets,
+	which Geo2DR can work with.
+
+	It reads the DS_A.txt, DS_graph_indicator.txt, and DS_graph_labels.txt 
+	to create a folder of graphs in GEXF format and a graph-id to 
+	graph-classification label file.
+
+	The saved format will be 
+	dataset_name/dataset_name/<name>.gexf : folder containing individual gexf files of each graph.
+	dataset_name/dataset_name.Labels : a file denoting each gexf file to the integer class label
 
 	See tu_gexifier for a more basic script based version. This class version
 	will also contain various metadata about the dataset which may be useful
 	for downstream decomposition algorithms and other analysis
+	
+	Parameters
+	----------
+	dataset : str
+		string name of directory containing dataset, eg. "MUTAG".
+	path_to_dataset : str
+		path to directory containing directory of dataset.
+	output_dir_for_graph_files : str
+		path to where new dataset and labels file will be saved.
 	"""
 	def __init__(self, dataset, path_to_dataset, output_dir_for_graph_files):
 		super(DortmundGexf, self).__init__()
@@ -71,7 +80,16 @@ class DortmundGexf(object):
 		self.output_dir_for_graph_files = output_dir_for_graph_files
 		self.folder_for_graph_files = output_dir_for_graph_files + dataset
 
-	def format_dataset(self):  
+	def format_dataset(self):
+		"""Method which formats supplied TU-Dortmund formatted dataset into 
+		GEXF format compatible with other geometric2dr modules
+
+		Returns
+		-------
+		None
+			The formatted dataset will be saved in `output_dir_for_graph_files` 
+			with the format described above
+		"""  
 		if os.path.isdir(self.folder_for_graph_files):
 			print("#... The dataset %s already exists, closing program ...#" % (self.folder_for_graph_files))
 		else:
@@ -99,14 +117,6 @@ class DortmundGexf(object):
 			edges = [(int(x.strip()), int(y.strip())) for x,y in edges] # nice little list of tuples
 
 			todoedges = len(edges)
-			# for x,y in tqdm(edges):
-			# 	## TAKES A LOT OF TIME, TODO: parallel or smarter algo (it gets worse over time)
-			# 	for gindex in graph_nodes.keys():
-			# 		if (x in graph_nodes[gindex] and y in graph_nodes[gindex]):
-			# 			graph_edges[gindex].append((x,y))
-			# 			break # no need to continue going through graphs checking for this edge
-			# 		else:
-			# 			continue
 
 			# new version
 			graph_edges = defaultdict(list)

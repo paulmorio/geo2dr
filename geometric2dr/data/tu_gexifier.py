@@ -1,5 +1,4 @@
-"""
-Gexifier for TU kernel based datasets.
+"""Simple script to transform TU-Dortmund Benchmark datasets into Geo2DR compatible GEXF.
 
 This scrips helps turn datasets from the format with which TU Graph Kernel datasets are written into something we can work with.
 
@@ -8,6 +7,11 @@ It reads the DS_A.txt, DS_graph_indicator.txt, and DS_graph_labels.txt to create
 The saved format will be 
 dataset_name/dataset_name : folder containing individual gexf files of each graph.
 dataset_name/dataset_name.Labels : a file denoting each gexf file to the integer class label
+
+.. deprecated:: 0.2.1
+	This script may be removed in future releases as it is succeeded by the faster
+	and feature-rich dortmund_formatter.DortmundGexf class.
+
 """
 
 import pickle
