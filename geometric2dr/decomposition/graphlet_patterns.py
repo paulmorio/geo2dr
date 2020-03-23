@@ -97,6 +97,29 @@ def get_maps(num_graphlets):
     return canonical_map
 
 def get_graphlet(window, num_graphlets):
+    """Compute the Nauty certificate of the graphlet in within a window of the adjacency matrix
+
+    This function takes the upper triangle of a nxn matrix and
+    computes its hash certificate using nauty. Given the parameters
+    this usually involved computing the graphlet of num_graphlets 
+    size
+
+    This is used for comparison with a bank of known certificates
+    as loaded in get_maps().
+
+    Parameters
+    ----------
+    window : numpy ndarray
+        submatrix inside the adjacency matrix of a graph
+    num_graphlets: int
+        the size of the graphlets to extract
+
+    Returns
+    -------
+    cert : byte str
+        certicate of the graphlet produced by finding its canonical representation with Nauty.
+
+    """
 
     adj_mat = {idx: [i for i in list(np.where(edge)[0]) if i!=idx] for idx, edge in enumerate(window)}
 
@@ -105,7 +128,39 @@ def get_graphlet(window, num_graphlets):
     return cert
 
 def graphlet_corpus(corpus_dir, num_graphlets, samplesize):
+    """Function which produces graph documents with the induced graphlet patterns
 
+    The main use case is for the user to input a path containing individual
+    graphs of the dataset in gexf format.
+    The decomposition algorithm will induce graphlet patterns for graphs
+    recording the dataset/"global" vocabulary of patterns within a dictionary.
+    The graph and its associated patterns (by IDs given through our hash function)
+    are saved into a  <graphid>.wldr<depth> file which contains a line delimited
+    list of all the substructure pattern ids.
+
+    Parameters
+    ----------
+    corpus_dir : str
+        path to directory containing graph files of dataset in .gexf format.
+    num_graphlets : int 
+        the size of the graphlet patterns to be extracted 
+    samplesize : int
+        the number of samples to take from a graph.
+
+    Returns
+    -------
+    corpus : list of lists of str
+        a list of lists, with each inner list containing all the samplesize*(1+ num_graphlets) patterns in one graph of the dataset
+    vocabulary : list
+        a set of the unique graphlet pattern ids
+    prob_map : dict
+        a map {gidx: {graphlet_idx: normalized_prob}} of normalized probabilities of a graphlet pattern appearing in a graph based on counts made in generation
+    num_graphs : int
+        the number of graphs in the dataset
+    graph_map : dict
+        a map {gidx: {graphlet_idx: count}} of the number of times a certain graphlet pattern appeared in a graph for each graph gidx in the dataset
+    
+    """
 
     fallback_map = {1: 1, 2: 2, 3: 4, 4: 8, 5: 19, 6: 53, 7: 209, 8: 1253, 9: 13599}
     canonical_map = get_maps(num_graphlets)
