@@ -96,11 +96,31 @@ def save_sp_doc(gexf_fh, gidx, coocurrence_corpus):
 			print (sentence, file=fh)
 
 def sp_corpus(corpus_dir):
-	"""
+	"""Function which induces the shortest path patterns over the graphs inside a given directory.
+
 	The main use case for this script is for the user to supply a path to the directory
 	containing the .gexf graph files of a dataset. The decomposition function will produce
 	a .spp file for each .gexf file which contains the shortest path patterns of a graph
 	given the vocabulary of patterns across the dataset.
+
+	Parameters
+	----------
+	corpus_dir : str
+		path to directory containing graph files of dataset in .gexf format
+
+	Returns
+	-------
+	corpus : list of lists of str
+	    a list of lists, with each inner list containing all the shortest path patterns in one graph of the dataset
+	vocabulary : list
+	    a set of the unique shortest path pattern ids
+	prob_map : dict
+	    a map {gidx: {path: normalized_prob}} of normalized probabilities of a shortest path pattern appearing in a graph based on counts made in generation
+	num_graphs : int
+	    the number of graphs in the dataset
+	graph_map : dict
+	    a map {gidx: {path: count}} of the number of times a certain shortest path pattern appeared in a graph for each graph gidx in the dataset
+	
 	"""
 	graph_files = get_files(corpus_dir, extension=".gexf")
 	vocabulary = set() 
