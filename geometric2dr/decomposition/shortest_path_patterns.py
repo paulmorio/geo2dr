@@ -48,16 +48,47 @@ random.seed(314124)
 np.random.seed(2312312)
 
 def load_graph(file_handle):
-	"""Load the gexf format file as a nx_graph and an adjacency matrix.
+	""" Load the gexf format file as a nx_graph and an adjacency matrix.
+
+	Parameters
+	----------
+	file_handle : str
+	    path to gexf file
+
+	Returns
+	-------
+	graph : networkx graph
+	    Networkx graph instance of input gexf file
+	adj_matrix : numpy ndarray
+	    The adjacency matrix of the graph
+
 	"""
 	graph = nx.read_gexf(file_handle)
 	adj_matrix = nx.to_numpy_matrix(graph)
 	return graph, adj_matrix
 
 def save_sp_doc(gexf_fh, gidx, coocurrence_corpus):
+	"""Saves a shortest path graph doc with the extension .spp
+	
+	Parameters
+	----------
+	gexf_fh : str
+		sdf
+	gidx : int
+		int id of the gexf (note: deprecated and will 
+		be removed in next version)
+	cooccurrence_corpus : list
+		list of lists containing cooccuring shortest paths 
+		(ie those starting from the same starting node)
+
+	Returns
+	-------
+	None : None
+		Saves the induced shortest path patterns into a graph document for the graph specified
+		in the `gexf_fh` 
+
 	"""
-	Saves a shortest path graph doc with the extension .spp
-	"""
+	
 	open_fname = gexf_fh + ".spp"
 	# if os.path.isfile(open_fname):
 	# 	return
