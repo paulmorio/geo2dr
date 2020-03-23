@@ -1,21 +1,13 @@
+"""Functions for inducing Weisfeiler Lehman graph decomposition algorithm via node relabeling
+as described in Shervashidze et al. [3]_.
+
+Based on the implementation available in the original source code of Graph2Vec [4]_
+and adapted for Geo2DR https://github.com/MLDroid/graph2vec_tf which has no license
+
 """
-Weisfeiler Lehman graph decomposition algorithm via node relabeling
-(Shershavidze et al)
 
-The main use case is for the user to input a path containing individual
-graphs of the dataset in gexf format.
-The decomposition algorithm will induce substructure patterns for graphs
-recording the dataset/"global" vocabulary of patterns within a dictionary.
-The graph and its associated patterns (by IDs given through our hash function)
-are saved into a  <graphid>.wldr<depth> file which contains a line delimited
-list of all the substructure pattern ids.
+# Author: Paul Scherer 2019.
 
-Author: Paul Scherer 2019.
-
-Based on the implementation available by the authors of Graph2Vec and adapted for Geo2DR
-https://github.com/MLDroid/graph2vec_tf No License
-Carry down MIT License
-"""
 
 import os
 import glob
@@ -147,6 +139,15 @@ def wl_corpus(fnames, max_h, node_label_attr_name='Label'):
     then perform max-h iterations of the WL relabeling algorithm (1979) to create new labels which are compressed
     versions of the rooted subgraphs for each node in the graph. These are all present in the nx graph objects's nodes
     as attributes, with the original label being 'Label' and our subsequent relabelings in the "relabel" attribute
+    
+    The main use case is for the user to input a path containing individual
+    graphs of the dataset in gexf format.
+    The decomposition algorithm will induce substructure patterns for graphs
+    recording the dataset/"global" vocabulary of patterns within a dictionary.
+    The graph and its associated patterns (by IDs given through our hash function)
+    are saved into a  <graphid>.wldr<depth> file which contains a line delimited
+    list of all the substructure pattern ids.
+
     """
     global label_to_compressed_label_map
     compressed_labels_map_list = [] # list of compressed labels maps that can be used to go backwards
