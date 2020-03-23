@@ -126,7 +126,7 @@ def get_graphlet(window, num_graphlets):
     return cert
 
 def graphlet_corpus(corpus_dir, num_graphlets, samplesize):
-    """Function which produces graph documents with the induced graphlet patterns
+    """Function which induces the graphlet patterns over the graphs inside a given directory.
 
     The main use case is for the user to input a path containing individual
     graphs of the dataset in gexf format.
