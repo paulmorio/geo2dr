@@ -71,8 +71,7 @@ def initial_relabel(graph, node_label_attr_name="Label"):
     return graph
 
 def wl_relabel(graph, it):
-    """
-    Runs an iteration of the WL relabeling algorithm, onto
+    """Runs an iteration of the WL relabeling algorithm, onto
     the graph using the global label_to_compressed_label_map
     
     Parameters
@@ -87,7 +86,7 @@ def wl_relabel(graph, it):
     -------
     graph : networkx graph
         the input nx graph with more labels in the "relabel" attribute
-        
+
     """
     global label_to_compressed_label_map # This is the global hash function for compression
 
@@ -111,16 +110,29 @@ def wl_relabel(graph, it):
 
 
 def save_wl_doc(fname,max_h,graph=None):
-    """
-    Dumps the subgraph sentences in format <center> <context in it> <context in it-1> <context in it+1>
-    In other words we are saving the relabelings of node from the WL algo into a text document
-    which can be fed into our skipgram architecture
+    """Saves the induced rooted subgraph patterns 
 
-    :param fname: path/filename of the graph
-    :param max_h: highest_iteration wlk_h specified (ie depth of rooted subgraph)
-    :param graph: the nx graph of the filename
-    :return None: we save text into a file
+    Saves the subgraph sentences in format <center> <context> <context> ....
+    In other words we are saving the relabelings of node from the WL algorithm 
+    into a text document which can be fed into our skipgram architecture
+    
+    Parameters
+    ----------
+    fname : str
+        path/filename of the graph
+    max_h : int
+        highest_iteration wlk_h specified (ie depth of rooted subgraph)
+    graph : networkx graph
+        the nx graph of the filename
+
+    Returns
+    -------
+    None : None 
+        The rooted subgraph patterns are saved into a text file in the 
+        format <center> <context> <context> <context> ....
+
     """
+
     open_fname = fname + '.wld' + str(max_h)
 
     # # no need to write if it already exists
@@ -175,6 +187,35 @@ def wl_corpus(fnames, max_h, node_label_attr_name='Label'):
     The graph and its associated patterns (by IDs given through our hash function)
     are saved into a  <graphid>.wldr<depth> file which contains a line delimited
     list of all the substructure pattern ids.
+
+    Parameters
+    ----------
+    fnames : list
+        list of gexf file paths for the graphs in the dataset
+    max_h : int
+        the maximum depth of rooted subgraph pattern to induce across 
+        the dataset of graphs
+    node_label_attr_name : str
+        string literal of the attribute name used as a label in the 
+        gexf file NB: "label" in the gexf refers to nodeID "Label"
+        refers to the dataset node label
+
+    Returns
+    -------
+    corpus : list of lists of str
+        a list of lists, with each inner list containing all the rooted subgraph patterns in one graph of the dataset
+    vocabulary : list
+        a set of the unique rooted subgraph pattern ids
+    prob_map : dict
+        a map {gidx: {wl_pattern: normalized_prob}} of normalized probabilities of a rooted subgraph pattern appearing in a graph based on counts made in generation
+    num_graphs : int
+        the number of graphs in the dataset
+    graph_map : dict
+        a map {gidx: {wl_pattern: count}} of the number of times a certain rooted subgraph pattern appeared in a graph for each graph gidx in the dataset
+
+    None : None
+        The rooted subgraph patterns are also saved into a text file for each graph in 'fnames' in the 
+        format <center> <context> <context> <context> ....
 
     """
     global label_to_compressed_label_map
