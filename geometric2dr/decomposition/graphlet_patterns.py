@@ -229,20 +229,34 @@ def graphlet_corpus(corpus_dir, num_graphlets, samplesize):
     return corpus, vocabulary, prob_map, num_graphs, graph_map
 
 def save_graphlet_document(gexf_fh, gidx, num_graphlets, samplesize, cooccurence_corpus):
-    """Saves the induced graphlet patterns into dataset folder
+    """Saves the induced graphlet patterns into dataset folder, it is only used in conjunction
+    with graphlet_corpus()
 
     Parameters
     ----------
     gexf_fh : str
-        asdf
+        path to gexf file of graph
     gidx : int
-        asdf
+        integer id of the graph, typically matches number in 
+        gexf_fh, if using TU Dortmund benchmark datasets
     num_graphlets : int
-        asdf
+        size of graphlet patterns induced
+    samplesize : int
+        number of graphlet patterns sampled from graph
+    cooccurrence_corpus : list
+        list of graphlet patterns induced under cooccurrence 
+        rules, in this case all graphlets immediately adjacent
+        to an induced graphlet pattern.
 
     Returns
     -------
-    
+    None : None
+        The decomposition algorithm will induce graphlet patterns for graphs
+        recording the dataset/"global" vocabulary of patterns within a dictionary.
+        The graph and its associated patterns (by IDs given through our hash function)
+        are saved into a  <graphid>.wldr<depth> file which contains a line delimited
+        list of all the substructure pattern ids.
+
 
     """
     open_fname = gexf_fh + ".graphlet" + "_ng_" + str(num_graphlets) + "_ss_" + str(samplesize)
