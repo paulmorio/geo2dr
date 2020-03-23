@@ -1,36 +1,30 @@
+"""Shortest path based decomposition algorithm to create graph documents. 
+Inspired and adapted from Yanardag and Vishwanathan "Deep Graph Kernels" [2]_.
+
+.. [2]  P. Yanardag and S. Vishwanathan, "Deep Graph Kernels", KDD '15: Proceedings of the 21th ACM SIGKDD International Conference on Knowledge Discovery and Data Mining, 2015
+
 """
-Shortest path based decomposition algorithm to create graph documents 
 
-The main use case for this script is for the user to supply a path to the directory
-containing the .gexf graph files of a dataset. The decomposition function will produce
-a .spp file for each .gexf file which contains the shortest path patterns of a graph
-given the vocabulary of patterns across the dataset.
+# Copyright (c) 2016 Pinar Yanardag
+#               2019 Paul Scherer
 
-Inspired and adapted from deep_graph_kernels.py by Pinar Yanardag 2015
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
 
-Hence we adopt license
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
 
-Copyright (c) 2016 Pinar Yanardag
-              2019 Paul Scherer
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-"""
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
 
 # Standard libraries
 import sys
@@ -54,8 +48,7 @@ random.seed(314124)
 np.random.seed(2312312)
 
 def load_graph(file_handle):
-	"""
-	Load the gexf format file as a nx_graph and an adjacency matrix.
+	"""Load the gexf format file as a nx_graph and an adjacency matrix.
 	"""
 	graph = nx.read_gexf(file_handle)
 	adj_matrix = nx.to_numpy_matrix(graph)
@@ -74,6 +67,12 @@ def save_sp_doc(gexf_fh, gidx, coocurrence_corpus):
 			print (sentence, file=fh)
 
 def sp_corpus(corpus_dir):
+	"""
+	The main use case for this script is for the user to supply a path to the directory
+	containing the .gexf graph files of a dataset. The decomposition function will produce
+	a .spp file for each .gexf file which contains the shortest path patterns of a graph
+	given the vocabulary of patterns across the dataset.
+	"""
 	graph_files = get_files(corpus_dir, extension=".gexf")
 	vocabulary = set() 
 	count_map = {}
