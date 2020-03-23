@@ -4,8 +4,6 @@ The algorithms are adapted from the original source code by
 Ivanov and Burnaev 2018 "Anonymous Walk Embeddings" [1]_. Original reference 
 implementation can be found in: https://github.com/nd7141/AWE
 
-.. [1]  Sergey Ivanov, Evgeny Burnaev. "Anonymous Walk Embeddings". Proceedings of the 35th International Conference on Machine Learning, PMLR 80:2186-2195, 2018. 
-
 """
 
 # Author: Paul Scherer 2019

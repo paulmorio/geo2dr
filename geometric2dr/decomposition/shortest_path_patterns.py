@@ -1,8 +1,6 @@
 """Shortest path based decomposition algorithm to create graph documents. 
 Inspired and adapted from Yanardag and Vishwanathan "Deep Graph Kernels" [2]_.
 
-.. [2]  P. Yanardag and S. Vishwanathan, "Deep Graph Kernels", KDD '15: Proceedings of the 21th ACM SIGKDD International Conference on Knowledge Discovery and Data Mining, 2015
-
 """
 
 # Copyright (c) 2016 Pinar Yanardag
@@ -88,7 +86,7 @@ def save_sp_doc(gexf_fh, gidx, coocurrence_corpus):
 		in the `gexf_fh` 
 
 	"""
-	
+
 	open_fname = gexf_fh + ".spp"
 	# if os.path.isfile(open_fname):
 	# 	return

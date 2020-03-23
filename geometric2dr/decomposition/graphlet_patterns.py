@@ -1,8 +1,6 @@
 """Graphlet based graph decomposition algorithm to create graph documents. 
 Inspired and adapted from Yanardag and Vishwanathan "Deep Graph Kernels" [2]_.
 
-.. [2]  P. Yanardag and S. Vishwanathan, "Deep Graph Kernels", KDD '15: Proceedings of the 21th ACM SIGKDD International Conference on Knowledge Discovery and Data Mining, 2015
-
 """
 
 # We adopt the original license and extend it here.
