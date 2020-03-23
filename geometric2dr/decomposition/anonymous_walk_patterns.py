@@ -318,7 +318,7 @@ def awe_corpus(corpus_dir, awe_length, label_setting, neighborhood_size=10, savi
 
 	Returns
 	-------
-	None
+	None : None
 		Induces the anonymous walks of `awe_length` across the list of gexf file paths
 		supplied in `corpus_dir`. Graph "documents" with the extension 
 		*.awe_<`awe_length`>_<`label_setting`>* are created for each of the gexf files in the
