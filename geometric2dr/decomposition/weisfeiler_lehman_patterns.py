@@ -21,16 +21,29 @@ label_to_compressed_label_map = {}
 get_int_node_label = lambda l: int(l.split('+')[-1])
 
 def initial_relabel(graph, node_label_attr_name="Label"): 
-    """
-    The initial relabeling of the graphs in the dataset. Taking the attributed label of the node as stated
-    by the attr in the gexf file, it gives new labels to these node types (without regard for neighbours)
-    hence it really is just a relabeling of the initial labels into our own "0+<newlabel>" format (to use 
+    """The initial relabeling of the graphs in the dataset. 
+
+    Taking the attributed label of the node as stated by the attr 
+    in the gexf file, it gives new labels to these node types
+    (without regard for neighbours) hence it really is just a relabeling
+    of the initial labels into our own "0+<newlabel>" format (to use 
     with WL relabeling scheme after
 
-    :param graph: a nx graph
-    :param node_label_attr_name: string literal of the attribute name used as a label in the gexf file
-                                NB: "label" in the gexf refers to nodeID "Label" refers to the dataset node label
-    :return graph: the same nx graph but with a new "relabel" attribute with the 0th wlk-h entry label
+    Parameters
+    ----------
+    graph : networkx graph
+        a networkx graph
+    node_label_attr_name : str
+        string literal of the attribute name used as a label in the 
+        gexf file NB: "label" in the gexf refers to nodeID "Label"
+        refers to the dataset node label
+    
+    Returns
+    -------
+    graph : networkx graph
+        the same nx graph but with a new "relabel" attribute with
+        the 0th wlk-h entry label
+
     """
     global label_to_compressed_label_map # This is the global WL hash function for compresssed labels
 
@@ -59,13 +72,22 @@ def initial_relabel(graph, node_label_attr_name="Label"):
 
 def wl_relabel(graph, it):
     """
-    Runs an iteration of the WL relabeling algorithm, onto the graph using the global 
-    label_to_compressed_label_map
+    Runs an iteration of the WL relabeling algorithm, onto
+    the graph using the global label_to_compressed_label_map
     
-    :param graph: an nx graph from the dataset which we want to relabel (has had to be initally relabeled, ie have the
-                    graph.nodes.[node]['relabel'] attribute)
-    :param it: an int, signifiying iteration in the WL relabeling algorithm.
-    :return graph: the input nx graph with more labels in the "relabel" attribute
+    Parameters
+    ----------
+    graph : networkx graph
+        a networkx graph from the dataset which we want to relabel 
+        (has had to be initally relabeled, ie have the graph.nodes.[node]['relabel'] attribute)
+    it : int
+        an int, signifiying iteration in the WL relabeling algorithm.
+
+    Returns
+    -------
+    graph : networkx graph
+        the input nx graph with more labels in the "relabel" attribute
+        
     """
     global label_to_compressed_label_map # This is the global hash function for compression
 
@@ -133,12 +155,18 @@ def save_wl_doc(fname,max_h,graph=None):
                 
 
 def wl_corpus(fnames, max_h, node_label_attr_name='Label'):
-    """
-    Given a set of graphs from the dataset, a maximum h for WL, and the label attribute name used in 
-    the gexf files we initially relabel the original labels into a compliant relabeling (caesar shift for ease)
-    then perform max-h iterations of the WL relabeling algorithm (1979) to create new labels which are compressed
-    versions of the rooted subgraphs for each node in the graph. These are all present in the nx graph objects's nodes
-    as attributes, with the original label being 'Label' and our subsequent relabelings in the "relabel" attribute
+    """Induce rooted subgraph patterns using the WL node relabeling 
+    algorith given list gexf files and save corresponding graph files.
+
+    Given a set of graphs from the dataset, a maximum h for WL, and 
+    the label attribute name used in the gexf files we initially relabel
+    the original labels into a compliant relabeling (caesar shift for 
+    ease) then perform max-h iterations of the WL relabeling algorithm 
+    (1979) to create new labels which are compressed versions of the 
+    rooted subgraphs for each node in the graph. These are all present
+    in the nx graph objects's nodes as attributes, with the original 
+    label being 'Label' and our subsequent relabelings in the "relabel"
+    attribute
     
     The main use case is for the user to input a path containing individual
     graphs of the dataset in gexf format.
