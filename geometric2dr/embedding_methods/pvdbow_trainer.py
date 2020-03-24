@@ -17,7 +17,7 @@ from .utils import save_graph_embeddings
 # from embedding_methods.classify import perform_classification, cross_val_accuracy
 
 class Trainer(object):
-	"""Handles corpus construction (hard drive version), PVDBOW initialization and training.
+	"""Handles corpus construction (hard drive version), PVDBOW (skipgram) initialization and training.
 
 	Paramaters
 	----------

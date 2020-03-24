@@ -16,6 +16,37 @@ from .skipgram import Skipgram
 from .utils import save_subgraph_embeddings
 
 class Trainer(object):
+	"""Handles corpus construction (hard drive version), skipgram initialization and training.
+
+	Paramaters
+	----------
+	corpus_dir : str
+		path to directory containing graph files
+	extension : str
+		extension used in graph documents produced after decomposition stage
+	max_files : int
+		the maximum number of graph files to consider, default of 0 uses all files
+	output_fh : str
+		the path to the file where embeddings should be saved
+	emb_dimension : int (default=128)
+		the desired dimension of the embeddings
+	batch_size : int (default=32)
+		the desired batch size
+	epochs : int (default=100)
+		the desired number of epochs for which the network should be trained
+	initial_lr : float (default=1e-3)
+		the initial learning rate
+	min_count : int (default=1)
+		the minimum number of times a pattern should occur across the dataset to 
+		be considered part of the substructure pattern vocabulary
+
+	Returns
+	-------
+	self : Trainer
+		A Trainer instance
+
+	"""
+
 	def __init__(self, corpus_dir, extension, max_files, window_size, output_fh, emb_dimension=128, batch_size=32, epochs=100, initial_lr=1e-3, min_count=1):
 		self.corpus = SkipgramCorpus(corpus_dir, extension, max_files, min_count, window_size)
 		self.dataloader = DataLoader(self.corpus, batch_size, shuffle=False, num_workers=4, collate_fn = self.corpus.collate)
@@ -43,6 +74,7 @@ class Trainer(object):
 			self.device = torch.device("cpu")
 
 	def train(self):
+		"""Train the network with the settings used to initialise the Trainer"""
 		for epoch in range(self.epochs):
 			print("### Epoch: " + str(epoch))
 			optimizer = optim.Adagrad(self.skipgram.parameters(), lr=self.initial_lr)
@@ -71,6 +103,36 @@ class Trainer(object):
 
 
 class InMemoryTrainer(object):
+	"""Handles corpus construction (in-memory version), PVDBOW initialization and training.
+
+	Paramaters
+	----------
+	corpus_dir : str
+		path to directory containing graph files
+	extension : str
+		extension used in graph documents produced after decomposition stage
+	max_files : int
+		the maximum number of graph files to consider, default of 0 uses all files
+	output_fh : str
+		the path to the file where embeddings should be saved
+	emb_dimension : int (default=128)
+		the desired dimension of the embeddings
+	batch_size : int (default=32)
+		the desired batch size
+	epochs : int (default=100)
+		the desired number of epochs for which the network should be trained
+	initial_lr : float (default=1e-3)
+		the initial learning rate
+	min_count : int (default=1)
+		the minimum number of times a pattern should occur across the dataset to 
+		be considered part of the substructure pattern vocabulary
+
+	Returns
+	-------
+	self : InMemoryTrainer
+		A trainer instance which has the dataset stored in memory for fast access
+	"""
+
 	def __init__(self, corpus_dir, extension, max_files, window_size, output_fh, emb_dimension=128, batch_size=32, epochs=100, initial_lr=1e-3, min_count=1):
 		self.corpus = InMemorySkipgramCorpus(corpus_dir, extension, max_files, min_count, window_size)
 		self.dataloader = DataLoader(self.corpus, batch_size, shuffle=False, num_workers=4, pin_memory=True, collate_fn = self.corpus.collate)
@@ -98,6 +160,7 @@ class InMemoryTrainer(object):
 			self.device = torch.device("cpu")
 
 	def train(self):
+		"""Train the network with the settings used to initialise the Trainer"""
 		for epoch in range(self.epochs):
 			print("### Epoch: " + str(epoch))
 			optimizer = optim.Adagrad(self.skipgram.parameters(), lr=self.initial_lr)
