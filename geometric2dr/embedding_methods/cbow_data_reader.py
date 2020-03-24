@@ -98,6 +98,7 @@ class CbowCorpus(Dataset):
 			dictionary of substructure pattern to int id map
 
 		"""
+		
 		# Get all the subgraph names (the centers, ie without context around itself) ie first item of 
 		# each line in the grapdoc files
 		subgraphs = defaultdict(int)
@@ -213,6 +214,7 @@ class CbowCorpus(Dataset):
 			list of negative samples by internal int id
 
 		"""
+
 		response = self.negatives[self.negpos:self.negpos + size]
 		self.negpos = (self.negpos + size) % len(self.negatives)
 		while target in response: # check equality with target
@@ -314,9 +316,15 @@ class CbowCorpus(Dataset):
 		self.epoch_flag = False
 
 	def __len__(self):
+		"""Return the number of total number of subgraphs
+		
+		"""
 		return len(self.context_pair_dataset) - 1
 
 	def __getitem__(self, idx):
+		""" Get a single target-context observation from the dataset.
+
+		"""
 		return self.context_pair_dataset[idx]
 
 	@staticmethod
