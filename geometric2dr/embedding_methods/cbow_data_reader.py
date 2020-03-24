@@ -1,11 +1,8 @@
-"""
-DataReader Module for CBOW Models
+"""Data_reader module containing corpus construction utilities for CBOW models
 
-This module describes the classes which handles graph corpi and datasets
-which can be loaded into PyTorch dataloaders for cbow model.
-
-Author: Paul Scherer
 """
+
+# Author: Paul Scherer
 
 import numpy as np
 import torch
@@ -19,9 +16,30 @@ from .utils import get_files
 np.random.seed(27)
 
 class CbowCorpus(Dataset):
-	"""
-	Class which representes all of the graph documents in a graph dataset serves context for PVDM models, This version 
-	keeps the entire corpus with negatives in memory which requires a larger initial creation time but is much quicker
+	"""Class which representes all of the graph documents in a graph dataset 
+	serves context for PVDM models, This version keeps the entire corpus 
+	with negatives in memory which requires a larger initial creation 
+	time but is much quicker at loading during training.
+
+	Parameters
+	----------
+	corpus_dir : str
+		path to folder with graph document files created in decomposition stage
+	extension : str
+		extension of the graph document files from which the corpus should be built
+	max_files : int (default=0)
+		the maximum number of files to include. Useful for debugging or other 
+		artificial scenarios. The default of 0 includes all files with matching
+		extension
+	window_size : int (default=1)
+		The number of context substructure patterns to be considered for every target. 
+		This needs to be greater than 0.
+
+	Returns
+	-------
+	self : CbowCorpus 
+		A corpus dataset that can be used with the CBOW with negative sampling model.
+
 	"""
 	NEGATIVE_TABLE_SIZE=1e8
 
