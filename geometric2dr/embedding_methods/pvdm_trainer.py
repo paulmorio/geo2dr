@@ -19,6 +19,38 @@ from .utils import save_graph_embeddings
 from .classify import perform_classification, cross_val_accuracy
 
 class PVDM_Trainer(object):
+	"""Handles corpus construction, CBOW initialization and training.
+
+	Paramaters
+	----------
+	corpus_dir : str
+		path to directory containing graph files
+	extension : str
+		extension used in graph documents produced after decomposition stage
+	max_files : int
+		the maximum number of graph files to consider, default of 0 uses all files
+	window_size : int
+		the number of cooccuring context subgraph patterns to use
+	output_fh : str
+		the path to the file where embeddings should be saved
+	emb_dimension : int (default=128)
+		the desired dimension of the embeddings
+	batch_size : int (default=32)
+		the desired batch size
+	epochs : int (default=100)
+		the desired number of epochs for which the network should be trained
+	initial_lr : float (default=1e-3)
+		the initial learning rate
+	min_count : int (default=1)
+		the minimum number of times a pattern should occur across the dataset to 
+		be considered part of the substructure pattern vocabulary
+
+	Returns
+	-------
+	self : PVDM_Trainer
+		A PVDM_Trainer instance
+	"""
+
 	def __init__(self, corpus_dir, extension, max_files, window_size, output_fh, emb_dimension=128, batch_size=32, epochs=100, initial_lr=1e-3, min_count=1):
 		self.corpus = PVDMCorpus(corpus_dir, extension, max_files, min_count, window_size)
 		self.dataloader = DataLoader(self.corpus, batch_size, shuffle=False, num_workers=0, collate_fn = self.corpus.collate)
@@ -46,6 +78,10 @@ class PVDM_Trainer(object):
 			self.device = torch.device("cpu")
 
 	def train(self):
+		"""Train the network with the settings used to initialise the PVDM_Trainer
+		
+		"""
+
 		for epoch in range(self.epochs):
 			print("### Epoch: " + str(epoch))
 			criterion = nn.CrossEntropyLoss()
