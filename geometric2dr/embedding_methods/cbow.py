@@ -28,7 +28,7 @@ class Cbow(nn.Module):
 		patterns, but can be repurposed to be number of graphs. 
 	vocab_size : int
 		The size of the vocabulary; the number of unique substructure patterns
-	embeddings_dimension : int
+	embedding_dimension : int
 		The desired dimensionality of the embeddings.
 
 	Returns
@@ -63,7 +63,7 @@ class Cbow(nn.Module):
 		----------
 		pos_target : torch.Long
 			index of target embedding
-		pos_context : torch.Long
+		pos_contexts : torch.Long
 			indices of context embeddings
 		pos_negatives : torch.Long
 			indices of negatives
