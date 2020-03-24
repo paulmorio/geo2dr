@@ -33,7 +33,8 @@ class Cbow(nn.Module):
 
 	Returns
 	-------
-	self : CBow (torch.nn.Module)
+	self : CBow 
+		a torch.nn.Module of the CBOW model
 	"""
 	def __init__(self, num_targets, vocab_size, embedding_dimension):
 		super(Cbow, self).__init__()
@@ -102,5 +103,13 @@ class Cbow(nn.Module):
 		return torch.mean(objective+neg_objective)
 
 	def give_target_embeddings(self):
+		"""Return the target embeddings as a numpy matrix
+
+		Returns
+		-------
+		numpy ndarray
+		    Numpy vocab_size x emb_dimension matrix of substructure pattern embeddings
+		"""
+
 		embedding = self.target_embeddings.weight.cpu().data.numpy()
 		return embedding
