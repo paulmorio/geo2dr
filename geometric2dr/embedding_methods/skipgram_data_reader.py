@@ -1,10 +1,9 @@
-"""
-A Datareader to help learn distributed representations of subgraphs as initially
-used in Deep Graph Kernels as a crux to build representations of kernel matrices 
-of the whole graphs.
+"""Data_reader module containing corpus construction utilities for 
+Skipgram based (ie PVDBOW as well) models.
 
-Author: Paul Scherer 2019
 """
+
+# Author: Paul Scherer 2019
 
 import numpy as np
 import torch
@@ -24,11 +23,31 @@ np.random.seed(27)
 #######################################################################################################
 #######################################################################################################
 class SkipgramCorpus(Dataset):
-	"""
-	Corpus which feeds positions of subgraphs, contextualised by "cooccuring" patterns 
-	as defined by the different decomposition algorithms.
+	"""Corpus which feeds positions of subgraphs, contextualised by "cooccuring" patterns 
+	as defined by the different decomposition algorithms. Designed to support negative 
+	sampling. In this version the __getitem__ function loads individual target-context pairs
+	from the hard-drive. As a result, it is quick to set up and memory efficient but may perform slower in training time.
+	
+	Parameters
+	----------
+	corpus_dir : str
+		path to folder with graph document files created in decomposition stage
+	extension : str
+		extension of the graph document files from which the corpus should be built
+	max_files : int (default=0)
+		the maximum number of files to include. Useful for debugging or other 
+		artificial scenarios. The default of 0 includes all files with matching
+		extension
+	window_size : int (default=1)
+		The number of context substructure patterns to be considered for every target. 
+		This needs to be greater than 0.
 
-	Designed to support negative sampling.
+	Returns
+	-------
+	self : SkipgramCorpus 
+		A corpus dataset that can be used with the skipgram with negative 
+		sampling model to learn substructure pattern embeddings.
+
 	"""
 	NEGATIVE_TABLE_SIZE = 1e8
 
@@ -55,10 +74,10 @@ class SkipgramCorpus(Dataset):
 		self.initTableNegatives()
 
 	def scan_and_load_corpus(self):
-		"""
-		gets the list of graph file paths, gives them number ids in a map and calls 
+		"""Gets the list of graph file paths, gives them number ids in a map and calls 
 		scan_corpus also makes available a list of shuffled graph_ids for batch
 		"""
+
 		print("#... Scanning and loading corpus from %s" % (self.corpus_dir))
 		self.graph_fname_list = sorted(get_files(self.corpus_dir, self.extension, self.max_files))
 		self._graph_name_to_id_map = {g:i for i, g in enumerate(self.graph_fname_list)}
@@ -72,10 +91,22 @@ class SkipgramCorpus(Dataset):
 		shuffle(self.graph_ids_for_batch_traversal)
 
 	def scan_corpus(self, min_count):
-		"""
-		Maps the graph files to a subgraph alphabet from which we create new_ids for the subgraphs
+		"""Maps the graph files to a subgraph alphabet from which we create new_ids for the subgraphs
 		which in turn get used by the skipgram architectures
+
+		Parameters
+		----------
+		min_count : int
+			The minimum number of times a subgraph pattern should appear across the graphs in 
+			order to be considered part of the vocabulary.
+
+		Returns
+		-------
+		(Optional) self._subgraph_to_id_map : dict
+			dictionary of substructure pattern to int id map
+
 		"""
+
 		# Get all the subgraph names (the centers, ie without context around itself) ie first item of 
 		# each line in the grapdoc files
 		subgraphs = defaultdict(int)
@@ -115,8 +146,18 @@ class SkipgramCorpus(Dataset):
 		return self._subgraph_to_id_map
 
 	def add_file(self, full_graph_path):
-		"""
-		This method is used to add new graphs into the corpus for inductive learning of new unseen graphs
+		"""This method is used to add new graphs into the corpus for 
+		inductive learning of new unseen graphs
+
+		Parameters
+		----------
+		full_graph_path : str
+			path to graph document to be part of the new corpus
+
+		Returns
+		-------
+		None
+			New graph and its substructure patterns is made part of the corpus
 		"""
 
 		# Retrieve the graphs files and assign them internal ids for this method
@@ -164,7 +205,23 @@ class SkipgramCorpus(Dataset):
 		self.negatives = np.array(self.negatives)
 		np.random.shuffle(self.negatives)
 
-	def getNegatives(self, target, size): 
+	def getNegatives(self, target, size):
+		r"""Given target find a `size` number of negative samples by index
+
+		Parameters
+		----------
+		target : int
+			internal int id of the subgraph pattern
+		size : int
+			number of negative samples to find
+
+		Returns
+		-------
+		response : [int]
+			list of negative samples by internal int id
+
+		"""
+
 		response = self.negatives[self.negpos:self.negpos + size]
 		self.negpos = (self.negpos + size) % len(self.negatives)
 		while target in response: # check equality with target
@@ -175,10 +232,17 @@ class SkipgramCorpus(Dataset):
 		return response
 
 	def __len__(self):
+		"""Return the number of total number of subgraphs
+		
+		"""
+
 		return self._subgraphcount
 
 	def __getitem__(self, idx):
-		# Get a single item of data from the dataset.
+		""" Get a single target-context observation from the dataset. This version loads each individual item from the hard drive
+
+		"""
+
 		target_subgraph_ids = []
 		context_subgraph_ids = []
 
@@ -210,8 +274,6 @@ class SkipgramCorpus(Dataset):
 		subgraph_contexts = graph_contents[line_id].split()[1:1+self.window_size]
 
 		target_graph = graph_name
-
-		# TODO MAKE THIS PART AN OPTION (BASED ON GRAPHLET ETC.)
 
 		# if target_subgraph in self._subgraph_to_id_map:
 		# 	for subgraph_context in subgraph_contexts:
@@ -272,11 +334,31 @@ class SkipgramCorpus(Dataset):
 #######################################################################################################
 #######################################################################################################
 class InMemorySkipgramCorpus(Dataset):
-	"""
-	Corpus which feeds positions of subgraphs, contextualised by "cooccuring" patterns 
-	as defined by the different decomposition algorithms.
+	"""Corpus which feeds positions of subgraphs, contextualised by "cooccuring" patterns 
+	as defined by the different decomposition algorithms. Designed to support negative 
+	sampling. This version keeps the entire corpus with negatives in memory which requires a 
+	larger initial creation time but has a much quicker __getitem__ computation.
+	
+	Parameters
+	----------
+	corpus_dir : str
+		path to folder with graph document files created in decomposition stage
+	extension : str
+		extension of the graph document files from which the corpus should be built
+	max_files : int (default=0)
+		the maximum number of files to include. Useful for debugging or other 
+		artificial scenarios. The default of 0 includes all files with matching
+		extension
+	window_size : int (default=1)
+		The number of context substructure patterns to be considered for every target. 
+		This needs to be greater than 0.
 
-	Designed to support negative sampling.
+	Returns
+	-------
+	self : InMemorySkipgramCorpus 
+		A corpus dataset that can be used with the skipgram with negative 
+		sampling model to learn substructure pattern embeddings.
+		
 	"""
 	NEGATIVE_TABLE_SIZE = 1e8
 
@@ -304,10 +386,11 @@ class InMemorySkipgramCorpus(Dataset):
 		self.preload_corpus()
 
 	def scan_and_load_corpus(self):
+		"""Gets the list of graph file paths, gives them number ids in a map and calls 
+		scan_corpus also makes available a list of shuffled graph_ids
+
 		"""
-		gets the list of graph file paths, gives them number ids in a map and calls 
-		scan_corpus also makes available a list of shuffled graph_ids for batch
-		"""
+
 		print("#... Scanning and loading corpus from %s" % (self.corpus_dir))
 		self.graph_fname_list = get_files(self.corpus_dir, self.extension, self.max_files)
 		self._graph_name_to_id_map = {g:i for i, g in enumerate(self.graph_fname_list)}
@@ -321,10 +404,22 @@ class InMemorySkipgramCorpus(Dataset):
 		shuffle(self.graph_ids_for_batch_traversal)
 
 	def scan_corpus(self, min_count):
-		"""
-		Maps the graph files to a subgraph alphabet from which we create new_ids for the subgraphs
+		"""Maps the graph files to a subgraph alphabet from which we create new_ids for the subgraphs
 		which in turn get used by the skipgram architectures
+
+		Parameters
+		----------
+		min_count : int
+			The minimum number of times a subgraph pattern should appear across the graphs in 
+			order to be considered part of the vocabulary.
+
+		Returns
+		-------
+		(Optional) self._subgraph_to_id_map : dict
+			dictionary of substructure pattern to int id map
+
 		"""
+
 		# Get all the subgraph names (the centers, ie without context around itself) ie first item of 
 		# each line in the grapdoc files
 		subgraphs = defaultdict(int)
@@ -364,9 +459,20 @@ class InMemorySkipgramCorpus(Dataset):
 		return self._subgraph_to_id_map
 
 	def add_file(self, full_graph_path):
+		"""This method is used to add new graphs into the corpus for 
+		inductive learning of new unseen graphs
+
+		Parameters
+		----------
+		full_graph_path : str
+			path to graph document to be part of the new corpus
+
+		Returns
+		-------
+		None
+			New graph and its substructure patterns is made part of the corpus
 		"""
-		This method is used to add new graphs into the corpus for inductive learning of new unseen graphs
-		"""
+
 
 		# Retrieve the graphs files and assign them internal ids for this method
 		self.graph_fname_list = get_files(self.corpus_dir, self.extension, self.max_files)
@@ -413,7 +519,23 @@ class InMemorySkipgramCorpus(Dataset):
 		self.negatives = np.array(self.negatives)
 		np.random.shuffle(self.negatives)
 
-	def getNegatives(self, target, size): 
+	def getNegatives(self, target, size):
+		r"""Given target find a `size` number of negative samples by index
+
+		Parameters
+		----------
+		target : int
+			internal int id of the subgraph pattern
+		size : int
+			number of negative samples to find
+
+		Returns
+		-------
+		response : [int]
+			list of negative samples by internal int id
+
+		"""
+
 		response = self.negatives[self.negpos:self.negpos + size]
 		self.negpos = (self.negpos + size) % len(self.negatives)
 		while target in response: # check equality with target
@@ -424,9 +546,10 @@ class InMemorySkipgramCorpus(Dataset):
 		return response
 
 	def preload_corpus(self):
+		"""Constructs and loads an entire context-pair dataset into memory
+		
 		"""
-		Loads an entire target-context substructure pair into memory, be careful.
-		"""
+
 		print("#... Generating dataset in memory for quick dataloader access")
 		self.context_pair_dataset = []
 
@@ -521,6 +644,9 @@ class InMemorySkipgramCorpus(Dataset):
 		return len(self.context_pair_dataset)-1
 
 	def __getitem__(self, idx):
+		""" Get a single target-context observation from the dataset in memory.
+
+		"""
 		return self.context_pair_dataset[idx]
 
 	@staticmethod
