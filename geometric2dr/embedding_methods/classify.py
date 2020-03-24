@@ -1,5 +1,4 @@
-"""
-Module containing various functions for classification (on top of the learned embeddings)
+"""Module containing various functions for classification (on top of the learned embeddings)
 mainly useful for providing convenience functions on common benchmark classification methods
 
 """
@@ -20,13 +19,24 @@ import logging
 from .utils import get_files, get_class_labels
 
 def linear_svm_classify(X_train, X_test, Y_train, Y_test):
-	"""
-	Classifier with graph embeddings
-	:param X_train: training feature vectors
-	:param X_test: testing feature vectors
-	:param Y_train: training set labels
-	:param Y_test: test set labels
-	:return: None
+	"""Utility function for quickly performing Scikit Learn GridSearchCV over a linear SVM 
+	with 10 fold CrossVal given the train test splits
+	
+	Parameters
+	----------
+	X_train : numpy ndarray
+		training feature vectors
+	X_test : numpy ndarray
+		testing feature vectors
+	Y_train : numpy ndarray
+		training set labels
+	Y_test : numpy ndarray
+		test set labels
+
+	Returns
+	-------
+	tuple
+		tuple with accuracy, precision, recall, fbeta_score as applicable
 	"""
 	params = {'C':[0.001, 0.01, 0.1, 1, 10, 100, 1000]}
 	if len(set(Y_train)) == 2:
