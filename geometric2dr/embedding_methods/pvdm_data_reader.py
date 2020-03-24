@@ -1,11 +1,8 @@
-"""
-DataReader Module for PVDM models
+"""Data_reader module containing corpus construction utilities for PVDM models
 
-This module describes the classes which handles graph corpi and datasets
-which can be loaded into PyTorch dataloaders.
-
-Author: Paul Scherer
 """
+
+# Author: Paul Scherer
 
 import numpy as np
 import torch
@@ -25,10 +22,32 @@ np.random.seed(27)
 #######################################################################################################
 
 class PVDMCorpus(Dataset):
+	"""Class which representes all of the graph documents in a graph dataset 
+	serves context for PVDM models, This version keeps the entire corpus 
+	with negatives in memory which requires a larger initial creation 
+	time but is much quicker at loading during training.
+
+	Parameters
+	----------
+	corpus_dir : str
+		path to folder with graph document files created in decomposition stage
+	extension : str
+		extension of the graph document files from which the corpus should be built
+	max_files : int (default=0)
+		the maximum number of files to include. Useful for debugging or other 
+		artificial scenarios. The default of 0 includes all files with matching
+		extension
+	window_size : int (default=1)
+		The number of context substructure patterns to be considered for every target. 
+		This needs to be greater than 0.
+
+	Returns
+	-------
+	self : PVDMCorpus 
+		A corpus dataset that can be used with the PVDM with negative sampling model.
+
 	"""
-	Class which representes all of the graph documents in a graph dataset serves context for PVDM models, This version 
-	keeps the entire corpus with negatives in memory which requires a larger initial creation time but is much quicker
-	"""
+
 	NEGATIVE_TABLE_SIZE=1e8
 
 	def __init__(self, corpus_dir=None, extension=".wld2", max_files=0, min_count=0, window_size=1):
@@ -55,10 +74,10 @@ class PVDMCorpus(Dataset):
 		self.pre_load_corpus()
 
 	def scan_and_load_corpus(self):
+		"""Gets the list of graph file paths, gives them number ids in a map and calls 
+		scan_corpus also makes available a list of shuffled graph_ids
 		"""
-		gets the list of graph file paths, gives them number ids in a map and calls 
-		scan_corpus also makes available a list of shuffled graph_ids for batch
-		"""
+
 		print("#... Scanning and loading corpus from %s" % (self.corpus_dir))
 		self.graph_fname_list = get_files(self.corpus_dir, self.extension, self.max_files)
 		self._graph_name_to_id_map = {g:i for i, g in enumerate(self.graph_fname_list)}
@@ -72,10 +91,22 @@ class PVDMCorpus(Dataset):
 		shuffle(self.graph_ids_for_batch_traversal)
 
 	def scan_corpus(self, min_count):
-		"""
-		Maps the graph files to a subgraph alphabet from which we create new_ids for the subgraphs
+		"""Maps the graph files to a subgraph alphabet from which we create new_ids for the subgraphs
 		which in turn get used by the skipgram architectures
+
+		Parameters
+		----------
+		min_count : int
+			The minimum number of times a subgraph pattern should appear across the graphs in 
+			order to be considered part of the vocabulary.
+
+		Returns
+		-------
+		(Optional) self._subgraph_to_id_map : dict
+			dictionary of substructure pattern to int id map
+
 		"""
+
 		# Get all the subgraph names (the centers, ie without context around itself) ie first item of 
 		# each line in the grapdoc files
 		subgraphs = defaultdict(int)
@@ -116,8 +147,18 @@ class PVDMCorpus(Dataset):
 		return self._subgraph_to_id_map
 
 	def add_file(self, full_graph_path):
-		"""
-		This method is used to add new graphs into the corpus for inductive learning of new unseen graphs
+		"""This method is used to add new graphs into the corpus for 
+		inductive learning of new unseen graphs
+
+		Parameters
+		----------
+		full_graph_path : str
+			path to graph document to be part of the new corpus
+
+		Returns
+		-------
+		None
+			New graph and its substructure patterns is made part of the corpus
 		"""
 
 		# Retrieve the graphs files and assign them internal ids for this method
@@ -165,7 +206,23 @@ class PVDMCorpus(Dataset):
 		self.negatives = np.array(self.negatives)
 		np.random.shuffle(self.negatives)
 
-	def getNegatives(self, target, size): 
+	def getNegatives(self, target, size):
+		r"""Given target find a `size` number of negative samples by index
+
+		Parameters
+		----------
+		target : int
+			internal int id of the subgraph pattern
+		size : int
+			number of negative samples to find
+
+		Returns
+		-------
+		response : [int]
+			list of negative samples by internal int id
+
+		"""
+
 		response = self.negatives[self.negpos:self.negpos + size]
 		self.negpos = (self.negpos + size) % len(self.negatives)
 		while target in response: # check equality with target
@@ -177,9 +234,10 @@ class PVDMCorpus(Dataset):
 
 
 	def pre_load_corpus(self):
+		"""Constructs and loads an entire context-pair dataset into memory
+		
 		"""
-		Loads an entire context-pair dataset into memory
-		"""
+
 		print("#... Generating dataset in memory for quick dataloader access")
 		self.context_pair_dataset = []
 
@@ -288,9 +346,15 @@ class PVDMCorpus(Dataset):
 		self.epoch_flag = False
 
 	def __len__(self):
+		"""Return the number of total number of subgraphs
+		
+		"""
 		return len(self.context_pair_dataset) - 1
 
 	def __getitem__(self, idx):
+		"""Return the number of total number of subgraphs
+		
+		"""
 		return self.context_pair_dataset[idx]
 
 	@staticmethod
@@ -299,12 +363,6 @@ class PVDMCorpus(Dataset):
 		all_contexts = [tsubgraph for batch in batches for _, tsubgraph, _, _ in batch if len(batch)>0]
 		all_subgraph_contexts = [csubgraph for batch in batches for _, _, csubgraph, _ in batch if len(batch)>0]
 		all_neg_contexts = [neg_tsubgraph for batch in batches for _, _, _, neg_tsubgraph in batch if len(batch)>0]
-
-		# print("targets len %s" % (len(all_targets)))
-		# print("all_contexts len %s" % (len(all_contexts)))
-		# print("all_subgraph_contexts len %s" % (len(all_subgraph_contexts)))
-		# print("all_subgraph_contexts sub_len %s" % ([len(x) for x in all_subgraph_contexts]))
-		# print("all_neg_contexts len %s" % (len(all_neg_contexts)))
 
 		return torch.LongTensor(all_targets), torch.LongTensor(all_contexts), torch.LongTensor(all_subgraph_contexts), torch.LongTensor(all_neg_contexts)
 
