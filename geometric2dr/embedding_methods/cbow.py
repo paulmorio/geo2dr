@@ -1,15 +1,13 @@
+"""CBOW model with negative sampling as in Mikolov et al. [5]_. 
+
+It is used with the corpus classes in cbow_data_reader which handles 
+the data reading and loading. This allows construction of full CBOW
+based systems. It is one of the choices of neural language model for
+recreating DGK [2]_ like systems.
+
 """
-CBOW model
 
-Uses negative sampling to learn better representations (and quicker too)
-
-It is used with the CBOWCorpus to handle the data reading and loading.
-This allows construction of full CBOW systems 
-
-Based on original description of CBOW in Mikolov et al (2013)
-
-Author: Paul Scherer
-"""
+# Author: Paul Scherer
 
 import torch
 import torch.nn as nn
@@ -17,12 +15,25 @@ import torch.nn.functional as F
 from torch.nn import init
 
 class Cbow(nn.Module):
-	"""
-	Pytorch implementation of the cbow with negative sampling
-	as in Mikolov et al.
+	"""Pytorch implementation of the CBOW architecture with negative sampling
+	as in Mikolov et al. [5]_
 
 	This is used in DGK models for example to learn embeddings
 	of substructures for downstream graph kernel definitions.
+
+	Parameters
+	----------
+	num_targets : int
+		The number of targets to embed. Typically the number of substructure
+		patterns, but can be repurposed to be number of graphs. 
+	vocab_size : int
+		The size of the vocabulary; the number of unique substructure patterns
+	embeddings_dimension : int
+		The desired dimensionality of the embeddings.
+
+	Returns
+	-------
+	self : CBow (torch.nn.Module)
 	"""
 	def __init__(self, num_targets, vocab_size, embedding_dimension):
 		super(Cbow, self).__init__()
@@ -45,6 +56,23 @@ class Cbow(nn.Module):
 		self.activation2 = nn.LogSoftmax(dim=-1)
 
 	def forward(self, pos_target, pos_contexts, pos_negatives):
+		"""Forward pass in network
+		
+		Parameters
+		----------
+		pos_target : torch.Long
+			index of target embedding
+		pos_context : torch.Long
+			indices of context embeddings
+		pos_negatives : torch.Long
+			indices of negatives
+
+		Returns
+		-------
+		torch.float
+			the negative sampling loss
+		
+		"""
 		# Be aware pos_contexts is typically several context embeddings
 		# emb_target_graph = self.context_embeddings(pos_graph_emb)
 		# mean_contexts_subgraphs = torch.mean(self.context_embeddings(pos_contexts), dim=1)
