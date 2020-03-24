@@ -67,9 +67,8 @@ class CbowCorpus(Dataset):
 		self.pre_load_corpus()
 
 	def scan_and_load_corpus(self):
-		"""
-		gets the list of graph file paths, gives them number ids in a map and calls 
-		scan_corpus also makes available a list of shuffled graph_ids for batch
+		"""Gets the list of graph file paths, gives them number ids in a map and calls 
+		scan_corpus also makes available a list of shuffled graph_ids
 		"""
 		print("#... Scanning and loading corpus from %s" % (self.corpus_dir))
 		self.graph_fname_list = get_files(self.corpus_dir, self.extension, self.max_files)
@@ -84,9 +83,20 @@ class CbowCorpus(Dataset):
 		shuffle(self.graph_ids_for_batch_traversal)
 
 	def scan_corpus(self, min_count):
-		"""
-		Maps the graph files to a subgraph alphabet from which we create new_ids for the subgraphs
+		"""Maps the graph files to a subgraph alphabet from which we create new_ids for the subgraphs
 		which in turn get used by the skipgram architectures
+
+		Parameters
+		----------
+		min_count : int
+			The minimum number of times a subgraph pattern should appear across the graphs in 
+			order to be considered part of the vocabulary.
+
+		Returns
+		-------
+		(Optional) self._subgraph_to_id_map : dict
+			dictionary of substructure pattern to int id map
+
 		"""
 		# Get all the subgraph names (the centers, ie without context around itself) ie first item of 
 		# each line in the grapdoc files
@@ -128,8 +138,18 @@ class CbowCorpus(Dataset):
 		return self._subgraph_to_id_map
 
 	def add_file(self, full_graph_path):
-		"""
-		This method is used to add new graphs into the corpus for inductive learning of new unseen graphs
+		"""This method is used to add new graphs into the corpus for 
+		inductive learning of new unseen graphs
+
+		Parameters
+		----------
+		full_graph_path : str
+			path to graph document to be part of the new corpus
+
+		Returns
+		-------
+		None
+			New graph and its substructure patterns is made part of the corpus
 		"""
 
 		# Retrieve the graphs files and assign them internal ids for this method
@@ -177,7 +197,22 @@ class CbowCorpus(Dataset):
 		self.negatives = np.array(self.negatives)
 		np.random.shuffle(self.negatives)
 
-	def getNegatives(self, target, size): 
+	def getNegatives(self, target, size):
+		r"""Given target find a `size` number of negative samples by index
+
+		Parameters
+		----------
+		target : int
+			internal int id of the subgraph pattern
+		size : int
+			number of negative samples to find
+
+		Returns
+		-------
+		response : [int]
+			list of negative samples by internal int id
+
+		"""
 		response = self.negatives[self.negpos:self.negpos + size]
 		self.negpos = (self.negpos + size) % len(self.negatives)
 		while target in response: # check equality with target
@@ -188,9 +223,10 @@ class CbowCorpus(Dataset):
 		return response
 
 	def pre_load_corpus(self):
+		"""Constructs and loads an entire context-pair dataset into memory
+		
 		"""
-		Loads an entire context-pair dataset into memory
-		"""
+		
 		print("#... Generating dataset in memory for quick dataloader access")
 		self.context_pair_dataset = []
 
