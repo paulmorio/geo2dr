@@ -1,8 +1,5 @@
-"""
-General Skipgram model with negative sampling originally introduced by word2vec paper
-Mikolov et al (2013). Used by DGK and Graph2Vec to learn substructure and graph level embeddings 
-
-Uses negative sampling to learn better representations (and quicker too)
+"""General Skipgram model with negative sampling originally introduced by word2vec paper
+Mikolov et al [5]_. Used by DGK [2]_ and Graph2Vec [4]_ to learn substructure and graph level embeddings 
 
 It is used by the SkipgamCorpus and PVDBOWCorpus to build complete Skipgram and PVDBOW systems respectively.
 SkipgramCorpus and PVDBOWCorpus are found in skipgram_data_reader and pvdbow_data_reader modules respectively
@@ -16,12 +13,26 @@ import torch.nn.functional as F
 from torch.nn import init
 
 class Skipgram(nn.Module):
-	"""
-	Pytorch implementation of the skipgram with negative 
-	sampling as in Mikolov et al.
+	"""Pytorch implementation of the skipgram with negative 
+	sampling as in Mikolov et al. [5]_
 
-	Based on the inputs it can be used as the skipgram described in the original Word2Vec paper, or as 
-	Doc2Vec (PV-DBOW) in Le and Mikolov
+	Based on the inputs it can be used as the skipgram described in the original Word2Vec paper [5]_ , or as 
+	Doc2Vec (PV-DBOW) in Le and Mikolov [6]_
+
+	Parameters
+	----------
+	num_targets : int
+		The number of targets to embed. Typically the number of substructure
+		patterns, but can be repurposed to be number of graphs. 
+	vocab_size : int
+		The size of the vocabulary; the number of unique substructure patterns
+	embedding_dimension : int
+		The desired dimensionality of the embeddings.
+
+	Returns
+	-------
+	self : Skipgram 
+		a torch.nn.Module of the Skipgram model
 	"""
 
 	def __init__(self, num_targets, vocab_size, embedding_dimension):
@@ -37,6 +48,23 @@ class Skipgram(nn.Module):
 		init.constant_(self.context_embeddings.weight.data,0)
 
 	def forward(self, pos_target, pos_context, neg_context):
+		"""Forward pass in network
+		
+		Parameters
+		----------
+		pos_target : torch.Long
+			index of target embedding
+		pos_context : torch.Long
+			index of context embedding
+		neg_context : torch.Long
+			index of negative
+		
+		Returns
+		-------
+		torch.float
+			the negative sampling loss
+			
+		"""
 		emb_target = self.target_embeddings(pos_target)
 		emb_context = self.context_embeddings(pos_context)
 		emb_neg_context = self.context_embeddings(neg_context)
