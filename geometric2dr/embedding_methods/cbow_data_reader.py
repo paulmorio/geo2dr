@@ -17,7 +17,7 @@ np.random.seed(27)
 
 class CbowCorpus(Dataset):
 	"""Class which representes all of the graph documents in a graph dataset 
-	serves context for PVDM models, This version keeps the entire corpus 
+	serves context for CBOW models, This version keeps the entire corpus 
 	with negatives in memory which requires a larger initial creation 
 	time but is much quicker at loading during training.
 
