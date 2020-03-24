@@ -1,8 +1,8 @@
-"""
-DataReader Module for skipgram models.
+"""Data_reader module containing corpus construction utilities for PVDBOW (skipgram) models.
 
 This module describes the classes which handle graph corpi and datasets
 which can be loaded into PyTorch dataloaders. 
+
 """
 
 import numpy as np
@@ -22,8 +22,31 @@ np.random.seed(27)
 #######################################################################################################
 #######################################################################################################
 class PVDBOWCorpus(Dataset):
-	"""
-	Class which representes all of the graph documents in a graph dataset
+	"""Class which represents the target-context dataset created
+	over the graph documents for PVDBOW models. In this version 
+	the __getitem__ function loads individual target-context pairs
+	from the hard-drive. As a result, it is quick to set up and 
+	memory efficient but may perform slower in training time.
+
+	Parameters
+	----------
+	corpus_dir : str
+		path to folder with graph document files created in decomposition stage
+	extension : str
+		extension of the graph document files from which the corpus should be built
+	max_files : int (default=0)
+		the maximum number of files to include. Useful for debugging or other 
+		artificial scenarios. The default of 0 includes all files with matching
+		extension
+	window_size : int (default=1)
+		The number of context substructure patterns to be considered for every target. 
+		This needs to be greater than 0.
+
+	Returns
+	-------
+	self : PVDBOWCorpus 
+		A corpus dataset that can be used with the skipgram with negative 
+		sampling model to learn graph-level embeddings.
 	"""
 	NEGATIVE_TABLE_SIZE=1e8
 
@@ -48,8 +71,7 @@ class PVDBOWCorpus(Dataset):
 		self.initTableNegatives()
 
 	def scan_and_load_corpus(self):
-		"""
-		gets the list of graph file paths, gives them number ids in a map and calls 
+		"""Gets the list of graph file paths, gives them number ids in a map and calls 
 		scan_corpus also makes available a list of shuffled graph_ids for batch
 		"""
 		print("#... Scanning and loading corpus from %s" % (self.corpus_dir))
@@ -65,10 +87,22 @@ class PVDBOWCorpus(Dataset):
 		shuffle(self.graph_ids_for_batch_traversal)
 
 	def scan_corpus(self, min_count):
-		"""
-		Maps the graph files to a subgraph alphabet from which we create new_ids for the subgraphs
+		"""Maps the graph files to a subgraph alphabet from which we create new_ids for the subgraphs
 		which in turn get used by the skipgram architectures
+
+		Parameters
+		----------
+		min_count : int
+			The minimum number of times a subgraph pattern should appear across the graphs in 
+			order to be considered part of the vocabulary.
+
+		Returns
+		-------
+		(Optional) self._subgraph_to_id_map : dict
+			dictionary of substructure pattern to int id map
+
 		"""
+
 		# Get all the subgraph names (the centers, ie without context around itself) ie first item of 
 		# each line in the grapdoc files
 		subgraphs = []
@@ -107,8 +141,18 @@ class PVDBOWCorpus(Dataset):
 		return self._subgraph_to_id_map
 
 	def add_file(self, full_graph_path):
-		"""
-		This method is used to add new graphs into the corpus for inductive learning of new unseen graphs
+		"""This method is used to add new graphs into the corpus for 
+		inductive learning of new unseen graphs
+
+		Parameters
+		----------
+		full_graph_path : str
+			path to graph document to be part of the new corpus
+
+		Returns
+		-------
+		None
+			New graph and its substructure patterns is made part of the corpus
 		"""
 
 		# Retrieve the graphs files and assign them internal ids for this method
@@ -158,7 +202,23 @@ class PVDBOWCorpus(Dataset):
 		self.negatives = np.array(self.negatives)
 		np.random.shuffle(self.negatives)
 		
-	def getNegatives(self, target, size): 
+	def getNegatives(self, target, size):
+		r"""Given target find a `size` number of negative samples by index
+
+		Parameters
+		----------
+		target : int
+			internal int id of the subgraph pattern
+		size : int
+			number of negative samples to find
+
+		Returns
+		-------
+		response : [int]
+			list of negative samples by internal int id
+
+		"""
+
 		response = self.negatives[self.negpos:self.negpos + size]
 		self.negpos = (self.negpos + size) % len(self.negatives)
 		while target in response: # check equality with target
@@ -169,12 +229,18 @@ class PVDBOWCorpus(Dataset):
 		return response
 
 	def __len__(self):
-		# Return the number of total number of subgraphs
+		"""Return the number of total number of subgraphs
+		
+		"""
 		# print("The number of graph-subgraph pairs considering batchsize in the dataset is")
 		return self._subgraphcount
 
 	def __getitem__(self, idx):
-		# Get a single item of data from the dataset.
+		""" Get a single target-context observation from the dataset.
+
+		This version loads each individual item from the hard drive
+
+		"""
 		target_graph_ids = []
 		context_subgraph_ids = []
 
@@ -255,9 +321,31 @@ class PVDBOWCorpus(Dataset):
 #######################################################################################################
 
 class PVDBOWInMemoryCorpus(Dataset):
-	"""
-	Class which representes all of the graph documents in a graph dataset, This version keeps the entire corpus with negatives in memory
-	which requires a larger initial creation time but is much quicker
+	"""Class which represents the target-context dataset created
+	over the graph documents for PVDBOW models. This version keeps 
+	the entire corpus with negatives in memory which requires a 
+	larger initial creation time but has a much quicker __getitem__ 
+	computation.
+
+	Parameters
+	----------
+	corpus_dir : str
+		path to folder with graph document files created in decomposition stage
+	extension : str
+		extension of the graph document files from which the corpus should be built
+	max_files : int (default=0)
+		the maximum number of files to include. Useful for debugging or other 
+		artificial scenarios. The default of 0 includes all files with matching
+		extension
+	window_size : int (default=1)
+		The number of context substructure patterns to be considered for every target. 
+		This needs to be greater than 0.
+
+	Returns
+	-------
+	self : PVDBOWInMemoryCorpus 
+		A corpus dataset that can be used with the skipgram with negative 
+		sampling model to learn graph-level embeddings.
 	"""
 	NEGATIVE_TABLE_SIZE=1e8
 
@@ -283,10 +371,11 @@ class PVDBOWInMemoryCorpus(Dataset):
 		self.pre_load_corpus()
 
 	def scan_and_load_corpus(self):
+		"""Gets the list of graph file paths, gives them number ids in a map and calls 
+		scan_corpus also makes available a list of shuffled graph_ids
+
 		"""
-		gets the list of graph file paths, gives them number ids in a map and calls 
-		scan_corpus also makes available a list of shuffled graph_ids for batch
-		"""
+
 		print("#... Scanning and loading corpus from %s" % (self.corpus_dir))
 		self.graph_fname_list = get_files(self.corpus_dir, self.extension, self.max_files)
 		self._graph_name_to_id_map = {g:i for i, g in enumerate(self.graph_fname_list)}
@@ -300,10 +389,22 @@ class PVDBOWInMemoryCorpus(Dataset):
 		shuffle(self.graph_ids_for_batch_traversal)
 
 	def scan_corpus(self, min_count):
-		"""
-		Maps the graph files to a subgraph alphabet from which we create new_ids for the subgraphs
+		"""Maps the graph files to a subgraph alphabet from which we create new_ids for the subgraphs
 		which in turn get used by the skipgram architectures
+
+		Parameters
+		----------
+		min_count : int
+			The minimum number of times a subgraph pattern should appear across the graphs in 
+			order to be considered part of the vocabulary.
+
+		Returns
+		-------
+		(Optional) self._subgraph_to_id_map : dict
+			dictionary of substructure pattern to int id map
+
 		"""
+
 		# Get all the subgraph names (the centers, ie without context around itself) ie first item of 
 		# each line in the grapdoc files
 		subgraphs = []
@@ -342,8 +443,18 @@ class PVDBOWInMemoryCorpus(Dataset):
 		return self._subgraph_to_id_map
 
 	def add_file(self, full_graph_path):
-		"""
-		This method is used to add new graphs into the corpus for inductive learning of new unseen graphs
+		"""This method is used to add new graphs into the corpus for 
+		inductive learning of new unseen graphs
+
+		Parameters
+		----------
+		full_graph_path : str
+			path to graph document to be part of the new corpus
+
+		Returns
+		-------
+		None
+			New graph and its substructure patterns is made part of the corpus
 		"""
 
 		# Retrieve the graphs files and assign them internal ids for this method
@@ -393,7 +504,23 @@ class PVDBOWInMemoryCorpus(Dataset):
 		self.negatives = np.array(self.negatives)
 		np.random.shuffle(self.negatives)
 
-	def getNegatives(self, target, size): 
+	def getNegatives(self, target, size):
+		r"""Given target find a `size` number of negative samples by index
+
+		Parameters
+		----------
+		target : int
+			internal int id of the subgraph pattern
+		size : int
+			number of negative samples to find
+
+		Returns
+		-------
+		response : [int]
+			list of negative samples by internal int id
+
+		"""
+
 		response = self.negatives[self.negpos:self.negpos + size]
 		self.negpos = (self.negpos + size) % len(self.negatives)
 		while target in response: # check equality with target
@@ -405,9 +532,10 @@ class PVDBOWInMemoryCorpus(Dataset):
 
 
 	def pre_load_corpus(self):
+		"""Constructs and loads an entire context-pair dataset into memory
+		
 		"""
-		Loads an entire context-pair dataset into memory
-		"""
+
 		print("#... Generating dataset in memory for quick dataloader access")
 		# Get a single item of data from the dataset.
 		self.context_pair_dataset = []
@@ -480,10 +608,15 @@ class PVDBOWInMemoryCorpus(Dataset):
 		self.epoch_flag = False
 
 	def __len__(self):
-		# Return the number of total number of subgraphs across the dataset (not unique subgraphs)
+		"""Return the number of total number of subgraphs
+		
+		"""
 		return self._subgraphcount
 
 	def __getitem__(self, idx):
+		""" Get a single target-context observation from the dataset in memory.
+
+		"""
 		return self.context_pair_dataset[idx]
 
 	@staticmethod
