@@ -1,5 +1,10 @@
 # Geo2DR
 
+![PyPI](https://img.shields.io/pypi/v/geometric2dr)
+![PyPI - License](https://img.shields.io/pypi/l/geometric2dr)
+[![Documentation Status](https://readthedocs.org/projects/geo2dr/badge/?version=latest)](https://geo2dr.readthedocs.io/en/latest/?badge=latest)
+
+
 ## *Geo2DR*: A library for learning distributed representations of graphs/manifolds.
 
 [Paper link](https://arxiv.org/abs/2003.05926)
