@@ -1,14 +1,10 @@
-# Geo2DR
+## *Geo2DR*: A library for learning distributed representations of graphs/manifolds.
 
 ![PyPI](https://img.shields.io/pypi/v/geometric2dr)
 ![PyPI - License](https://img.shields.io/pypi/l/geometric2dr)
 [![Documentation Status](https://readthedocs.org/projects/geo2dr/badge/?version=latest)](https://geo2dr.readthedocs.io/en/latest/?badge=latest)
 
-
-## *Geo2DR*: A library for learning distributed representations of graphs/manifolds.
-
-[Paper link](https://arxiv.org/abs/2003.05926)
-[Pypi link](https://pypi.org/project/geometric2dr/)
+**[Documentation](https://geo2dr.readthedocs.io/en/latest/)** | **[Paper](https://arxiv.org/abs/2003.05926)** | **[PyPI Page](https://pypi.org/project/geometric2dr/)**
 
 This library consists of various graph factorization and embedding algorithms built around a common framework to enable quick construction of systems capable of learning distributed representations of graphs. This library utilises PyTorch to maximise the utilisation of CUDA enabled GPUs for learning, but will also run efficiently on CPUs if a GPU is not available. 
 
