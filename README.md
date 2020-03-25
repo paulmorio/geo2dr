@@ -1,5 +1,6 @@
 ## *Geo2DR*: A library for learning distributed representations of graphs/manifolds.
 
+[![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 ![PyPI](https://img.shields.io/pypi/v/geometric2dr)
 ![PyPI - License](https://img.shields.io/pypi/l/geometric2dr)
 [![Documentation Status](https://readthedocs.org/projects/geo2dr/badge/?version=latest)](https://geo2dr.readthedocs.io/en/latest/?badge=latest)
