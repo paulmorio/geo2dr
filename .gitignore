@@ -20,6 +20,8 @@ replication/graph2vec_MUTAGfullCV_results.csv
 replication/*.graph
 replication/DGK_*
 replication/best*
+replication/*.pkl
+replication/pickle_sp_run.py
 # In Package Data
 geometric2dr/file_handling/dortmund_data
 geometric2dr/file_handling/dortmund_gexf
