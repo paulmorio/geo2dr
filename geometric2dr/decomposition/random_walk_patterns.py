@@ -149,6 +149,14 @@ def rw_corpus(corpus_dir, walk_length, neighborhood_size, saving_graph_docs=True
 	
 	Parameters
 	----------
+	corpus_dir : str
+		path to directory containing graph files
+	walk_length : int
+		desired length of the random walk
+	neighborhood_size : int
+		number of cooccuring walks to find per walk source (node)
+	saving_graph_docs : bool
+		boolean on whether the graph documents should be generated or not
 
 	Returns
 	-------
