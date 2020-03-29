@@ -26,6 +26,13 @@ geometric2dr.decomposition.weisfeiler\_lehman\_patterns
    :members:
 
 
+geometric2dr.decomposition.random\_walk\_patterns
+-------------------------------------------------------
+
+.. automodule:: geometric2dr.decomposition.random_walk_patterns
+   :members:
+
+
 References
 ----------
 .. [1]  Sergey Ivanov, Evgeny Burnaev. "Anonymous Walk Embeddings". Proceedings of the 35th International Conference on Machine Learning, PMLR 80:2186-2195, 2018.
