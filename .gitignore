@@ -10,6 +10,7 @@ examples/data/MUTAG/*.wld*
 examples/data/MUTAG/*.spp
 examples/data/MUTAG/*.awe*
 examples/data/MUTAG/*.graphlet*
+examples/data/MUTAG/*.rw*
 examples/data/*.json
 
 # Replication Data
