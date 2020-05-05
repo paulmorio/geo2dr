@@ -1,0 +1,5 @@
+include README.md
+include LICENSE
+include update_log.md
+include geometric2dr/decomposition/canonical_maps/*
+include geometric2dr/decomposition/graphlet_counter_maps/*
