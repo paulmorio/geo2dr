@@ -23,6 +23,10 @@ replication/DGK_*
 replication/best*
 replication/*.pkl
 replication/pickle_sp_run.py
+replication/awe_*.csv
+replication/awe_all*
+replication/graph2vec*.csv
+
 # In Package Data
 geometric2dr/file_handling/dortmund_data
 geometric2dr/file_handling/dortmund_gexf
