@@ -4,7 +4,7 @@ with open('README.md') as f:
 	long_description = f.read()
 
 setup(name="geometric2dr",
-      version='0.1.1',
+      version='0.5.0',
       description="Geo2DR: Library to build distributed representations of graphs",
       long_description = long_description,
       long_description_content_type="text/markdown",
