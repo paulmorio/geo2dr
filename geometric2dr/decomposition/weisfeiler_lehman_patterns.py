@@ -13,6 +13,7 @@ import os
 import glob
 from time import time
 import networkx as nx
+from tqdm import tqdm
 
 # Global label_to_compressed_label_map in its initial empty state 
 label_to_compressed_label_map = {}
@@ -105,7 +106,6 @@ def wl_relabel(graph, it):
             graph.nodes[node]['relabel'][it] = str(it) + "+" + str(compressed_label)
         else:
             graph.nodes[node]['relabel'][it] = str(it) + "+" + str(label_to_compressed_label_map[node_neighbourhood_label])
-
     return graph
 
 
@@ -222,7 +222,13 @@ def wl_corpus(fnames, max_h, node_label_attr_name='Label'):
     compressed_labels_map_list = [] # list of compressed labels maps that can be used to go backwards
 
     # Read each graph as a networkx graph
-    graphs = [nx.read_gexf(fname) for fname in fnames]
+    print('#... Loading graphs')
+    graphs = [nx.read_gexf(fname) for fname in tqdm(fnames)]
+
+
+
+
+
     assert len(graphs) > 0, "fnames parameter does not contain valid .gexf files"
     print ('#... Loaded all the graphs')
 
@@ -235,7 +241,7 @@ def wl_corpus(fnames, max_h, node_label_attr_name='Label'):
         t0 = time()
         compressed_labels_map_list.append(label_to_compressed_label_map)
         label_to_compressed_label_map = {}
-        graphs = [wl_relabel(g, it) for g in graphs]
+        graphs = [wl_relabel(g, it) for g in tqdm(graphs)]
         print ('WL iteration {} done in {} sec.'.format(it, round(time() - t0, 2)))
         print ('num of WL rooted subgraphs in iter {} is {}'.format(it, len(label_to_compressed_label_map)))
 
