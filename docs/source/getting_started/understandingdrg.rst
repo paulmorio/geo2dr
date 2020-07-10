@@ -1,4 +1,25 @@
 A Quick Primer on Distributed Representations of Graphs
 =======================================================
 
-TODO
+.. image:: CompleteDR.png
+  :width: 50%
+  :alt: A conceptual framework of how distributed representations of graphs are created.
+
+Here we provide a brief and simplified primer on learning distributed representations of graphs. This will not fully describe the various intricacies of existing methods, but cover a conceptual framework common to almost all distributed representations of graphs particularly for learning representations of substructure patterns and whole graphs. The above figure is a diagrammatic representation of this conceptual framework.
+
+Given a set of graphs $\mathbb{G} = \{ \mathcal{G}_1, \mathcal{G}_2, ... \mathcal{G}_n \}$ one can induce discrete substructure patterns such as shortest paths, rooted subgraphs, graphlets, etc. using side-effects of algorithms such as the Floyd-Warshall or Weisfeiler-Lehman Graph Isomorphism test, and so on. This can be used to produce pattern frequency vectors $\mathbf{X} = \{\mathbf{x}_1, \mathbf{x}_2, ..., \mathbf{x}_n \}$ describing the occurrence frequency of substructure patterns over a shared vocabulary $\mathbb{V}$. $\mathbb{V}$ is the set of unique substructure patterns induced across all of the graphs in the dataset $\mathbb{G}$. 
+
+Classically one may directly use these pattern frequency vectors within standard machine learning methods using vector inputs to perform some task. This is the approach taken by a variety of graph kernels \cite{deepgraphkernels, vishreview}. Unvfortunately, as the graphs of $\mathbb{G}$ and subtructure patterns induced become more complex through size or specificity, the number of induced patterns increases dramatically. This, in turn, causes the pattern frequency vectors of $\mathbf{X}$ to be extremely sparse and high-dimensional. The high specificity of the patterns and the sparsity of the pattern frequency vectors cause a phenomenon known as diagonal dominance across the kernel matrices wherein each graph becomes more similar to itself and dissimilar from others, degrading the classification performance \cite{deepgraphkernels}.
+
+To address this issue it is possible to learn dense and low dimensional distributed representations of graphs that are inductively biased to be similar when they contain similar substructure patterns and dissimilar when they do not. To achieve this, the construction of a corpus dataset $\mathcal{D}$ is required detailing the target-context relationship between a graph and its induced substructure as in our example or a substructure pattern to other substructure patterns. In the simplest form for graph-level representation learning one can implement $\mathcal{D}$ as tuples of graphs and substructure pattern $(\mathcal{G}_i, p_j) \in \mathcal{D}$ if $p_j \in \mathbb{V}$ and $p_j \in \mathcal{G}_i$. 
+
+The corpus is utilised with a method that incorporates Harris' distributive hypothesis \yrcite{harris} to learn the distributed representations of graphs. skipgram, cbow, PV-DM, PV-DBOW \cite{word2vec, doc2vec} are a few examples of neural embedding methods that incorporate this inductive bias and are all present in the Geo2DR library. In skipgram with negative sampling, as used in Graph2Vec \cite{graph2vec}, the distributed representations can be learned by optimizing
+
+$$
+\mathcal{L} = \sum_{\mathcal{G}_i \in \mathbb{G}} \sum_{p \in \mathbb{V}} |\{{(\mathcal{G}_i, p ) \in \mathcal{D}}\}| (\log \sigma(\Phi_i \cdot \mathcal{S}_{p}) \\
++ k \cdot \mathbb{E}_{p_N \in P_D}[\log \sigma(-\Phi_i \cdot p_N)] 
+$$
+
+over the corpus observations \noindent where $\Phi \in \mathbb{R}^{|\mathbb{G}| \times d}$ is the $d$ dimensional matrix of graph embeddings we desire of the graph dataset $\mathbb{G}$, and $\Phi_i$ is embedding for $\mathcal{G}_i \in \mathbb{G}$. Similarly, $\mathcal{S} \in \mathbb{R}^{|\mathbb{V}| \times d}$ are the $d$ dimensional embeddings of the substructure patterns in the vocabulary $\mathbb{V}$ so $\mathcal{S}_p$ represents the vector embedding corresponding to substructure pattern $p$. The embeddings of the substructure patterns are also tuned but ultimately not used, as we are interested in the graph embeddings in $\Phi$. $k$ is the number of negative samples with $t_N$ being the sampled context pattern, drawn according to the empirical unigram distribution $P_D (p) = \frac{|\{p | \forall G_i \in \mathbb{G}, (G_i, p) \in \mathcal{D}\}|}{|D|}$.
+
+The optimization of the above utility function creates the desired distributed representations of the targets in $\Phi$, in this the case graph-level embeddings. These may be used as input for any downstream machine learning task and method that take vector inputs. The distributed representations benefit from having lower dimensionality than the pattern frequency vectors, in other words $|\mathbb{V}| >> d$, being non-sparse, and being inductively biased via the distributive hypothesis in an unsupervised manner. For more in-depth reading we recommend \cite{harris, word2vec, doc2vec, deepgraphkernels, graph2vec}.
