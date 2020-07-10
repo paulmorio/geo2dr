@@ -1,4 +1,4 @@
-## *Geo2DR*: A library for learning distributed representations of graphs/manifolds.
+## *Geo2DR*: A library for learning distributed representations of graphs.
 
 [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 ![PyPI](https://img.shields.io/pypi/v/geometric2dr)
@@ -23,13 +23,14 @@ The following substructure induction algorithms are implemented
 - Weisfeiler-Lehman rooted subgraph decomposition
 - Random walks
 - Anonymous walks
-- Graphlets (currently support graphlets of size 2-8)
+- Graphlets (currently support graphlet pattern matching of size 2-8 with PyNauty)
 - Shortest paths
 
 The following embedding systems are included
 - Skipgram with negative sampling
 - PV-DBOW with negative sampling
 - PV-DM with negative sampling
+- GloVe (Coming soon)
 
 The following methods are currently implemented in the `examples` directory
 - Graph2Vec from Narayanan et al. [Graph2Vec: Learning Distributed Representations of Graphs](https://arxiv.org/abs/1707.05005) (2017 International Workshop on Mining and Learning with Graphs)
@@ -117,7 +118,7 @@ pip install -e .
 
 2. How is this different from other libraries for learning representations of graphs, such as PyTorch Geometric or Spektral?
 
-- *The systems produced here learn distributed representations of graphs. These representations are built by taking the perspective that graphs are composed of discrete substructures which characterise the graph in relation to the patterns found in other graphs of a collection under observation. The distributed vector representations are learned by exploiting the distributive hypothesis. Most of representations of graphs learned using systems such as created in PyTorch Geometric rely on a series of spectral/spatial graph convolutions to create node representations which are pooled in various ways to form graph level representations. The foundation of these algorithms can be found in the message-passing+pooling paradigm whereas our foundation is the distributive hypothesis. Hence this library is different and complementary to other existing libraries, and as far as I am aware this is the first.*
+- *The systems produced here learn distributed representations of graphs. These representations are built by taking the perspective that graphs are composed of discrete substructures which characterise the graph in relation to the patterns found in other graphs of a collection under observation. The distributed vector representations are learned by exploiting the distributive hypothesis. Most of representations of graphs learned using systems such as created in PyTorch Geometric rely on a series of spectral/spatial graph convolutions to create node representations which are pooled in various ways to form graph level representations. The foundation of these algorithms can be found in the message-passing+pooling paradigm whereas our foundation is the distributive hypothesis. Hence this library is different and complementary to other existing libraries, and as far as I am aware this is the first, especially for creating your own methods.*
 
 3. Hey my model for learning distributed representations is not implemented in the examples!
 
