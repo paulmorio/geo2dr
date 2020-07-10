@@ -9,7 +9,7 @@ Basic theory and methodology
 ----------------------------
 
 .. image:: geo_v3.png
-  :width: 50%
+  :width: 100%
   :alt: A conceptual framework of how distributed representations of graphs are created.
 
 Popular sytems such as Deep Graph Kernels (Yanardag and Vishwanathan, 2015), Graph2Vec (Narayanan et al., 2017), and Anonymous Walk Embeddings (AWE) (Ivanov and Burnaev, 2018) are all methods which learn distributed representations of arbitrary sized graphs. Such systems can be characterised by a common pipeline described below (and in the figure above).

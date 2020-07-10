@@ -2,7 +2,7 @@ A Quick Primer on Distributed Representations of Graphs
 =======================================================
 
 .. image:: CompleteDR.png
-  :width: 50%
+  :width: 100%
   :alt: A conceptual framework of how distributed representations of graphs are created.
 
 Here we provide a brief and simplified primer on learning distributed representations of graphs. This will not fully describe the various intricacies of existing methods, but cover a conceptual framework common to almost all distributed representations of graphs particularly for learning representations of substructure patterns and whole graphs. The above figure is a diagrammatic representation of this conceptual framework.
