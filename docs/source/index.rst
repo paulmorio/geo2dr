@@ -6,7 +6,7 @@ Welcome to Geo2DR's Docs!
 **Geo2DR** is a Python library for learning distributed representations of graphs. Here, embeddings of *substructure patterns* (walks, graphlets, trees, etc.) and *whole graphs* are learned by exploiting the distributive hypothesis used in statistical language modelling. It attempts to make the various algorithms used for inducing discrete structures, creating corpi, training neural language models available under a simple easy to use library. 
 
 .. note::
-   This is an early-stage project and a lot more documentation is planned to be included (you can view the raw rst file to see the upcoming tutorials and reference materials to be included in the coming 2 weeks). Its quite tough going at it alone!
+   This is an early-stage project and a lot more documentation is planned to be included (you can view the raw rst file to see the upcoming tutorials and reference materials to be included in the coming weeks). Its quite tough going at it alone!
 
 .. toctree::
    :glob:
@@ -15,6 +15,7 @@ Welcome to Geo2DR's Docs!
 
    getting_started/installation
    getting_started/introduction
+   getting_started/understandingdrg
    getting_started/dataformatting
    getting_started/decomposition
    getting_started/learning
