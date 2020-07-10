@@ -46,12 +46,12 @@ Care was taken so that modules can act independently. This was done so that user
 We recommend following the installation procedure within a virtual environment.
 
 ### Installing dependencies: PyNauty and Pytorch
-Geo2DR has two main dependencies that need to be installed prior to installing Geo2DR.
+Geo2DR has two main dependencies that need to be installed prior to installing Geo2DR. PyNauty for the fast graphlet pattern matching, and PyTorch for our neural embedding methods and optimization thereof.
 
 #### PyNauty dependencies
-To build pynauty the following additional components are needed:
+To build PyNauty the following additional components are needed:
 
-- Python 3.5
+- Python 3.5+
 - The most recent version of Nauty.
 - An ANSI C compiler.
 
@@ -90,7 +90,7 @@ Pytorch is installed based on the available hardware of the machine (GPU or CPU)
 
 ## Installing Geo2DR
 
-### From Pypi
+### (Stable Release) From PyPI
 This installation procedure refers to installation from the python package index. This version is stable but may lack the features included currently in this Github repository.
 
 ```bash
@@ -98,7 +98,7 @@ pip install geometric2dr
 ```
 
 
-### From source
+### (Dev Release) From source
 Geo2DR can be installed into the virtualenvironment from the source folder to get its latest features. If ones wishes to simply use Geo2DR modules one can use the standard pip source install from the project folder containing `setup.py`
 
 ```bash
