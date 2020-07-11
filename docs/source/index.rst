@@ -14,8 +14,8 @@ Welcome to Geo2DR's Docs!
    :caption: Getting Started:
 
    getting_started/installation
-   getting_started/introduction
    getting_started/understandingdrg
+   getting_started/introduction
    getting_started/dataformatting
    getting_started/decomposition
    getting_started/learning
