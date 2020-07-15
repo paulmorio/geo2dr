@@ -7,12 +7,18 @@
 
 **[Documentation](https://geo2dr.readthedocs.io/en/latest/)** | **[Paper](https://arxiv.org/abs/2003.05926)** | **[PyPI Page](https://pypi.org/project/geometric2dr/)**
 
-This library consists of various graph factorization and embedding algorithms built around a common framework to enable quick construction of systems capable of learning distributed representations of graphs. This library utilises PyTorch to maximise the utilisation of CUDA enabled GPUs for learning, but will also run efficiently on CPUs if a GPU is not available. 
+TL;DR Geo2DR is a library for rapidly ***constructing*** methods capable of learning distributed representations of graphs.
 
-Popular sytems such as Deep Graph Kernels (Yanardag and Vishwanathan, 2015), Graph2Vec (Narayanan et al., 2017), and Anonymous Walk Embeddings (AWE) (Ivanov and Burnaev, 2018) are all methods which learn distributed representations of arbitrary sized graphs. Such systems can be characterised by a common pipeline described below.
+## Overview
+This library consists of various data prorcessing, graph factorization and embedding algorithms built around a common conceptual framework to enable quick construction of systems capable of [learning distributed representations of graphs](https://geo2dr.readthedocs.io/en/latest/getting_started/understandingdrg.html). The emphasis is not on providing single-line API like calls to specific methods, but providing the various building blocks necessary to construct (or reconstruct) new methods for learning distributed representations of graphs. We hope this encourages exploration of methods using the distributive hypothesis as an inductive bias to learn vector space models of graphs in an unsupervised manner.
 
-1. **Decomposition of graphs into descriptive substructures:** Each graph in the dataset of graphs is reduced to a set of induced substructure patterns according to some decomposition algorithm. An example is inducing all the rooted subgraphs of a graph using a byproduct of the Weisfeiler-Lehman graph isomorphism test (Shervashidze et al., 2011) as done in Graph2Vec. The set of unique substructure patterns induced across the set of input graphs defines a common "vocabulary" that can describe a graph in relation to another graph based on the induced subgraphs patterns. 
-2. **Learning distributed vector representations:** The distributive hypothesis (Harris, 1954) posits that words which are used and exist within the same context have similar semantic meanings. In a similar way we may define that a graph is *contextualized* by the substructure patterns producing a new dataset of (graph, induced_subgraph_pattern) pairs. Embedding methods which exploit the distributive hypothesis such as skipgram (Mikolov et al., 2014) can then be used to learn fixed-size distributed vector embeddings of each substructure pattern or graph in an unsupervised manner.
+To encourage users we have numerous examples recreating existing methods such as Deep Graph Kernels (Yanardag and Vishwanathan, 2015), Graph2Vec (Narayanan et al., 2017) and Anonymous Walk Embeddings (AWE) (Ivanov and Burnaev, 2018) as well as kernel methods with Geo2DR. This library utilises PyTorch to maximise the utilisation of CUDA enabled GPUs for learning, but will also run efficiently on CPUs if a GPU is not available. Geo2DR's modules can also be used to interface with other libraries such as Gephi and NetworkX for analysing data or with Gensim for learning distributed representations.
+
+### Concept
+Popular sytems such as Deep Graph Kernels (Yanardag and Vishwanathan, 2015), Graph2Vec (Narayanan et al., 2017), and Anonymous Walk Embeddings (AWE) (Ivanov and Burnaev, 2018) are all methods which learn distributed representations of arbitrary sized graphs. Such systems can largely be characterised by the choice of:
+
+1. **Induced Substructure Pattern:** Each graph in the dataset of graphs is reduced to a set of induced substructure patterns according to some decomposition algorithm. An example is inducing all the rooted subgraphs of a graph using a byproduct of the Weisfeiler-Lehman graph isomorphism test (Shervashidze et al., 2011) as done in Graph2Vec. The set of unique substructure patterns induced across the set of input graphs defines a common "vocabulary" that can describe a graph in relation to another graph based on the induced subgraphs patterns. 
+2. **Neural Embedding Method using Distributive Hypothesis:** The distributive hypothesis (Harris, 1954) posits that words which are used and exist within the same context have similar semantic meanings. In a similar way we may define that a graph is *contextualized* by the substructure patterns producing a new corpus dataset of (target-graph, context-substructure_pattern) pairs. Embedding methods which exploit the distributive hypothesis such as skipgram (Mikolov et al., 2014) can then be used to learn fixed-size distributed vector embeddings of each substructure pattern or graph in an unsupervised manner.
 
 Once the distributed vector representations are learned for each of the graphs in a dataset. The graph embeddings may be used in any downstream application such as graph classification, regression, etc.
 
@@ -51,7 +57,7 @@ Geo2DR has two main dependencies that need to be installed prior to installing G
 #### PyNauty dependencies
 To build PyNauty the following additional components are needed:
 
-- Python 3.5+
+- Python 3.6+
 - The most recent version of Nauty.
 - An ANSI C compiler.
 
