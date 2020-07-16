@@ -16,10 +16,10 @@ Welcome to Geo2DR's Docs!
    getting_started/installation
    getting_started/understandingdrg
    getting_started/introduction
-   getting_started/dataformatting
-   getting_started/decomposition
-   getting_started/learning
-   getting_started/downstream
+   getting_started/data_formatting
+   getting_started/de_composition
+   getting_started/lear_ning
+   getting_started/down_stream
    license
 
 .. toctree::
