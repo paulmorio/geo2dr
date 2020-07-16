@@ -1,4 +1,4 @@
-A Quick Primer on Distributed Representations of Graphs
+A quick primer on distributed representations of graphs
 =======================================================
 
 .. image:: CompleteDR.png
