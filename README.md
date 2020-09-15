@@ -141,12 +141,10 @@ pip install -e .
 If this toolkit or any of the examples of pre-existing methods were useful, please cite the original authors and consider citing the library.
 
 ```
-@misc{geometric2dr,
+@inproceedings{geometric2dr,
     title={Learning distributed representations of graphs with Geo2DR},
     author={Paul Scherer and Pietro Lio},
+    booktitle={ICML Workshop on Graph Representation Learning and Beyond},
     year={2020},
-    eprint={2003.05926},
-    archivePrefix={arXiv},
-    primaryClass={cs.LG}
 }
 ```
