@@ -6,7 +6,7 @@ An important aspect of research is being able to develop methods and subsequentl
 Basic overview
 --------------
 
-
+Geo2DR uses the Graph Exchange Format (GEXF) as its main medium for storing and reading graphs. This choice comes from the point that graphs stored in the GEXF format can be used in popular network analysis software such as Gephi and NetworkX. Therefore a collection of graphs would practically be a directory containing `.gexf` files. Modules of the `decomposition` subpackage would be able to 
 
 TU Dortmund dataset processing
 ------------------------------
