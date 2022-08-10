@@ -150,6 +150,7 @@ class InMemoryTrainer(object):
 		self.vocab_size = self.corpus.num_subgraphs
 
 		self.skipgram = Skipgram(self.num_targets, self.vocab_size, self.emb_dimension)
+		self.train_losses = []
 
 		if torch.cuda.is_available():
 			self.device = torch.device("cuda")
@@ -161,12 +162,12 @@ class InMemoryTrainer(object):
 		"""Train the network with the settings used to initialise the Trainer
 		
 		"""
-		optimizer = optim.Adam(self.skipgram.parameters(), lr=self.initial_lr)
-		scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, len(self.dataloader))
+		optimizer = optim.SparseAdam(self.skipgram.parameters(), lr=self.initial_lr)
+		# scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, len(self.dataloader))
 		
 		for epoch in range(self.epochs):
-			print("### Epoch: " + str(epoch))
 
+			print("### Epoch: " + str(epoch))
 			running_loss = 0.0
 			for i, sample_batched in tqdm(enumerate(self.dataloader)):
 
@@ -179,9 +180,11 @@ class InMemoryTrainer(object):
 					loss = self.skipgram.forward(pos_target, pos_context, neg_context) # the loss is integrated into the forward function
 					loss.backward()
 					optimizer.step()
-					scheduler.step()
+					# scheduler.step()
 
 					running_loss = running_loss * 0.9 + loss.item() * 0.1
+					self.train_losses.append(running_loss)
+
 			print(" Loss: " + str(running_loss))
 
 		final_embeddings = self.skipgram.target_embeddings.weight.cpu().data.numpy()
