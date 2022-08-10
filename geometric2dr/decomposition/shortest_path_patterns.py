@@ -33,6 +33,7 @@ import itertools
 import random
 from collections import defaultdict
 from time import time
+from tqdm import tqdm
 
 # 3rd party
 import numpy as np
@@ -95,7 +96,7 @@ def save_sp_doc(gexf_fh, gidx, coocurrence_corpus):
 			sentence = str.join(" ", map(str, spp_neighbourhood))
 			print (sentence, file=fh)
 
-def sp_corpus(corpus_dir):
+def sp_corpus(corpus_dir, node_label_attr_name='Label'):
 	"""Function which induces the shortest path patterns over the graphs inside a given directory.
 
 	The main use case for this script is for the user to supply a path to the directory
@@ -128,16 +129,17 @@ def sp_corpus(corpus_dir):
 	graph_map = {}
 	corpus = []
 
-	for gexf_fh in graph_files:
+	for gexf_fh in tqdm(graph_files, "Computing shortest paths for graphs"):
 		open_fname = gexf_fh + ".spp"
 		if os.path.exists(open_fname):
 			continue
 		
-		gidx = int((os.path.basename(gexf_fh)).replace(".gexf", ""))
+		# Lets try modifying this part without issue
+		gidx = (os.path.basename(gexf_fh)).replace(".gexf", "")
 		graph, am = load_graph(gexf_fh)
 
 		count_map[gidx] = {}
-		label_map = [graph.nodes[nidx]["Label"] for nidx in sorted(list(graph.nodes()))]
+		label_map = [graph.nodes[nidx][node_label_attr_name] for nidx in sorted(list(graph.nodes()))]
 		coocurrence_corpus = []
 
 		G = graph

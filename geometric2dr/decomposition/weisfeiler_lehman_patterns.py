@@ -255,7 +255,7 @@ def wl_corpus(fnames, max_h, node_label_attr_name='Label'):
     graph_map = {}
 
     for fname, g in zip(fnames, graphs):
-        gidx = int((os.path.basename(fname)).replace(".gexf", ""))
+        gidx = (os.path.basename(fname)).replace(".gexf", "")
         tmp_corpus = []
         count_map = {}
         for n, d in g.nodes(data=True):
