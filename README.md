@@ -3,7 +3,6 @@
 [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 ![PyPI](https://img.shields.io/pypi/v/geometric2dr)
 ![PyPI - License](https://img.shields.io/pypi/l/geometric2dr)
-[![Documentation Status](https://readthedocs.org/projects/geo2dr/badge/?version=latest)](https://geo2dr.readthedocs.io/en/latest/?badge=latest)
 
 **[Documentation](https://geo2dr.readthedocs.io/en/latest/)** | **[Paper](https://arxiv.org/abs/2003.05926)** | **[PyPI Page](https://pypi.org/project/geometric2dr/)**
 
