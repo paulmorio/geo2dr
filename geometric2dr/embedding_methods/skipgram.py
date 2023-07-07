@@ -39,12 +39,13 @@ class Skipgram(nn.Module):
 		super(Skipgram, self).__init__()
 		self.num_targets = num_targets
 		self.embedding_dimension = embedding_dimension
-		self.target_embeddings = nn.Embedding(num_targets, embedding_dimension, sparse=True) # its a tensor with a lookup function overloading the embedding(word) oart
-		self.context_embeddings = nn.Embedding(vocab_size, embedding_dimension, sparse=True)
+		self.target_embeddings = nn.Embedding(num_targets, embedding_dimension, sparse=True, scale_grad_by_freq=True) # its a tensor with a lookup function overloading the embedding(word) oart
+		self.context_embeddings = nn.Embedding(vocab_size, embedding_dimension, sparse=True, scale_grad_by_freq=True)
 
 		# Xavier initialization of weights
 		initrange=1.0/(self.embedding_dimension) 
 		init.uniform_(self.target_embeddings.weight.data, -initrange, initrange)
+		# Constants for context embeddings as in Mikolov et al.
 		init.constant_(self.context_embeddings.weight.data,0)
 
 	def forward(self, pos_target, pos_context, neg_context):
