@@ -10,14 +10,8 @@ implementation can be found in: https://github.com/nd7141/AWE
 # Carry down MIT License
 
 # Standard libraries
-import sys
 import os
-import glob
-import pickle
-import itertools
 import random
-from collections import defaultdict
-from time import time
 from tqdm import tqdm
 
 # 3rd party

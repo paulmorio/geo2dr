@@ -1,7 +1,6 @@
 """Unit tests for anonymous walk patterns
 
 """
-import pytest
 from pathlib import Path
 import os
 import requests
