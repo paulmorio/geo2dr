@@ -7,11 +7,33 @@ import os
 import requests
 from io import BytesIO
 from zipfile import ZipFile
+
 from unittest import TestCase
 
 # Module import
 from geometric2dr.data.dortmund_formatter import *
 
+def test_DortmundGexf():
+    mutagzip_url = "https://ls11-www.cs.tu-dortmund.de/people/morris/graphkerneldatasets/MUTAG.zip"
+    # Download file in tmp if not already present
+    if not os.path.exists("test_data/dortmund_data/MUTAG.zip"):
+        Path("test_data/dortmund_data/").mkdir(parents=True, exist_ok=True)
+        r = requests.get(mutagzip_url)
+        z = ZipFile(BytesIO(r.content))
+        z.extractall("test_data/dortmund_data/")
+
+    # Instantiate and format the dataset
+    dataset = "MUTAG"
+    path_to_dataset = "test_data/dortmund_data/"
+    relative_output_directory = "test_data/"
+    gexifier = DortmundGexf(dataset, path_to_dataset, relative_output_directory)
+    gexifier.format_dataset()
+
+    assert os.path.isdir(os.path.join(relative_output_directory, dataset))
+    
+    # Test the number of gexf files == num graphs in dataset
+    num_files = len(os.listdir(os.path.join(relative_output_directory, dataset)))
+    assert num_files == 188
 
 class TestDortmundGexf(TestCase):
     """Class containing unit tests on DortmundGexf"""
