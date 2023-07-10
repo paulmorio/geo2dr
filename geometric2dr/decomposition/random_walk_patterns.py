@@ -9,14 +9,8 @@ and Evgeny Burnaev [1]_
 # Author: Paul Scherer 2020
 
 # Standard libraries
-import sys
 import os
-import glob
-import pickle
-import itertools
 import random
-from collections import defaultdict
-from time import time
 from tqdm import tqdm
 
 # 3rd party
