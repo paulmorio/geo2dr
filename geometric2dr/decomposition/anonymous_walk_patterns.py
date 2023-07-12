@@ -218,7 +218,8 @@ def random_walk_with_label_edges(graph, rw_graph, node, steps):
 	d = dict()
 	for i in range(steps):
 		v = random_step_node(rw_graph, node)
-		label = int(graph[node][v]['Label'])
+		# label = int(graph[node][v]['Label'])
+		label = graph.nodes[node]['Label']
 		if label not in d:
 			d[label] = idx
 			idx += 1
@@ -240,7 +241,7 @@ def random_walk_with_label_edges_nodes(graph, rw_graph, node, steps):
 	for i in range(steps):
 		v = random_step_node(rw_graph, node)
 		node_label = graph.nodes[node]['Label']
-		edge_label = int(graph[node][v]['Label'])
+		edge_label = int(graph.nodes[node]['Label'])
 		if node_label not in node_labels:
 			node_labels[node_label] = node_idx
 			node_idx += 1

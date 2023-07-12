@@ -93,6 +93,8 @@ def wl_relabel(graph, it):
 
     prev_iter = it - 1
     for node in graph.nodes():
+        print(node)
+        print(graph.nodes[node]['relabel'])
         prev_iter_node_label = get_int_node_label(graph.nodes[node]['relabel'][prev_iter]) # just a int ("1") in first it 0
         node_label = [prev_iter_node_label]
         neighbours = list(nx.all_neighbors(graph, node))

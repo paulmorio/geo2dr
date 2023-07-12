@@ -130,9 +130,9 @@ def sp_corpus(corpus_dir, node_label_attr_name='Label'):
 	corpus = []
 
 	for gexf_fh in tqdm(graph_files, "Computing shortest paths for graphs"):
-		open_fname = gexf_fh + ".spp"
-		if os.path.exists(open_fname):
-			continue
+		# open_fname = gexf_fh + ".spp"
+		# # if os.path.exists(open_fname):
+		# # 	continue
 		
 		# Lets try modifying this part without issue
 		gidx = (os.path.basename(gexf_fh)).replace(".gexf", "")

@@ -110,7 +110,7 @@ def random_walks_graph(nx_graph, walk_length, neighborhood_size=0):
 	return walks
 
 def save_rw_doc(gexf_fh, coocurrence_corpus, walk_length):
-	"""Saves a shortest path graph doc with the extension .spp
+	"""Saves a shortest path graph doc with the extension .rw
 	
 	Parameters
 	----------
@@ -131,8 +131,6 @@ def save_rw_doc(gexf_fh, coocurrence_corpus, walk_length):
 	"""
 
 	open_fname = gexf_fh + ".rw"  + str(walk_length)
-	# if os.path.isfile(open_fname):
-	# 	return
 	with open(open_fname,'w') as fh:
 		for spp_neighbourhood in coocurrence_corpus:
 			sentence = str.join(" ", map(str, spp_neighbourhood))

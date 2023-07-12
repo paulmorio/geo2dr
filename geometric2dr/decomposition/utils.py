@@ -3,7 +3,6 @@ General purpose utilities for I/O for decomposition
 """
 
 import os
-import json
 
 def get_files(dname, extension, max_files=0):
     """
