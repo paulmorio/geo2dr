@@ -71,36 +71,15 @@ class TestRandomWalkPatterns(TestCase):
         assert len(rws) == 17
 
     def test_random_walk_with_label_nodes(self) -> None:
-        
+        pass
 
-# def random_step_node(rw_graph, node):
-# 	'''Moves one step from the current according to probabilities of 
-# 	outgoing edges. Return next node.
+    def test_random_walks_graph(self) -> None:
+        pass
 
-# 	'''
+    def test_save_rw_doc(self) -> None:
+        pass
 
-# 	r = random.uniform(0, 1)
-# 	low = 0
-# 	for v in rw_graph[node]:
-# 		p = rw_graph[node][v]['weight']
-# 		if r <= low + p:
-# 			return v
-# 		low += p
+    def test_rw_corpus(self) -> None:
+        pass
 
-# def random_walk_with_label_nodes(graph, rw_graph, node, steps):
-# 	'''Creates anonymous walk from a node for arbitrary steps with usage of node labels.
-# 	Returns a tuple with consequent nodes.
 
-# 	'''
-	
-# 	d = dict()
-# 	count = 0
-# 	pattern = []
-# 	for i in range(steps + 1):
-# 		label = graph.nodes[node]['Label']
-# 		if label not in d:
-# 			d[label] = count
-# 			count += 1
-# 		pattern.append(d[label])
-# 		node = random_step_node(rw_graph, node)
-# 	return tuple(pattern)
