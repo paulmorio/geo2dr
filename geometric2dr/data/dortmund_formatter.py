@@ -73,7 +73,6 @@ class DortmundGexf(object):
     def __init__(self, dataset, path_to_dataset, output_dir_for_graph_files):
         super(DortmundGexf, self).__init__()
         self.dataset = dataset
-        # TODO Do some regex dark magicks
         self.graph_A_fname = path_to_dataset + dataset + "/" + dataset + "_A.txt"
         self.graph_indicator_fname = (
             path_to_dataset + dataset + "/" + dataset + "_graph_indicator.txt"
