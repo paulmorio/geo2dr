@@ -10,7 +10,7 @@ import numpy as np
 import geometric2dr.embedding_methods.utils as utils
 from geometric2dr.decomposition.weisfeiler_lehman_patterns import wl_corpus
 from geometric2dr.embedding_methods.cbow_trainer import Trainer
-from geometric2dr.embedding_methods.classify import cross_val_accuracy_precomputed_kernel_matrix
+# from geometric2dr.embedding_methods.classify import cross_val_accuracy_precomputed_kernel_matrix
 
 # Input data paths
 dataset = "MUTAG"

@@ -8,7 +8,7 @@ import numpy as np
 
 import geometric2dr.embedding_methods.utils as utils
 from geometric2dr.decomposition.weisfeiler_lehman_patterns import wl_corpus
-from geometric2dr.embedding_methods.skipgram_trainer import InMemoryTrainer
+from geometric2dr.embedding_methods.skipgram_trainer import InMemoryTrainer, Trainer
 from geometric2dr.embedding_methods.classify import cross_val_accuracy_rbf_bag_of_words
 
 # Input data paths
@@ -33,7 +33,7 @@ extension = ".wld" + str(wl_depth) # Extension of the graph document
 # Step 2
 # Train a skipgram (w. Negative Sampling) model to learn distributed representations of the subgraph patterns
 ############
-trainer = InMemoryTrainer(corpus_dir=corpus_data_dir, extension=extension, max_files=0, window_size=10, output_fh=output_embedding_fh,
+trainer = Trainer(corpus_dir=corpus_data_dir, extension=extension, max_files=0, window_size=10, output_fh=output_embedding_fh,
 				  emb_dimension=25, batch_size=10000, epochs=5, initial_lr=0.1, min_count=1)
 trainer.train()
 final_subgraph_embeddings = trainer.skipgram.give_target_embeddings()
@@ -48,7 +48,7 @@ vocab_size = trainer.vocab_size
 P = np.zeros((num_graphs, trainer.vocab_size))
 for i in range(num_graphs):
 	for jdx, j in enumerate(vocabulary):
-		P[i][jdx] = prob_map[i+1].get(j,0)
+		P[i][jdx] = prob_map[str(i+1)].get(j,0)
 M = np.zeros((len(vocabulary), len(vocabulary)))
 for i in range(len(vocabulary)):
 	for j in range(len(vocabulary)):
