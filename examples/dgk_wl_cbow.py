@@ -10,7 +10,7 @@ import numpy as np
 import geometric2dr.embedding_methods.utils as utils
 from geometric2dr.decomposition.weisfeiler_lehman_patterns import wl_corpus
 from geometric2dr.embedding_methods.cbow_trainer import Trainer
-# from geometric2dr.embedding_methods.classify import cross_val_accuracy_precomputed_kernel_matrix
+from geometric2dr.embedding_methods.classify import cross_val_accuracy_precomputed_kernel_matrix
 
 # Input data paths
 dataset = "MUTAG"
@@ -50,7 +50,7 @@ vocab_size = trainer.vocab_size
 P = np.zeros((num_graphs, trainer.vocab_size))
 for i in range(num_graphs):
 	for jdx, j in enumerate(vocabulary):
-		P[i][jdx] = prob_map[i+1].get(j,0)
+		P[i][jdx] = prob_map[str(i+1)].get(j,0)
 M = np.zeros((len(vocabulary), len(vocabulary)))
 for i in range(len(vocabulary)):
 	for j in range(len(vocabulary)):

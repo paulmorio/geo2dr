@@ -6,7 +6,7 @@ Author: Paul Scherer 2020
 """
 
 from geometric2dr.decomposition.weisfeiler_lehman_patterns import wl_corpus
-from geometric2dr.embedding_methods.pvdbow_trainer import InMemoryTrainer
+from geometric2dr.embedding_methods.pvdbow_trainer import Trainer
 from geometric2dr.embedding_methods.classify import cross_val_accuracy
 import geometric2dr.embedding_methods.utils as utils
 
@@ -18,7 +18,7 @@ corpus_data_dir = "data/" + dataset
 output_embedding_fh = "Graph2Vec_Embeddings.json"
 
 # Hyper parameters
-wl_depth = 2
+wl_depth = 3
 min_count_patterns = 0 # min number of occurrences to be considered in vocabulary of subgraph patterns
 
 
@@ -36,8 +36,8 @@ extension = ".wld" + str(wl_depth) # Extension of the graph document
 #		 for an example of the latter check out the DGK models.
 ######
 # Instantiate a PV-DBOW trainer to learn distributed reps directly.
-trainer = InMemoryTrainer(corpus_dir=corpus_data_dir, extension=extension, max_files=0, output_fh=output_embedding_fh,
-                  emb_dimension=32, batch_size=128, epochs=250, initial_lr=0.1,
+trainer = Trainer(corpus_dir=corpus_data_dir, extension=extension, max_files=0, output_fh=output_embedding_fh,
+                  emb_dimension=32, batch_size=128, epochs=250, initial_lr=0.01,
                   min_count=min_count_patterns)
 trainer.train()
 

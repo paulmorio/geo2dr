@@ -35,7 +35,7 @@ vocabulary = list(sorted(vocabulary))
 P = np.zeros((num_graphs, vocab_size))
 for i in range(num_graphs):
 	for jdx, j in enumerate(vocabulary):
-		P[i][jdx] = prob_map[i+1].get(j,0)
+		P[i][jdx] = prob_map[str(i+1)].get(j,0)
 K = P.dot(P.T)
 
 class_labels_fname = "data/"+ dataset + ".Labels"
