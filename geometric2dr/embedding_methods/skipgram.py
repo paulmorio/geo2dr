@@ -14,6 +14,7 @@ from torch.nn import init
 
 
 class Skipgram(nn.Module):
+
     """Pytorch implementation of the skipgram with negative
     sampling as in Mikolov et al. [5]_
 
