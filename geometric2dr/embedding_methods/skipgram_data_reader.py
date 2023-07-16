@@ -584,7 +584,6 @@ class InMemorySkipgramCorpus(Dataset):
 					target_subgraph_ids.append(self._subgraph_to_id_map[tgt])
 					context_subgraph_ids.append(self._subgraph_to_id_map[ctx])
 
-
 			# Dark lord hack which needs to be refactored later but also respects 
 			# random uniform sampling of original
 			ri = randint(0, len(target_subgraph_ids)-1)
