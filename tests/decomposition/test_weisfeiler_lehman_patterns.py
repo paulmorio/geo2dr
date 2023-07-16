@@ -16,6 +16,7 @@ from geometric2dr.decomposition.weisfeiler_lehman_patterns import *
 from geometric2dr.decomposition.utils import *
 from geometric2dr.decomposition.random_walk_patterns import load_graph
 
+
 class TestWeisfeilerLehmanPatterns(TestCase):
     """Tests for the WL patterns module"""
 
@@ -33,35 +34,32 @@ class TestWeisfeilerLehmanPatterns(TestCase):
 
     def test_initial_relabel(self) -> None:
         graph, adj_matrix = load_graph(self.graph_file_handle)
-        g = initial_relabel(graph, node_label_attr_name='Label')
-        assert 'relabel' in g.nodes['1']
+        g = initial_relabel(graph, node_label_attr_name="Label")
+        assert "relabel" in g.nodes["1"]
         assert len(g.nodes()) == 17
         return None
-    
+
     def test_wl_relabel(self) -> None:
         graph, adj_matrix = load_graph(self.graph_file_handle)
-        g = initial_relabel(graph, node_label_attr_name='Label')
+        g = initial_relabel(graph, node_label_attr_name="Label")
         wlgraph = wl_relabel(g, 1)
-        assert 0 in graph.nodes['1']['relabel'].keys()
-        assert 1 in graph.nodes['1']['relabel'].keys()
+        assert 0 in graph.nodes["1"]["relabel"].keys()
+        assert 1 in graph.nodes["1"]["relabel"].keys()
 
-    #TODO
+    # TODO
     def test_save_wl_doc(self) -> None:
         pass
 
     def test_wl_corpus(self) -> None:
         fnames = get_files(self.corpus_dir, ".gexf")
         max_h = 2
-        node_label_attr_name = 'Label'
+        node_label_attr_name = "Label"
 
-        corpus, vocabulary, prob_map, num_graphs, graph_map = wl_corpus(fnames, max_h, node_label_attr_name)
+        corpus, vocabulary, prob_map, num_graphs, graph_map = wl_corpus(
+            fnames, max_h, node_label_attr_name
+        )
         assert len(corpus) == 188
         assert len(vocabulary) >= 3
         assert len(prob_map) == 188
         assert num_graphs == 188
         assert len(graph_map) == 188
-
-    
-
-
-    

@@ -7,24 +7,27 @@ from pathlib import Path
 from unittest import TestCase
 from geometric2dr.embedding_methods.pvdm_trainer import PVDM_Trainer
 
+
 class TestTrainer(TestCase):
     def setUp(self) -> None:
         corpus_data_dir = "tests/test_data/MUTAG/"
         extension = ".wld2"
         self.output_embedding_fh = "PVDM_Embeddings.json"
-        min_count_patterns = 0 # min number of occurrences to be considered in vocabulary of subgraph patterns
+        min_count_patterns = 0  # min number of occurrences to be considered in vocabulary of subgraph patterns
 
-        self.trainer = PVDM_Trainer(corpus_dir=corpus_data_dir, 
-                                  extension=extension, 
-                                  max_files=0, 
-                                  output_fh=self.output_embedding_fh, 
-                                  emb_dimension=32, 
-                                  batch_size=128, 
-                                  epochs=100, 
-                                  initial_lr=0.1,
-                                  min_count=min_count_patterns,
-                                  window_size=5)
-        
+        self.trainer = PVDM_Trainer(
+            corpus_dir=corpus_data_dir,
+            extension=extension,
+            max_files=0,
+            output_fh=self.output_embedding_fh,
+            emb_dimension=32,
+            batch_size=128,
+            epochs=100,
+            initial_lr=0.1,
+            min_count=min_count_patterns,
+            window_size=5,
+        )
+
     def test_train(self) -> None:
         self.trainer.train()
         final_embeddings = self.trainer.pvdm.give_target_embeddings()

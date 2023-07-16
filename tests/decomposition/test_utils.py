@@ -11,8 +11,11 @@ from zipfile import ZipFile
 
 from geometric2dr.decomposition.utils import *
 
+
 def test_get_files() -> None:
-    mutagzip_url = "https://ls11-www.cs.tu-dortmund.de/people/morris/graphkerneldatasets/MUTAG.zip"
+    mutagzip_url = (
+        "https://ls11-www.cs.tu-dortmund.de/people/morris/graphkerneldatasets/MUTAG.zip"
+    )
     # Download file in tmp if not already present
     if not os.path.exists("tests/test_data/dortmund_data/MUTAG.zip"):
         Path("tests/test_data/dortmund_data/").mkdir(parents=True, exist_ok=True)

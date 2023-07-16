@@ -17,8 +17,8 @@ np.random.seed(2018)
 # Module
 from geometric2dr.decomposition.anonymous_walk_patterns import *
 
-class TestAnonymousWalkPatterns(TestCase):
 
+class TestAnonymousWalkPatterns(TestCase):
     def setUp(self) -> None:
         mutagzip_url = "https://ls11-www.cs.tu-dortmund.de/people/morris/graphkerneldatasets/MUTAG.zip"
         # Download file in tmp if not already present
@@ -43,8 +43,8 @@ class TestAnonymousWalkPatterns(TestCase):
         awe_length = 2
         keep_last = True
         new_paths = all_paths(paths, steps=awe_length, keep_last=keep_last)
-        assert len(new_paths)==2
-        assert len(new_paths[0])==3
+        assert len(new_paths) == 2
+        assert len(new_paths[0]) == 3
         return None
 
     def test_all_paths_edges(self) -> None:
@@ -52,8 +52,8 @@ class TestAnonymousWalkPatterns(TestCase):
         awe_length = 2
         keep_last = True
         new_paths = all_paths(paths, steps=awe_length, keep_last=keep_last)
-        assert len(new_paths)==2
-        assert len(new_paths[0])==3
+        assert len(new_paths) == 2
+        assert len(new_paths[0]) == 3
         return None
 
     def test_all_paths_nodes(self) -> None:
@@ -61,8 +61,8 @@ class TestAnonymousWalkPatterns(TestCase):
         awe_length = 2
         keep_last = True
         new_paths = all_paths(paths, steps=awe_length, keep_last=keep_last)
-        assert len(new_paths)==2
-        assert len(new_paths[0])==3
+        assert len(new_paths) == 2
+        assert len(new_paths[0]) == 3
         return None
 
     def test_all_paths_edges_nodes(self) -> None:
@@ -70,8 +70,8 @@ class TestAnonymousWalkPatterns(TestCase):
         awe_length = 2
         keep_last = True
         new_paths = all_paths(paths, steps=awe_length, keep_last=keep_last)
-        assert len(new_paths)==2
-        assert len(new_paths[0])==3
+        assert len(new_paths) == 2
+        assert len(new_paths[0]) == 3
         return None
 
     def test_create_random_walk_graph(self) -> None:
@@ -96,17 +96,21 @@ class TestAnonymousWalkPatterns(TestCase):
         rw = create_random_walk_graph(g)
         aws = []
         for i, node in enumerate(rw):
-            aws.append(random_walk_node(rw, node,steps=2))
+            aws.append(random_walk_node(rw, node, steps=2))
         assert len(aws) == 17
-        assert all([len(x) == 3 for x in aws]) # ensure all walks are the correct length
+        assert all(
+            [len(x) == 3 for x in aws]
+        )  # ensure all walks are the correct length
 
         g, _ = load_graph(self.graph_file_handle)
         rw = create_random_walk_graph(g)
         aws = []
         for i, node in enumerate(rw):
-            aws.append(random_walk_node(rw, node,steps=3))
+            aws.append(random_walk_node(rw, node, steps=3))
         assert len(aws) == 17
-        assert all([len(x) == 4 for x in aws]) # ensure all walks are the correct length
+        assert all(
+            [len(x) == 4 for x in aws]
+        )  # ensure all walks are the correct length
         return None
 
     def test_random_walk_with_label_edges(self) -> None:
@@ -117,7 +121,6 @@ class TestAnonymousWalkPatterns(TestCase):
             aws.append(random_walk_with_label_edges(g, rw, node, steps=3))
         assert len(aws) == 17
         return None
-    
 
     def test_random_walk_with_label_edges_nodes(self) -> None:
         g, _ = load_graph(self.graph_file_handle)
@@ -135,7 +138,9 @@ class TestAnonymousWalkPatterns(TestCase):
         for i, node in enumerate(rw):
             aws.append(anonymous_walk_node(g, rw, node, steps=2, label_setting=None))
         assert len(aws) == 17
-        assert all([len(x) == 3 for x in aws]) # ensure all walks are the correct length
+        assert all(
+            [len(x) == 3 for x in aws]
+        )  # ensure all walks are the correct length
         return None
 
     def test_anonymous_walks(self) -> None:
@@ -148,19 +153,26 @@ class TestAnonymousWalkPatterns(TestCase):
             walk_ids[tuple(path)] = i
         g, _ = load_graph(self.graph_file_handle)
         label_setting = None
-        aws = anonymous_walks(g, 2, walk_ids=walk_ids, awe_length=2, label_setting=label_setting)
+        aws = anonymous_walks(
+            g, 2, walk_ids=walk_ids, awe_length=2, label_setting=label_setting
+        )
         assert len(aws) == 17
         assert all([len(x) == 2 for x in aws])
         return None
 
     def test_awe_corpus(self) -> None:
         awe_length = 2
-        corpus, vocabulary, prob_map, num_graphs, graph_map = awe_corpus(self.corpus_dir, awe_length=awe_length, label_setting=None, saving_graph_docs=True)
+        corpus, vocabulary, prob_map, num_graphs, graph_map = awe_corpus(
+            self.corpus_dir,
+            awe_length=awe_length,
+            label_setting=None,
+            saving_graph_docs=True,
+        )
         assert len(corpus) == 188
         assert len(vocabulary) == 2
-        assert '0' in vocabulary
+        assert "0" in vocabulary
         assert len(prob_map) == 188
-        assert all([len(prob_map[i]) == 2 for i in range(1,189)])
+        assert all([len(prob_map[i]) == 2 for i in range(1, 189)])
         assert num_graphs == 188
         assert len(graph_map) == 188
         return None

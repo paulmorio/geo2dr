@@ -18,6 +18,7 @@ np.random.seed(2018)
 # Module
 from geometric2dr.decomposition.random_walk_patterns import *
 
+
 class TestRandomWalkPatterns(TestCase):
     """Tests for the random walk patterns module"""
 
@@ -64,8 +65,8 @@ class TestRandomWalkPatterns(TestCase):
         g, _ = load_graph(self.graph_file_handle)
         assert g.number_of_nodes() == 17
         rw = create_random_walk_graph(g)
-        random_walk_instance = random_walk_with_label_nodes(g, rw, '1', 2)
-        assert (len(random_walk_instance) == 2 or len(random_walk_instance)==3)
+        random_walk_instance = random_walk_with_label_nodes(g, rw, "1", 2)
+        assert len(random_walk_instance) == 2 or len(random_walk_instance) == 3
         return None
 
     def test_random_walks_graph(self) -> None:
@@ -73,18 +74,20 @@ class TestRandomWalkPatterns(TestCase):
         assert g.number_of_nodes() == 17
         walks = random_walks_graph(g, 2, 1)
         assert len(walks) == 17
-        assert ['(0, 0, 0)'] in walks
+        assert ["(0, 0, 0)"] in walks
         return None
 
-    #TODO
+    # TODO
     def test_save_rw_doc(self) -> None:
         pass
 
     def test_rw_corpus(self) -> None:
-        corpus, vocabulary, prob_map, num_graphs, graph_map = rw_corpus(self.corpus_dir, walk_length=2, neighborhood_size=2, saving_graph_docs=False)
+        corpus, vocabulary, prob_map, num_graphs, graph_map = rw_corpus(
+            self.corpus_dir, walk_length=2, neighborhood_size=2, saving_graph_docs=False
+        )
         assert len(corpus) == 188
         assert len(vocabulary) >= 3
-        assert '0' in vocabulary
+        assert "0" in vocabulary
         assert len(prob_map) == 188
         assert num_graphs == 188
         assert len(graph_map) == 188

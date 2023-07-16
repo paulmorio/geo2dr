@@ -7,6 +7,7 @@ from sklearn import datasets
 from unittest import TestCase
 from geometric2dr.embedding_methods.classify import *
 
+
 class TestClassify(TestCase):
     def setUp(self) -> None:
         X, y = datasets.load_iris(return_X_y=True)
@@ -25,27 +26,35 @@ class TestClassify(TestCase):
         self.y_test = y[int(0.9 * n_sample) :]
 
     def test_linear_svm_classify(self) -> None:
-        acc, precision, recall, fbeta_score = linear_svm_classify(self.X_train, self.X_test, self.y_train, self.y_test)
+        acc, precision, recall, fbeta_score = linear_svm_classify(
+            self.X_train, self.X_test, self.y_train, self.y_test
+        )
         assert acc > 0
 
     def test_rbf_svm_classify(self) -> None:
-        acc, precision, recall, fbeta_score = rbf_svm_classify(self.X_train, self.X_test, self.y_train, self.y_test)
+        acc, precision, recall, fbeta_score = rbf_svm_classify(
+            self.X_train, self.X_test, self.y_train, self.y_test
+        )
         assert acc > 0
 
     def test_perform_classification(self) -> None:
         corpus_dir = "tests/test_data/MUTAG/"
-        extension = ".wld2" 
-        embedding_fname = "tests/test_data/Graph2Vec_Embeddings.json" 
+        extension = ".wld2"
+        embedding_fname = "tests/test_data/Graph2Vec_Embeddings.json"
         class_labels_fname = "tests/test_data/MUTAG.Labels"
-        acc, precision, recall, fbeta_score = perform_classification(corpus_dir, extension, embedding_fname, class_labels_fname)
+        acc, precision, recall, fbeta_score = perform_classification(
+            corpus_dir, extension, embedding_fname, class_labels_fname
+        )
         assert acc > 0
 
     def test_cross_val_accuracy(self) -> None:
         corpus_dir = "tests/test_data/MUTAG/"
-        extension = ".wld2" 
-        embedding_fname = "tests/test_data/Graph2Vec_Embeddings.json" 
+        extension = ".wld2"
+        embedding_fname = "tests/test_data/Graph2Vec_Embeddings.json"
         class_labels_fname = "tests/test_data/MUTAG.Labels"
-        meanacc, stdacc = cross_val_accuracy(corpus_dir, extension, embedding_fname, class_labels_fname)
+        meanacc, stdacc = cross_val_accuracy(
+            corpus_dir, extension, embedding_fname, class_labels_fname
+        )
         assert meanacc > 0
 
     def test_cross_val_accuracy_rbf_bag_of_words(self) -> None:

@@ -34,6 +34,7 @@ np.random.seed(2312312)
 # Module
 from geometric2dr.decomposition.shortest_path_patterns import *
 
+
 class TestShortestPathPatterns(TestCase):
     """Tests for the shortest path patterns module"""
 
@@ -54,8 +55,8 @@ class TestShortestPathPatterns(TestCase):
         assert graph.number_of_nodes() == 17
         assert adj_matrix.shape[0] == 17
         return None
-    
-    #TODO
+
+    # TODO
     def test_save_sp_doc(self) -> None:
         pass
 
@@ -64,7 +65,7 @@ class TestShortestPathPatterns(TestCase):
         corpus, vocabulary, prob_map, num_graphs, graph_map = sp_corpus(corpus_dir)
         assert len(corpus) == 188
         assert len(vocabulary) >= 3
-        assert '0_0_0' in vocabulary
+        assert "0_0_0" in vocabulary
         assert len(prob_map) == 188
         assert num_graphs == 188
         assert len(graph_map) == 188

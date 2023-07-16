@@ -14,6 +14,7 @@ import random
 # from geometric2dr.decomposition.graphlet_patterns import *
 from geometric2dr.decomposition.random_walk_patterns import *
 
+
 class TestGraphlletPatterns(TestCase):
     """Tests for the random walk patterns module"""
 
@@ -34,18 +35,18 @@ class TestGraphlletPatterns(TestCase):
         assert graph.number_of_nodes() == 17
         assert adj_matrix.shape[0] == 17
 
-    #TODO
+    # TODO
     def test_get_maps(self) -> None:
         pass
 
-    #TODO
+    # TODO
     def test_get_graphlet(self) -> None:
         pass
 
-    #TODO
+    # TODO
     def test_graphlet_corpus(self) -> None:
         pass
 
-    #TODO 
+    # TODO
     def test_save_graphlet_document(self) -> None:
         pass
