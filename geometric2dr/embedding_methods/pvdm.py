@@ -25,7 +25,7 @@ class PVDM(nn.Module):
     ----------
     num_targets : int
         The number of targets to embed. Typically the number of substructure
-        patterns, but can be repurposed to be number of graphs. 
+        patterns, but can be repurposed to be number of graphs.
     vocab_size : int
         The size of the vocabulary; the number of unique substructure patterns
     embedding_dimension : int
@@ -41,12 +41,12 @@ class PVDM(nn.Module):
         super(PVDM, self).__init__()
         self.num_targets = num_targets
         self.embedding_dimension = embedding_dimension
-        concat_dim = 2*embedding_dimension
+        concat_dim = 2 * embedding_dimension
 
-        self.target_embeddings = nn.Embedding(num_targets, embedding_dimension) #D
-        self.context_embeddings = nn.Embedding(vocab_size, embedding_dimension) #W
-        self.output_layer = nn.Embedding(vocab_size, concat_dim) #O
-        
+        self.target_embeddings = nn.Embedding(num_targets, embedding_dimension)  # D
+        self.context_embeddings = nn.Embedding(vocab_size, embedding_dimension)  # W
+        self.output_layer = nn.Embedding(vocab_size, concat_dim)  # O
+
         # Xavier initialization of weights
         initrange = 1.0 / (self.embedding_dimension)
         init.uniform_(self.target_embeddings.weight.data, -initrange, initrange)
@@ -59,7 +59,7 @@ class PVDM(nn.Module):
 
     def forward(self, pos_graph_emb, pos_context_target, pos_contexts, pos_negatives):
         """Forward pass in network
-        
+
         Parameters
         ----------
         pos_graph_emb : torch.Long
@@ -67,7 +67,7 @@ class PVDM(nn.Module):
         pos_context_target : torch.Long
             index of target subgraph pattern embedding
         pos_contexts : torch.Long
-            indices of context subgraph patterns around the target subgraph embedding    
+            indices of context subgraph patterns around the target subgraph embedding
         pos_negatives : torch.Long
             indices of negatives
 
@@ -75,7 +75,7 @@ class PVDM(nn.Module):
         -------
         torch.float
             the negative sampling loss
-        
+
         """
 
         # Be aware pos_contexts is typically several context embeddings
@@ -99,15 +99,19 @@ class PVDM(nn.Module):
         # Concat graph embedding with contexts embeddings
         stack_target_contexts = torch.cat((emb_target, mean_contexts), dim=1)
 
-        objective = torch.sum(torch.mul(stack_target_contexts, emb_context_target), dim=1) # mul is elementwise multiplication
+        objective = torch.sum(
+            torch.mul(stack_target_contexts, emb_context_target), dim=1
+        )  # mul is elementwise multiplication
         objective = torch.clamp(objective, max=10, min=-10)
         objective = -F.logsigmoid(objective)
 
-        neg_objective = torch.bmm(emb_negative_targets, stack_target_contexts.unsqueeze(2)).squeeze()
+        neg_objective = torch.bmm(
+            emb_negative_targets, stack_target_contexts.unsqueeze(2)
+        ).squeeze()
         neg_objective = torch.clamp(neg_objective, max=10, min=-10)
         neg_objective = -torch.sum(F.logsigmoid(-neg_objective), dim=1)
 
-        return torch.mean(objective+neg_objective)
+        return torch.mean(objective + neg_objective)
 
     def give_target_embeddings(self):
         """Return the target embeddings as a numpy matrix
