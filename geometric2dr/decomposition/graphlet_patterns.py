@@ -39,7 +39,7 @@ from time import time
 # 3rd party
 import numpy as np
 import networkx as nx
-import pynauty # make sure to install this
+import pynauty  # make sure to install this
 
 # Internal
 from .utils import get_files
@@ -50,7 +50,7 @@ np.random.seed(2312312)
 
 
 def load_graph(file_handle):
-    """ Load the gexf format file as a nx_graph and an adjacency matrix.
+    """Load the gexf format file as a nx_graph and an adjacency matrix.
 
     Parameters
     ----------
@@ -70,8 +70,9 @@ def load_graph(file_handle):
     adj_matrix = nx.to_numpy_matrix(graph)
     return graph, adj_matrix
 
+
 def get_maps(num_graphlets):
-    """Load certificates created by the canonical representations of 
+    """Load certificates created by the canonical representations of
     graphlets into canonical maps dictionary for quick isomorphism
     check when we extract graphlets from graphs in the users dataset
 
@@ -87,19 +88,20 @@ def get_maps(num_graphlets):
 
     """
 
-    data_path = os.path.join(os.path.dirname(__file__), 'canonical_maps')
+    data_path = os.path.join(os.path.dirname(__file__), "canonical_maps")
     # data_path = "canonical_maps"
-    with open(data_path + "/canonical_map_n%s.p"%(num_graphlets), 'rb') as handle:
+    with open(data_path + "/canonical_map_n%s.p" % (num_graphlets), "rb") as handle:
         # canonical_map : {canonical string id: {"graph", "idx", "n"}}
         canonical_map = pickle.load(handle, encoding="latin1")
     return canonical_map
+
 
 def get_graphlet(window, num_graphlets):
     """Compute the Nauty certificate of the graphlet in within a window of the adjacency matrix
 
     This function takes the upper triangle of a nxn matrix and
     computes its hash certificate using nauty. Given the parameters
-    this usually involved computing the graphlet of num_graphlets 
+    this usually involved computing the graphlet of num_graphlets
     size
 
     This is used for comparison with a bank of known certificates
@@ -119,11 +121,17 @@ def get_graphlet(window, num_graphlets):
 
     """
 
-    adj_mat = {idx: [i for i in list(np.where(edge)[0]) if i!=idx] for idx, edge in enumerate(window)}
+    adj_mat = {
+        idx: [i for i in list(np.where(edge)[0]) if i != idx]
+        for idx, edge in enumerate(window)
+    }
 
-    g = pynauty.Graph(number_of_vertices=num_graphlets, directed=False, adjacency_dict = adj_mat)
+    g = pynauty.Graph(
+        number_of_vertices=num_graphlets, directed=False, adjacency_dict=adj_mat
+    )
     cert = pynauty.certificate(g)
     return cert
+
 
 def graphlet_corpus(corpus_dir, num_graphlets, samplesize):
     """Function which induces the graphlet patterns over the graphs inside a given directory.
@@ -140,8 +148,8 @@ def graphlet_corpus(corpus_dir, num_graphlets, samplesize):
     ----------
     corpus_dir : str
         path to directory containing graph files of dataset in .gexf format.
-    num_graphlets : int 
-        the size of the graphlet patterns to be extracted 
+    num_graphlets : int
+        the size of the graphlet patterns to be extracted
     samplesize : int
         the number of samples to take from a graph.
 
@@ -157,7 +165,7 @@ def graphlet_corpus(corpus_dir, num_graphlets, samplesize):
         the number of graphs in the dataset
     graph_map : dict
         a map {gidx: {graphlet_idx: count}} of the number of times a certain graphlet pattern appeared in a graph for each graph gidx in the dataset
-    
+
     """
 
     fallback_map = {1: 1, 2: 2, 3: 4, 4: 8, 5: 19, 6: 53, 7: 209, 8: 1253, 9: 13599}
@@ -176,21 +184,23 @@ def graphlet_corpus(corpus_dir, num_graphlets, samplesize):
         nx_graph, adj_mat = load_graph(gexf_fh)
         num_nodes = len(adj_mat)
 
-        count_map = {} # graphlet countmap
-        tmp_corpus = [] # temporary corpus of graphlet patterns for a single graph
-        cooccurence_corpus = [] # corpus which preserves cooccurence as in Yanardag et al.
+        count_map = {}  # graphlet countmap
+        tmp_corpus = []  # temporary corpus of graphlet patterns for a single graph
+        cooccurence_corpus = (
+            []
+        )  # corpus which preserves cooccurence as in Yanardag et al.
 
         # Only sample graphlets if the number of nodes in the graph is larger than the
         # maximum graphlet size
         if num_nodes >= num_graphlets:
             for _ in range(samplesize):
-                r =  np.random.permutation(range(num_nodes))
+                r = np.random.permutation(range(num_nodes))
                 for n in [num_graphlets]:
                     # "Main Graphlet"
-                    # Choose a random set of num_graphlet nodes, find the graphlets of 
+                    # Choose a random set of num_graphlet nodes, find the graphlets of
                     # desired size and add it to the count_map
-                    window = adj_mat[np.ix_(r[0:n],r[0:n])]
-                    g_type = canonical_map[str(get_graphlet(window, n), 'latin1')]
+                    window = adj_mat[np.ix_(r[0:n], r[0:n])]
+                    g_type = canonical_map[str(get_graphlet(window, n), "latin1")]
                     graphlet_idx = g_type["idx"]
                     count_map[graphlet_idx] = count_map.get(graphlet_idx, 0) + 1
                     vocabulary.add(graphlet_idx)
@@ -199,12 +209,12 @@ def graphlet_corpus(corpus_dir, num_graphlets, samplesize):
 
                     # "Co-occuring Graphlets"
                     for node in r[0:n]:
-                        # select a non-overlapping window n-1 in size and one of 
+                        # select a non-overlapping window n-1 in size and one of
                         # the nodes in the "main graphlet", to find a neighbouring graphlet
-                        new_n_arr = r[n:][0:n-1]
+                        new_n_arr = r[n:][0 : n - 1]
                         r2 = np.array(list(new_n_arr) + [node])
-                        window2 = adj_mat[np.ix_(r2,r2)]
-                        g_type2 = canonical_map[str(get_graphlet(window2, n), 'latin1')]
+                        window2 = adj_mat[np.ix_(r2, r2)]
+                        g_type2 = canonical_map[str(get_graphlet(window2, n), "latin1")]
                         graphlet_idx2 = g_type2["idx"]
                         count_map[graphlet_idx2] = count_map.get(graphlet_idx2, 0) + 1
                         vocabulary.add(graphlet_idx2)
@@ -217,16 +227,26 @@ def graphlet_corpus(corpus_dir, num_graphlets, samplesize):
 
         # Record and save graphlet information for the one graph
         graph_map[gidx] = count_map
-        save_graphlet_document(gexf_fh, gidx, num_graphlets, samplesize, cooccurence_corpus)
+        save_graphlet_document(
+            gexf_fh, gidx, num_graphlets, samplesize, cooccurence_corpus
+        )
 
     # Normalise the probabilities of a graphlet in a graph.
-    prob_map = {gidx: {graphlet: count/float(sum(graphlets.values())) \
-        for graphlet, count in graphlets.items()} for gidx, graphlets in graph_map.items()}
+    prob_map = {
+        gidx: {
+            graphlet: count / float(sum(graphlets.values()))
+            for graphlet, count in graphlets.items()
+        }
+        for gidx, graphlets in graph_map.items()
+    }
     num_graphs = len(prob_map)
 
     return corpus, vocabulary, prob_map, num_graphs, graph_map
 
-def save_graphlet_document(gexf_fh, gidx, num_graphlets, samplesize, cooccurence_corpus):
+
+def save_graphlet_document(
+    gexf_fh, gidx, num_graphlets, samplesize, cooccurence_corpus
+):
     """Saves the induced graphlet patterns into dataset folder, it is only used in conjunction
     with graphlet_corpus()
 
@@ -235,14 +255,14 @@ def save_graphlet_document(gexf_fh, gidx, num_graphlets, samplesize, cooccurence
     gexf_fh : str
         path to gexf file of graph
     gidx : int
-        integer id of the graph, typically matches number in 
+        integer id of the graph, typically matches number in
         gexf_fh, if using TU Dortmund benchmark datasets
     num_graphlets : int
         size of graphlet patterns induced
     samplesize : int
         number of graphlet patterns sampled from graph
     cooccurrence_corpus : list
-        list of graphlet patterns induced under cooccurrence 
+        list of graphlet patterns induced under cooccurrence
         rules, in this case all graphlets immediately adjacent
         to an induced graphlet pattern.
 
@@ -257,14 +277,18 @@ def save_graphlet_document(gexf_fh, gidx, num_graphlets, samplesize, cooccurence
 
 
     """
-    open_fname = gexf_fh + ".graphlet" + "_ng_" + str(num_graphlets) + "_ss_" + str(samplesize)
-    with open(open_fname,'w') as fh:
+    open_fname = (
+        gexf_fh + ".graphlet" + "_ng_" + str(num_graphlets) + "_ss_" + str(samplesize)
+    )
+    with open(open_fname, "w") as fh:
         for graphlet_neighbourhood in cooccurence_corpus:
             sentence = str.join(" ", map(str, graphlet_neighbourhood))
-            print (sentence, file=fh)
+            print(sentence, file=fh)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     corpus_dir = corpus_dir = "../data/dortmund_gexf/MUTAG/"
-    corpus, vocabulary, prob_map, num_graphs, graph_map = graphlet_corpus(corpus_dir, num_graphlets=3, samplesize=6)
+    corpus, vocabulary, prob_map, num_graphs, graph_map = graphlet_corpus(
+        corpus_dir, num_graphlets=3, samplesize=6
+    )
     # should result in files with 6 lines each with num_graphlets+1 items
